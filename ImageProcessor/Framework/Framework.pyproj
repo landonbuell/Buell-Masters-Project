@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>460e390a-9887-440e-ab18-52fce9282b9b</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Framework.py</StartupFile>
+    <StartupFile>__init__.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Framework.py" />
+    <Compile Include="appConfig.py" />
+    <Compile Include="imageProcessingApplication.py" />
+    <Compile Include="textLogger.py" />
+    <Compile Include="__init__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
