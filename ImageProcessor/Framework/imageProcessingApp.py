@@ -13,8 +13,17 @@
 import os
 import datetime
 
+import commonEnumerations
+
 import appConfig
 import textLogger
+
+import sampleManager
+import dataManager
+import augmentationManager
+import preprocessManager
+import classificationManager
+import segmentationManager
 
         #### CLASS DEFINITIONS ####
 
@@ -38,16 +47,16 @@ class ImageProcessingApp:
 
         self._config        = config
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
-        self._exitStatus    = appConfig.Status.SUCCESS
+        self._exitStatus    = commonEnumerations.Status.SUCCESS
 
-        self._sampleManager = None
-        self._dataManager   = None
+        self._sampleManager = sampleManager.SampleManager(self)
+        self._dataManager   = dataManager.DataManager(self)
 
-        self._augmentationManager   = None
-        self._preprocessManager     = None
+        self._augmentationManager   = augmentationManager.AugmentationManager(self)
+        self._preprocessManager     = preprocessManager.PreprocessManager(self)
 
-        self._classificationManager = None
-        self._segmentationManager   = None
+        self._classificationManager = classificationManager.ClassificationManager(self)
+        self._segmentationManager   = segmentationManager.SegmentationManager(self)
 
     def __del__(self):
         """ Destructor """
@@ -67,7 +76,7 @@ class ImageProcessingApp:
         """ Return the App's Configuration Structure """
         return self._config
 
-    def getStatus(self) -> appConfig.Status:
+    def getStatus(self) -> commonEnumerations.Status:
         """ Return the App's Status """
         return self._exitStatus
 
@@ -99,11 +108,19 @@ class ImageProcessingApp:
 
     def logMessage(self,message: str) -> None:
         """ Log Message to Logger / Console """
-
+        self._logger.logMessage(message)
         return None
 
     def startup(self) -> int:
         """ Run App Startup """
+        self._sampleManager.init()
+        self._dataManager.init()
+
+        self._augmentationManager.init()
+        self._preprocessManager.init()
+
+        self._classificationManager.init()
+        self._preprocessManager.init()
 
         return self._exitStatus
 
@@ -129,7 +146,6 @@ class ImageProcessingApp:
         result = result.replace(":",".")
         result = result.replace(" ",".")
         return result
-
 
 """
     Author:         Landon Buell

@@ -14,12 +14,6 @@ import os
 import enum
         #### CLASS DEFINITIONS ####
 
-class Status(enum.IntEnum):
-        """ Stores Exist Status for Application """
-        SUCCESS     = 0
-        WARNING     = 1
-        ERROR       = 2
-
 class AppConfig:
     """ 
         Stores configuration Information for ImageProcessingApplication Instance
@@ -40,6 +34,10 @@ class AppConfig:
 
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
+        
+        self._enableCrossValidation     = False
+
+        self._maxSampleDatabaseSize = int(2**16)
 
     # Accessors
 
@@ -75,15 +73,23 @@ class AppConfig:
         """ Return the shuffle Seed """
         return self._shuffleSeed
 
+    def getMaxSampleDatabseSize(self) -> int:
+        """ Return the maximum allowed size for the SampleManager's Database """
+        return self._maxSampleDatabaseSize
+
     # Public Interface
 
     # Private Interface
 
     # Static Interface
 
-
-
-
+    @staticmethod
+    def getDevelopmentConfig():
+        """ Return Instace Designed for App Development """
+        inputPaths = [os.path.abspath(os.path.join("..","..","dataset","asl_alphabet_train")),]
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
+        config = AppConfig(inputPaths,outputPath)
+        return config
 
 """
     Author:         Landon Buell
