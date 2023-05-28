@@ -79,7 +79,7 @@ class TextLogger:
 
         if (self._toFile == True):
             self._outStream.write(formattedMessage + "\n")
-        return self
+        return None
 
     # Private Interface
 

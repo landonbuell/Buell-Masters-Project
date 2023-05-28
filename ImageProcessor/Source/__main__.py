@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # TODO
 
     # Initialize a Setting / Configurations Struct
-    config = appConfig.AppConfig()
+    config = appConfig.AppConfig.getDevelopmentConfig()
 
     # Create & Run the Image Processing App
     app = imageProcessingApp.ImageProcessingApp(config)

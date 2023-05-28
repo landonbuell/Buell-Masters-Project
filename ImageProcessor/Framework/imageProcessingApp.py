@@ -16,6 +16,8 @@ import datetime
 import appConfig
 import textLogger
 
+import sampleManager
+
         #### CLASS DEFINITIONS ####
 
 class ImageProcessingApp:
@@ -40,7 +42,7 @@ class ImageProcessingApp:
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
         self._exitStatus    = appConfig.Status.SUCCESS
 
-        self._sampleManager = None
+        self._sampleManager = sampleManager.SampleManager(self)
         self._dataManager   = None
 
         self._augmentationManager   = None
@@ -99,11 +101,13 @@ class ImageProcessingApp:
 
     def logMessage(self,message: str) -> None:
         """ Log Message to Logger / Console """
-
+        self._logger.logMessage(message)
         return None
 
     def startup(self) -> int:
         """ Run App Startup """
+        self._sampleManager.init()
+
 
         return self._exitStatus
 
