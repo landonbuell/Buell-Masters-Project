@@ -13,8 +13,9 @@
 import os
 import queue
 
+import commonEnumerations
+
 import manager
-import imageProcessingApp
 
         #### FUNCTION DEFINITIONS ####
 
@@ -28,7 +29,7 @@ class SampleManager(manager.Manager):
     __NAME = "SampleManager"
 
     def __init__(self,
-                 app: imageProcessingApp.ImageProcessingApp):
+                 app): #imageClassifierApp.ImageClassifierApp
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
 
@@ -41,26 +42,26 @@ class SampleManager(manager.Manager):
 
     # Public Interface
 
-    def init(self) -> imageProcessingApp.Status:
+    def init(self) -> commonEnumerations.Status:
         """ Initialize this Manager """
-        if (super().init() == imageProcessingApp.Status.ERROR):
+        if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
         # Populate Sample Databse 
         self._setInitFinished(True)
         return self._status
 
-    def call(self) -> imageProcessingApp.Status:
+    def call(self) -> commonEnumerations.Status:
         """ Run this manager """
-        if (super().call() == imageProcessingApp.Status.ERROR):
+        if (super().call() == commonEnumerations.Status.ERROR):
             return self._status
 
         self._setExecuteFinished(True)
         return self._status
 
-    def cleanup(self) -> imageProcessingApp.Status:
+    def cleanup(self) -> commonEnumerations.Status:
         """ Cleanup this manager """
-        if (super().cleanup() == imageProcessingApp.Status.ERROR):
+        if (super().cleanup() == commonEnumerations.Status.ERROR):
             return self._status
 
         self._setShutdownFinished(True)

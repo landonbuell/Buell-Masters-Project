@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="commonEnumerations.py" />
     <Compile Include="simpleQueue.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>

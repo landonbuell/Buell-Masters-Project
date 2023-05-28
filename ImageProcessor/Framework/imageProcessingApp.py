@@ -13,6 +13,8 @@
 import os
 import datetime
 
+import commonEnumerations
+
 import appConfig
 import textLogger
 
@@ -45,7 +47,7 @@ class ImageProcessingApp:
 
         self._config        = config
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
-        self._exitStatus    = appConfig.Status.SUCCESS
+        self._exitStatus    = commonEnumerations.Status.SUCCESS
 
         self._sampleManager = sampleManager.SampleManager(self)
         self._dataManager   = dataManager.DataManager(self)
@@ -74,7 +76,7 @@ class ImageProcessingApp:
         """ Return the App's Configuration Structure """
         return self._config
 
-    def getStatus(self) -> Status:
+    def getStatus(self) -> commonEnumerations.Status:
         """ Return the App's Status """
         return self._exitStatus
 
@@ -144,13 +146,6 @@ class ImageProcessingApp:
         result = result.replace(":",".")
         result = result.replace(" ",".")
         return result
-
-class Status(enum.IntEnum):
-    """ Stores Exist Status for Application """
-    SUCCESS     = 0
-    WARNING     = 1
-    ERROR       = 2
-
 
 """
     Author:         Landon Buell

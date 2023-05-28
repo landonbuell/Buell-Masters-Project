@@ -10,7 +10,7 @@
 
         #### IMPORTS ####
 
-import os
+import commonEnumerations
 
 import imageProcessingApp
 
@@ -22,14 +22,14 @@ class Manager:
     """
 
     def __init__(self,
-                 app: imageProcessingApp.ImageProcessingApp,
+                 app,   #imageProcessingApp.ImageProcessingApp
                  name: str):
         """ Constructor """
         self._app       = app
         self._name      = name
 
         self._progress  = [False] * 6
-        self._status    = imageProcessingApp.Status.SUCCESS
+        self._status    = commonEnumerations.Status.SUCCESS
         
     def __del__(self):
         """ Destructor """
@@ -37,7 +37,7 @@ class Manager:
 
     # Accessors
 
-    def getStatus(self) -> imageProcessingApp.Status:
+    def getStatus(self) -> commonEnumerations.Status:
         """ Return the Status of this manager """
         return self._status
 
@@ -80,7 +80,7 @@ class Manager:
         self._app.logMessage(message)
         return None
 
-    def updateStatus(self, newStatus: imageProcessingApp.Status) -> bool:
+    def updateStatus(self, newStatus: commonEnumerations.Status) -> bool:
         """ Update the status of this manager if newer status is more sever """
         intOldStatus = int(self._status)
         intNewStatus = int(newStatus)
@@ -92,7 +92,7 @@ class Manager:
             return True
         return False
 
-    def init(self) -> imageProcessingApp.Status:
+    def init(self) -> commonEnumerations.Status:
         """ Initialize this Manager """
         self._setInitStarted(True)
         msg = "Intializing {0} ... ".format(self._name)
@@ -100,13 +100,13 @@ class Manager:
 
         return self._status
 
-    def call(self) -> imageProcessingApp.Status:
+    def call(self) -> commonEnumerations.Status:
         """ Execute this Manager """
         self._setExecuteStarted(True)
 
         return self._status
 
-    def cleanup(self) -> imageProcessingApp.Status:
+    def cleanup(self) -> commonEnumerations.Status:
         """ Cleanup this Manager """
         msg = "Cleaning {0} ... ".format(self._name)
         self.logMessage(msg)
@@ -115,7 +115,7 @@ class Manager:
 
     # Proctected Interface
 
-    def _overrideStatus(self, newStatus: imageProcessingApp.Status) -> None:
+    def _overrideStatus(self, newStatus: commonEnumerations.Status) -> None:
         """ Force Override the status of this Manager """
         self._status = newStatus
         return self

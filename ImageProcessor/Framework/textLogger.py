@@ -31,18 +31,18 @@ class TextLogger:
         self._outStream     = None
         self._toConsole     = toConsole
         self._toFile        = toFile
+
+        if (os.path.isdir(outputPath) == False):
+            os.mkdir(outputPath)
         
         if (self._toFile):
-            self._outFile = open(self._outPath,"w")
+            self._outStream = open(self._outPath,"w")
         self.__writeHeader()
 
     def __del__(self):
-        self.__writeFooter()
         """ Destructor for Logger Instance """
-        if (self._outFile is not None):
-            if (self._outFile.closed() == False):
-                self._outFile.close()
-        self._outFile = None
+        self.__writeFooter()
+        self.__closeStream()
 
     @staticmethod
     def fromConfig(config):
@@ -113,10 +113,17 @@ class TextLogger:
         """ Get a Spacer String """
         return "\n" + ("-" * numChars) + "\n"
 
+    def __closeStream(self) -> None:
+        """ Close the Output Stream if it is open """
+        if (self._outStream is not None):
+            if (self._outStream.closed == False):
+                self._outStream.close()
+        return None
+    
     # Static Interface
 
     @staticmethod
-    def getDatetime():
+    def getDateTime():
         """ Return the current Datetime as a string """
         return imageProcessingApp.ImageProcessingApp.getDateTime()
 
