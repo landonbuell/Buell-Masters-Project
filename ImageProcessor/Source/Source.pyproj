@@ -1,0 +1,58 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>766313c1-b264-48c2-a681-3b63c7a8b4ee</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>__main__.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Source</Name>
+    <RootNamespace>Source</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="__init__.py" />
+    <Compile Include="__main__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Classification\Classification.pyproj">
+      <Name>Classification</Name>
+      <Project>{1437ce5c-4483-48bf-96d4-0478a9103554}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonToolsPy\CommonToolsPy.pyproj">
+      <Name>CommonToolsPy</Name>
+      <Project>{f3e14f42-715e-402a-9d8a-deb3df3c87a3}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Framework\Framework.pyproj">
+      <Name>Framework</Name>
+      <Project>{460e390a-9887-440e-ab18-52fce9282b9b}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Segmentation\Segmentation.pyproj">
+      <Name>Segmentation</Name>
+      <Project>{28f5ca23-7086-4e12-b7d1-169e20c08059}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
