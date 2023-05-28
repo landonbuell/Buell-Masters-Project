@@ -22,7 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="appConfig.py" />
-    <Compile Include="imageProcessingApplication.py" />
+    <Compile Include="imageProcessingApp.py" />
     <Compile Include="textLogger.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>

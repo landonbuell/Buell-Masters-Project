@@ -121,7 +121,7 @@ class ImageProcessingApp:
 
     # Static Interface
 
-     @staticmethod
+    @staticmethod
     def getDateTime() -> str:
         """ Get formatted DateTime as String """
         result = str(datetime.datetime.now())

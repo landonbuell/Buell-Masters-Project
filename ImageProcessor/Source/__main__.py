@@ -14,7 +14,7 @@ import os
 import sys
 
 import appConfig
-import imageProcessingApplication
+import imageProcessingApp
 
         #### MAIN EXECUTABLE ####
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     config = appConfig.AppConfig()
 
     # Create & Run the Image Processing App
-    app = imageProcessingApplication.ImageProcessingApp(config)
+    app = imageProcessingApp.ImageProcessingApp(config)
     app.startup()
     app.execute()
     app.shutdown()

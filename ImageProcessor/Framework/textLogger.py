@@ -22,13 +22,13 @@ class TextLogger:
     """
 
     def __init__(self,
-                 outpath : str,
-                 fileName : str,
+                 outputPath: str,
+                 fileName: str,
                  toConsole=True,
                  toFile=True):
         """ Constructor for Logger Instance """ 
-        self._outPath       = os.path.join(outpath,fileName)
-        self._outStream     = open(self._outPath,"w")
+        self._outPath       = os.path.join(outputPath,fileName)
+        self._outStream     = None
         self._toConsole     = toConsole
         self._toFile        = toFile
         
@@ -47,12 +47,12 @@ class TextLogger:
     @staticmethod
     def fromConfig(config):
         """ Initialize TextLogger Instance from AppConfig Instance """
-        app = imageProcessingApp.getInstance()
+        app = imageProcessingApp.ImageProcessingApp.getInstance()
         logger = TextLogger(
-            outputPat=app.getConfig().getOutputPath(),
+            outputPath=app.getConfig().getOutputPath(),
             fileName="textLogger.txt",
             toConsole=app.getConfig().getLogToConsole(),
-            toFile=app.getConfit().getLogToFile())
+            toFile=app.getConfig().getLogToFile())
         return logger
 
     # Getters and Setters
@@ -67,7 +67,7 @@ class TextLogger:
         """ Log Message to Console or Text """
         if (timeStamp == True):
             # Log Message w/ a TimeStamp
-            now = ImageProcessingApp.getDateTime()
+            now = TextLogger.getDateTime()
         else:
             # Log Message w/o a TimeStamp
             now = ""
@@ -88,7 +88,7 @@ class TextLogger:
         header = [
             self.__spacer(),
             "ImageProcessingApp",
-            ImageProcessingApp.getDateTime(),
+            TextLogger.getDateTime(),
             self.__spacer()
             ]
         # Log Each Line of the Header
@@ -101,7 +101,7 @@ class TextLogger:
         footer = [
             self.__spacer(),
             "ImageProcessingApp",
-            ImageProcessingApp.getDateTime(),
+            TextLogger.getDateTime(),
             self.__spacer()
             ]
         # Log Each Line of the Header
@@ -112,6 +112,13 @@ class TextLogger:
     def __spacer(self,numChars=64):
         """ Get a Spacer String """
         return "\n" + ("-" * numChars) + "\n"
+
+    # Static Interface
+
+    @staticmethod
+    def getDatetime():
+        """ Return the current Datetime as a string """
+        return imageProcessingApp.ImageProcessingApp.getDateTime()
 
 
 
