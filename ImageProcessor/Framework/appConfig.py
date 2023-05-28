@@ -14,12 +14,6 @@ import os
 import enum
         #### CLASS DEFINITIONS ####
 
-class Status(enum.IntEnum):
-    """ Stores Exist Status for Application """
-    SUCCESS     = 0
-    WARNING     = 1
-    ERROR       = 2
-
 class AppConfig:
     """ 
         Stores configuration Information for ImageProcessingApplication Instance

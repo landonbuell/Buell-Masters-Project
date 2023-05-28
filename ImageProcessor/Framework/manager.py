@@ -12,7 +12,6 @@
 
 import os
 
-import appConfig
 import imageProcessingApp
 
         #### CLASS DEFINITIONS ####
@@ -30,7 +29,7 @@ class Manager:
         self._name      = name
 
         self._progress  = [False] * 6
-        self._status    = appConfig.Status.SUCCESS
+        self._status    = imageProcessingApp.Status.SUCCESS
         
     def __del__(self):
         """ Destructor """
@@ -38,7 +37,7 @@ class Manager:
 
     # Accessors
 
-    def getStatus(self) -> appConfig.Status:
+    def getStatus(self) -> imageProcessingApp.Status:
         """ Return the Status of this manager """
         return self._status
 
@@ -81,7 +80,7 @@ class Manager:
         self._app.logMessage(message)
         return None
 
-    def updateStatus(self, newStatus: appConfig.Status) -> bool:
+    def updateStatus(self, newStatus: imageProcessingApp.Status) -> bool:
         """ Update the status of this manager if newer status is more sever """
         intOldStatus = int(self._status)
         intNewStatus = int(newStatus)
@@ -93,7 +92,7 @@ class Manager:
             return True
         return False
 
-    def init(self) -> appConfig.Status:
+    def init(self) -> imageProcessingApp.Status:
         """ Initialize this Manager """
         self._setInitStarted(True)
         msg = "Intializing {0} ... ".format(self._name)
@@ -101,13 +100,13 @@ class Manager:
 
         return self._status
 
-    def call(self) -> appConfig.Status:
+    def call(self) -> imageProcessingApp.Status:
         """ Execute this Manager """
         self._setExecuteStarted(True)
 
         return self._status
 
-    def cleanup(self) -> appConfig.Status:
+    def cleanup(self) -> imageProcessingApp.Status:
         """ Cleanup this Manager """
         msg = "Cleaning {0} ... ".format(self._name)
         self.logMessage(msg)
@@ -116,7 +115,7 @@ class Manager:
 
     # Proctected Interface
 
-    def _overrideStatus(self, newStatus: appConfig.Status) -> None:
+    def _overrideStatus(self, newStatus: imageProcessingApp.Status) -> None:
         """ Force Override the status of this Manager """
         self._status = newStatus
         return self

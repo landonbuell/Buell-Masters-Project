@@ -21,6 +21,7 @@ import dataManager
 import augmentationManager
 import preprocessManager
 import classificationManager
+import segmentationManager
 
         #### CLASS DEFINITIONS ####
 
@@ -47,13 +48,13 @@ class ImageProcessingApp:
         self._exitStatus    = appConfig.Status.SUCCESS
 
         self._sampleManager = sampleManager.SampleManager(self)
-        self._dataManager   = None
+        self._dataManager   = dataManager.DataManager(self)
 
-        self._augmentationManager   = None
-        self._preprocessManager     = None
+        self._augmentationManager   = augmentationManager.AugmentationManager(self)
+        self._preprocessManager     = preprocessManager.PreprocessManager(self)
 
-        self._classificationManager = None
-        self._segmentationManager   = None
+        self._classificationManager = classificationManager.ClassificationManager(self)
+        self._segmentationManager   = segmentationManager.SegmentationManager(self)
 
     def __del__(self):
         """ Destructor """
@@ -73,7 +74,7 @@ class ImageProcessingApp:
         """ Return the App's Configuration Structure """
         return self._config
 
-    def getStatus(self) -> appConfig.Status:
+    def getStatus(self) -> Status:
         """ Return the App's Status """
         return self._exitStatus
 
@@ -111,7 +112,13 @@ class ImageProcessingApp:
     def startup(self) -> int:
         """ Run App Startup """
         self._sampleManager.init()
+        self._dataManager.init()
 
+        self._augmentationManager.init()
+        self._preprocessManager.init()
+
+        self._classificationManager.init()
+        self._preprocessManager.init()
 
         return self._exitStatus
 
@@ -137,6 +144,12 @@ class ImageProcessingApp:
         result = result.replace(":",".")
         result = result.replace(" ",".")
         return result
+
+class Status(enum.IntEnum):
+    """ Stores Exist Status for Application """
+    SUCCESS     = 0
+    WARNING     = 1
+    ERROR       = 2
 
 
 """

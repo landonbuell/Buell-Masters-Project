@@ -15,7 +15,6 @@ import queue
 
 import manager
 import imageProcessingApp
-import appConfig
 
         #### FUNCTION DEFINITIONS ####
 
@@ -42,26 +41,26 @@ class SampleManager(manager.Manager):
 
     # Public Interface
 
-    def init(self) -> appConfig.Status:
+    def init(self) -> imageProcessingApp.Status:
         """ Initialize this Manager """
-        if (super().init() == appConfig.Status.ERROR):
+        if (super().init() == imageProcessingApp.Status.ERROR):
             return self._status
 
         # Populate Sample Databse 
         self._setInitFinished(True)
         return self._status
 
-    def call(self) -> appConfig.Status:
+    def call(self) -> imageProcessingApp.Status:
         """ Run this manager """
-        if (super().call() == appConfig.Status.ERROR):
+        if (super().call() == imageProcessingApp.Status.ERROR):
             return self._status
 
         self._setExecuteFinished(True)
         return self._status
 
-    def cleanup(self) -> appConfig.Status:
+    def cleanup(self) -> imageProcessingApp.Status:
         """ Cleanup this manager """
-        if (super().cleanup() == appConfig.Status.ERROR):
+        if (super().cleanup() == imageProcessingApp.Status.ERROR):
             return self._status
 
         self._setShutdownFinished(True)
