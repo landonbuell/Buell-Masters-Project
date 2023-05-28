@@ -3,7 +3,7 @@
     Solution:       ImageProcessing
     Project:        Framework
     Namespace:      N/A
-    File:           sampleManager.py
+    File:           classificationManager.py
     Author:         Landon Buell
     Date:           May 2023
 """
@@ -21,20 +21,17 @@ import appConfig
 
         #### CLASS DEFINTIONS ####
 
-class SampleManager(manager.Manager):
+class ClassificationManager(manager.Manager):
     """
-        SampleManager is a database of all input samples
+        ClassificationManager handles all image-classification related tasks
     """
 
-    __NAME = "SampleManager"
+    __NAME = "ClassificationManager"
 
     def __init__(self,
                  app: imageProcessingApp.ImageProcessingApp):
         """ Constructor """
-        super().__init__(app,SampleManager.__NAME)
-
-        self._database = queue.Queue(app.getConfig().getMaxSampleDatabseSize())
-
+        super().__init__(app,ClassificationManager.__NAME)
 
     def __del__(self):
         """ Destructor """

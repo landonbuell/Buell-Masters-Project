@@ -22,9 +22,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="appConfig.py" />
+    <Compile Include="augmentationManager.py" />
+    <Compile Include="classificationManager.py" />
+    <Compile Include="dataManager.py" />
     <Compile Include="imageProcessingApp.py" />
     <Compile Include="manager.py" />
+    <Compile Include="preprocessManager.py" />
     <Compile Include="sampleManager.py" />
+    <Compile Include="segmentationManager.py" />
     <Compile Include="textLogger.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>

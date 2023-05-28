@@ -17,6 +17,10 @@ import appConfig
 import textLogger
 
 import sampleManager
+import dataManager
+import augmentationManager
+import preprocessManager
+import classificationManager
 
         #### CLASS DEFINITIONS ####
 

@@ -3,7 +3,7 @@
     Solution:       ImageProcessing
     Project:        Framework
     Namespace:      N/A
-    File:           sampleManager.py
+    File:           preprocessManager.py
     Author:         Landon Buell
     Date:           May 2023
 """
@@ -21,20 +21,17 @@ import appConfig
 
         #### CLASS DEFINTIONS ####
 
-class SampleManager(manager.Manager):
+class PreprocessManager(manager.Manager):
     """
-        SampleManager is a database of all input samples
+        PreprocessManager preprocesses a given sample batch of samples
     """
 
-    __NAME = "SampleManager"
+    __NAME = "PreprocessManager"
 
     def __init__(self,
                  app: imageProcessingApp.ImageProcessingApp):
         """ Constructor """
-        super().__init__(app,SampleManager.__NAME)
-
-        self._database = queue.Queue(app.getConfig().getMaxSampleDatabseSize())
-
+        super().__init__(app,PreprocessManager.__NAME)
 
     def __del__(self):
         """ Destructor """
