@@ -38,6 +38,7 @@ class AppConfig:
         self._enableCrossValidation     = False
 
         self._maxSampleDatabaseSize = int(2**16)
+        self._maxSampleSearchDepth  = int(4)
 
     # Accessors
 
@@ -73,9 +74,13 @@ class AppConfig:
         """ Return the shuffle Seed """
         return self._shuffleSeed
 
-    def getMaxSampleDatabseSize(self) -> int:
+    def getMaxSampleDatabaseSize(self) -> int:
         """ Return the maximum allowed size for the SampleManager's Database """
         return self._maxSampleDatabaseSize
+
+    def getMaxSampleSearchDepth(self) -> int:
+        """ Return the maximum allowed recursion depth when searching for samples """
+        return self._maxSampleSearchDepth
 
     # Public Interface
 
