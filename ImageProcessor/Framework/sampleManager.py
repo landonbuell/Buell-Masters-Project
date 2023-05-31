@@ -11,6 +11,8 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
+import pandas as pd
 
 import simpleQueue
 import commonEnumerations
@@ -19,11 +21,7 @@ import manager
 
         #### FUNCTION DEFINITIONS ####
 
-def defaultFileToSample(itemPath: str) -> None:
-    """ Turns a directory path item to an image sample """
 
-
-    return None
         #### CLASS DEFINTIONS ####
 
 class SampleManager(manager.Manager):
@@ -39,8 +37,10 @@ class SampleManager(manager.Manager):
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
 
-        self._database = simpleQueue.SimpleQueue()
-        self._callbackFileToSample = None   # Callback to turn a path into a Sample Instance
+        self._sampleDatabase    = simpleQueue.SimpleQueue()
+        self._classDatabase     = dict()
+
+        self.__loadSamplesFromInputFile()
 
     def __del__(self):
         """ Destructor """
@@ -50,15 +50,15 @@ class SampleManager(manager.Manager):
 
     def isFull(self) -> bool:
         """ Return T/F if the sample database is full """
-        return self._database.isFull()
+        return self._sampleDatabase.isFull()
 
     def isEmpty(self) -> bool:
         """ Return T/F is the sample database is empty """
-        return self._database.isEmpty()
+        return self._sampleDatabase.isEmpty()
 
     def getSize(self) -> int:
         """ Return the number of items in the sample database """
-        return self._database.getSize()
+        return self._sampleDatabase.getSize()
 
     # Public Interface
 
@@ -95,6 +95,22 @@ class SampleManager(manager.Manager):
         # TODO: IMPLEMENT THIS
         return None
 
+    # Private Class
+
+    class __LabeledSample:
+        """ Stores a Labeled Sample Instance """
+
+        def __init__(self,
+                     filePath: str,
+                     classIndex: int):
+            """ Constructor """
+            self.filePath   = filePath
+            self.classIndex = classIndex
+
+        def __del__(self):
+            """ Destructor """
+            pass
+
     # Private Interface 
 
     def __enqueueSample(self,pathToFile: str) -> None:
@@ -103,33 +119,26 @@ class SampleManager(manager.Manager):
 
         return None
 
-    def __populateSampleDatabase(self) -> None:
-        """ Populate the Sample Database """
-        datasetPaths = self.getConfig().getInputPaths()     #list
-        for path in datasetPaths:
-            self.__enqueueSamplesInpath(path,currentDepth=0)
+    def __loadSamplesFromInputFile(self) -> None:
+        """ Load samples from an specified input file """
+        inputFiles = self.getApp().getConfig().getInputPaths()
+        for item in inputFiles:
+            if (os.path.isfile(item) == False):
+                msg = "File '{0}' does not exist. Skipping..."
+                self.logMessage(msg)
+            # Otherwise, read the file
+            self.__readInputFile(item)
 
-        return None
+    def __readInputFile(self,inputFilePath: str) -> None:
+        """ Read the Contents of an input file, and use it to enqueue new samples """
+        inputFrame = pd.read_csv(inputFilePath,index_col=None)
+        for ii,data in inputFrame.iterrows():
+            sample = SampleManager.__LabeledSample(
+                data.filePath,data.classInt)
 
-    def __enqueueSamplesInpath(self,
-                               pathToSearch: str,
-                               currentDepth: int) -> None:
-        """ Find Samples (recursively) in path, and enqueue them to this database """
-        contents = os.listdir(pathToSearch)
-        for item in contents:
-            fullPathToItem = os.path.join(item,pathToSearch)
-            if (os.path.isdir(fullPathToItem) == True):
-                # Is a directory
-                if (currentDepth >= self.getConfig().getMaxSampleSearchDepth()):
-                    # Maximum depth attained - skip this directory
-                    continue
-                self.__enqueueSamplesInpath(fullPathToItem,currentDepth + 1)
-            elif (os.path.isfile(fullPathToItem) == True):
-                ext = fullPathToItem.split(".")[-1]
-                if ((ext in SampleManager.__ACCEPTED_EXTENSIONS) == False):
-                    # Not an image that we can work with
-                    continue
-                self.__enqueueSample(fullPathToItem)
+
+        return self
+
 
 """
     Author:         Landon Buell
