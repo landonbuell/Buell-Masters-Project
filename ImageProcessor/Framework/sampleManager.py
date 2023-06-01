@@ -36,11 +36,7 @@ class SampleManager(manager.Manager):
                  app): #imageClassifierApp.ImageClassifierApp
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
-
         self._sampleDatabase    = simpleQueue.SimpleQueue()
-        self._classDatabase     = dict()
-
-        self.__loadSamplesFromInputFile()
 
     def __del__(self):
         """ Destructor """
@@ -68,8 +64,8 @@ class SampleManager(manager.Manager):
             return self._status
 
         # Populate Sample Databse 
-        self.__populateSampleDatabase()
-
+        self.__loadSamplesFromInputFile()
+        self.__shuffleAllSamplesInDatabase()
 
         self._setInitFinished(True)
         return self._status
@@ -90,22 +86,34 @@ class SampleManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
-    def getNextBatch(self):
+    def nextBatch(self,batchSizeOverride=None) -> np.ndarray:
         """ Return the Next Batch of Samples """
-        # TODO: IMPLEMENT THIS
-        return None
+        batchSize = self.getApp().getConfig().getBatchSize()
+        if (batchSizeOverride is not None):
+            batchSize = int(batchSizeOverride)
+        # Dequeue samples and return batch
+        batch = np.array()
+        while ((self._sampleDatabase.isEmpty() == False) and
+               (len(batch) < batchSize)):
+               # Get a sample from the database
+               labeledSample = self._sampleDatabase.front()
+               batch = np.append(batch,labeledSample)
+               self._sampleDatabase.dequeue()
+        return batch
 
-    # Private Class
+    # Public Class
 
-    class __LabeledSample:
+    class LabeledSample:
         """ Stores a Labeled Sample Instance """
 
         def __init__(self,
                      filePath: str,
-                     classIndex: int):
+                     classStr: str,
+                     classInt: int):
             """ Constructor """
             self.filePath   = filePath
-            self.classIndex = classIndex
+            self.classStr   = classStr
+            self.classInt   = classInt
 
         def __del__(self):
             """ Destructor """
@@ -113,33 +121,55 @@ class SampleManager(manager.Manager):
 
     # Private Interface 
 
-    def __enqueueSample(self,pathToFile: str) -> None:
+    def __enqueueSample(self,labeledSample: LabeledSample) -> bool:
         """ Enqueue Sample to the database, Return T/F if it was successful """
         
-
-        return None
+        # TODO: Register class w/ Data Manager
+        
+        # Enqueue the Sample
+        self._sampleDatabase.enqueue(labeledSample)
+        return True
 
     def __loadSamplesFromInputFile(self) -> None:
         """ Load samples from an specified input file """
         inputFiles = self.getApp().getConfig().getInputPaths()
         for item in inputFiles:
             if (os.path.isfile(item) == False):
-                msg = "File '{0}' does not exist. Skipping..."
+                msg = "File '{0}' does not exist. Skipping...".format(item)
                 self.logMessage(msg)
+                continue
+            msg = "Loading samples from file: {0}".format(item)
+            self.logMessage(msg)
             # Otherwise, read the file
             self.__readInputFile(item)
+        return self
 
     def __readInputFile(self,inputFilePath: str) -> None:
         """ Read the Contents of an input file, and use it to enqueue new samples """
         inputFrame = pd.read_csv(inputFilePath,index_col=None)
+        msg = "\tFound {0} samples in file".format(len(inputFrame))
         for ii,data in inputFrame.iterrows():
-            sample = SampleManager.__LabeledSample(
-                data.filePath,data.classInt)
-
-
+            if (self._sampleDatabase.isFull() == True):
+                msg = "Sample Database is full. Not enqueing any new samples"
+                self.logMessage(msg)
+                return self
+            # Make a new Sample Instance
+            sample = SampleManager.LabeledSample(
+                data.filePath,
+                data.classStr,
+                data.classInt)
+            self.__enqueueSample(sample)
         return self
 
 
+    def __shuffleAllSamplesInDatabase(self):
+        """ Shuffle All samples in the database """
+        seed = self.getApp().getConfig().getShuffleSeed()
+        if (seed < 0):
+            return self
+        msg = "Shuffling samples w/ seed = {0}".format(seed)
+        self._sampleDatabase.shuffle(seed)
+        return self
 """
     Author:         Landon Buell
     Date:           May 2023

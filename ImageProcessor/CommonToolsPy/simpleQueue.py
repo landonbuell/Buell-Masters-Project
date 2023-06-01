@@ -94,6 +94,12 @@ class SimpleQueue:
         self._rear  = -1
         return self
 
+    def shuffle(self,seed):
+        """ Shuffle the contents of the queue """
+        np.random.seed(seed)
+        np.random.shuffle(self._data)
+        return self
+
     # Private interface
 
 
