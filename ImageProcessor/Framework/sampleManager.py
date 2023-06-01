@@ -99,11 +99,11 @@ class SampleManager(manager.Manager):
         self._folds.append(newFold)
         return True
         
-
-    def nextBatch(overrideBatchSize=None):
-        """ Get the next batch of samples """
-        # TODO: Implement this
-        return None
+    def getSamplesForNextBatch(self,foldIndex: int) -> np.ndarray:
+        """ Get the sample Index's for the next Batch of """
+        batchSize = self.getApp().getConfig().getBatchSize()
+        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
+        return batchIndexes
 
     def getSample(self,key: int):
         """ Get sample at specified int key """
