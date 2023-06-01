@@ -30,13 +30,17 @@ class SampleManager(manager.Manager):
     """
 
     __NAME = "SampleManager"
-    __ACCEPTED_EXTENSIONS = ["png","jpg","jpeg"]
+    __MAX_NUM_FOLDS = 10
 
     def __init__(self,
                  app): #imageClassifierApp.ImageClassifierApp
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
-        self._sampleDatabase    = simpleQueue.SimpleQueue()
+        databaseCapacity = self.getApp().getConfig().getMaxSampleDatabaseSize()
+        self._sampleDatabase    = np.empty(shape=(databaseCapacity,),dtype=object)
+        self._orderQueue        = simpleQueue.SimpleQueue(databaseCapacity)
+        self._sizeDatabaseSize  = 0
+        
 
     def __del__(self):
         """ Destructor """
@@ -44,17 +48,17 @@ class SampleManager(manager.Manager):
 
     # Accessors
 
-    def isFull(self) -> bool:
-        """ Return T/F if the sample database is full """
-        return self._sampleDatabase.isFull()
-
-    def isEmpty(self) -> bool:
-        """ Return T/F is the sample database is empty """
-        return self._sampleDatabase.isEmpty()
-
     def getSize(self) -> int:
-        """ Return the number of items in the sample database """
-        return self._sampleDatabase.getSize()
+        """ Return the size of the database """
+        return self._size
+
+    def getNumUnreadSamples(self) -> int:
+        """ Get the number of samples that have not been sent off """
+        return self._orderQueue.size()
+
+    def getNumReadSamples(self) -> int:
+        """ Get the number of samples that have been sent off """
+        return (self._size - self._orderQueue.getSize())
 
     # Public Interface
 
@@ -65,17 +69,9 @@ class SampleManager(manager.Manager):
 
         # Populate Sample Databse 
         self.__loadSamplesFromInputFile()
-        self.__shuffleAllSamplesInDatabase()
+        self.__buildOrderQueue()
 
         self._setInitFinished(True)
-        return self._status
-
-    def call(self) -> commonEnumerations.Status:
-        """ Run this manager """
-        if (super().call() == commonEnumerations.Status.ERROR):
-            return self._status
-
-        self._setExecuteFinished(True)
         return self._status
 
     def cleanup(self) -> commonEnumerations.Status:
@@ -86,20 +82,10 @@ class SampleManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
-    def nextBatch(self,batchSizeOverride=None) -> np.ndarray:
-        """ Return the Next Batch of Samples """
-        batchSize = self.getApp().getConfig().getBatchSize()
-        if (batchSizeOverride is not None):
-            batchSize = int(batchSizeOverride)
-        # Dequeue samples and return batch
-        batch = np.array()
-        while ((self._sampleDatabase.isEmpty() == False) and
-               (len(batch) < batchSize)):
-               # Get a sample from the database
-               labeledSample = self._sampleDatabase.front()
-               batch = np.append(batch,labeledSample)
-               self._sampleDatabase.dequeue()
-        return batch
+    def nextBatch(overrideBatchSize=None):
+        """ Get the next batch of samples """
+        # TODO: Implement this
+        return None
 
     # Public Class
 
@@ -108,7 +94,6 @@ class SampleManager(manager.Manager):
 
         def __init__(self,
                      filePath: str,
-                     classStr: str,
                      classInt: int):
             """ Constructor """
             self.filePath   = filePath
@@ -119,16 +104,11 @@ class SampleManager(manager.Manager):
             """ Destructor """
             pass
 
-    # Private Interface 
+        def __repr__(self) -> str:
+            """ Debug representation of instance """
+            return "Labeled Sample: {0} -> {1} @ {2}".format(self.classStr,self.classInt,hex(id(self)))
 
-    def __enqueueSample(self,labeledSample: LabeledSample) -> bool:
-        """ Enqueue Sample to the database, Return T/F if it was successful """
-        
-        # TODO: Register class w/ Data Manager
-        
-        # Enqueue the Sample
-        self._sampleDatabase.enqueue(labeledSample)
-        return True
+    # Private Interface 
 
     def __loadSamplesFromInputFile(self) -> None:
         """ Load samples from an specified input file """
@@ -142,34 +122,35 @@ class SampleManager(manager.Manager):
             self.logMessage(msg)
             # Otherwise, read the file
             self.__readInputFile(item)
+        # All Done
+        msg = "Finished reading all input file. Sample Database has {0} items".format(self._sampleDatabase.getSize())
+        self.logMessage(msg)
         return self
 
     def __readInputFile(self,inputFilePath: str) -> None:
         """ Read the Contents of an input file, and use it to enqueue new samples """
         inputFrame = pd.read_csv(inputFilePath,index_col=None)
         msg = "\tFound {0} samples in file".format(len(inputFrame))
+        self.logMessage(msg)
+
         for ii,data in inputFrame.iterrows():
             if (self._sampleDatabase.isFull() == True):
                 msg = "Sample Database is full. Not enqueing any new samples"
                 self.logMessage(msg)
                 return self
+
             # Make a new Sample Instance
             sample = SampleManager.LabeledSample(
                 data.filePath,
-                data.classStr,
                 data.classInt)
+
             self.__enqueueSample(sample)
         return self
 
+    def buildOrderQueue(self):
+        """ Build the Queue of sample indexes to use """
 
-    def __shuffleAllSamplesInDatabase(self):
-        """ Shuffle All samples in the database """
-        seed = self.getApp().getConfig().getShuffleSeed()
-        if (seed < 0):
-            return self
-        msg = "Shuffling samples w/ seed = {0}".format(seed)
-        self._sampleDatabase.shuffle(seed)
-        return self
+
 """
     Author:         Landon Buell
     Date:           May 2023

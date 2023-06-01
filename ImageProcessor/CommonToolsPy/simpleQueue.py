@@ -21,7 +21,7 @@ class SimpleQueue:
     """ Simple FIFO Queue implementation through a numpy array """
 
     def __init__(self,
-                 maxCapacity=int(2**16)):
+                 maxCapacity: int):
         """ Constructor """
         self._size      = 0
         self._data      = np.empty(shape=(maxCapacity,),dtype=object)

@@ -35,9 +35,9 @@ class AppConfig:
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
         
-        self._enableCrossValidation     = False
+        self._crossValidationFolds  = 10
 
-        self._maxSampleDatabaseSize = int(2**16)
+        self._maxSampleDatabaseSize = int(1e5)
         self._maxSampleSearchDepth  = int(4)
 
     # Accessors
@@ -73,6 +73,14 @@ class AppConfig:
     def getShuffleSeed(self) -> int:
         """ Return the shuffle Seed """
         return self._shuffleSeed
+
+    def getNumCrossValFolds(self) -> int:
+        """ Get the Number of folds for cross validation """
+        return max(self._crossValidationFolds,1)
+
+    def crossValidationEnabled(self) -> bool:
+        """ Return T/F if cross valdation is enabled """
+        return (self.getNumCrossValFolds() > 1)
 
     def getMaxSampleDatabaseSize(self) -> int:
         """ Return the maximum allowed size for the SampleManager's Database """
