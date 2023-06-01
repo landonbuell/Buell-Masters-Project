@@ -35,10 +35,8 @@ class AppConfig:
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
         
-        self._crossValidationFolds  = 10
-
-        self._maxSampleDatabaseSize = int(1e5)
-        self._maxSampleSearchDepth  = int(4)
+        self._crossValidationFolds  = 1
+        self._testSplitRatio        = 0.2
 
     # Accessors
 
@@ -75,20 +73,12 @@ class AppConfig:
         return self._shuffleSeed
 
     def getNumCrossValFolds(self) -> int:
-        """ Get the Number of folds for cross validation """
+        """ Return the Number of folds for cross validation """
         return max(self._crossValidationFolds,1)
 
-    def crossValidationEnabled(self) -> bool:
-        """ Return T/F if cross valdation is enabled """
-        return (self.getNumCrossValFolds() > 1)
-
-    def getMaxSampleDatabaseSize(self) -> int:
-        """ Return the maximum allowed size for the SampleManager's Database """
-        return self._maxSampleDatabaseSize
-
-    def getMaxSampleSearchDepth(self) -> int:
-        """ Return the maximum allowed recursion depth when searching for samples """
-        return self._maxSampleSearchDepth
+    def getTestSplitRatio(self) -> float:
+        """ Ratio of the Test size to the full dataset """
+        return self._testSplitRatio
 
     # Public Interface
 
@@ -103,6 +93,13 @@ class AppConfig:
         outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
         config = AppConfig(inputPaths,outputPath)
         return config
+
+class Constants:
+    """ Static Class of Constants """
+
+    MAX_SAMPLE_DATA_BASE_SIZE   = int(1e5)
+    MAX_RECURSION_DEPTH         = 4
+
 
 """
     Author:         Landon Buell

@@ -12,6 +12,7 @@
 
 import os
 import datetime
+import numpy as np
 
 import commonEnumerations
 
@@ -48,6 +49,7 @@ class ImageProcessingApp:
         self._config        = config
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
         self._exitStatus    = commonEnumerations.Status.SUCCESS
+        np.random.seed(config.getShuffleSeed()) # Set the numpy Random Seed
 
         self._sampleManager = sampleManager.SampleManager(self)
         self._dataManager   = dataManager.DataManager(self)
@@ -103,6 +105,10 @@ class ImageProcessingApp:
     def getSegmentationManager(self):
         """ Return the Segmentation Manager """
         return self._segmentationManager
+
+    def crossValEnabled(self) -> bool:
+        """ Return T/F if Cross Validation Mode is enabled """
+        return (self.getConfig().getNumCrossValFolds() > 1 )
 
     # Public Interface
 
