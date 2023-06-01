@@ -226,9 +226,20 @@ class SampleManager(manager.Manager):
     @staticmethod
     def callbackInitCrossValFolds(sampleMgr) -> None:
         """ Register a set of Cross Validation Folds """
-        numFolds = sampleMgr.getApp().getConfig().getNumCrossValFolds()
-
-
+        allSamples  = np.arange(sampleMgr.getSize(),dtype=np.int32)
+        np.random.shuffle(allSamples)
+        numFolds    = sampleMgr.getApp().getConfig().getNumCrossValFolds()
+        foldSize    = int(allSamples.size / numFolds)
+        foldStart   = 0
+        for foldIdx in range(numFolds):
+            # Create the Fold + Register it
+            foldSamples = allSamples[foldStart:foldStart + foldSize]
+            fold = crossValidationFold.CrossValidationFold(
+                foldIndex=foldIdx,
+                samplesInFold=foldSamples)
+            sampleMgr.registerFold(fold)
+            # Increment the start point
+            foldStart += foldSize
         return None
 
 
