@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "460e390a-9887-440e-ab18-52fce9282b9b": {
+      "ProjectGuid": "460e390a-9887-440e-ab18-52fce9282b9b",
+      "DisplayName": "Framework",
+      "ColorIndex": 0
+    },
+    "766313c1-b264-48c2-a681-3b63c7a8b4ee": {
+      "ProjectGuid": "766313c1-b264-48c2-a681-3b63c7a8b4ee",
+      "DisplayName": "Source",
+      "ColorIndex": 1
+    },
+    "f3e14f42-715e-402a-9d8a-deb3df3c87a3": {
+      "ProjectGuid": "f3e14f42-715e-402a-9d8a-deb3df3c87a3",
+      "DisplayName": "CommonToolsPy",
+      "ColorIndex": 2
+    }
+  },
+  "NextColorIndex": 3
+}

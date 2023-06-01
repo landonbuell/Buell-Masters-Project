@@ -166,21 +166,22 @@ class SampleManager(manager.Manager):
                 data.filePath,
                 data.classInt)
             self.__enqueueSample(sample)
-            self.__registerWithClassDatabase(data.classStr,data.classInt)
-
+            self.__registerWithDataManager(sample)
         # Finished w/ provided input file
         return True
 
-    def __enqueueSample(self,sample: LabeledSample) -> None:
+    def __enqueueSample(self,labeledSample: LabeledSample) -> None:
         """ Add a Sample the the database, return T/F if successful """
-        self._sampleDatabase[self._databaseSize] = sample
+        self._sampleDatabase[self._databaseSize] = labeledSample
         self._databaseSize += 1
         return None
 
-    def __registerWithClassDatabase(self,classStr: str, classInt: int) -> None:
-        """ Register Class Int/Str pair with ClassDatabase in DataManager """
-        # TODO: Implement this w/ Data Manager
-        return None
+    def __registerWithDataManager(self,labeledSample: LabeledSample) -> None:
+        """ Register this class w/ Class Database """
+        dataMgr = self.getApp().getDataManager()
+        dataMgr.registerClassWithDatabase(
+            labeledSample.classInt,labeledSample.classStr)
+        return self
 
     def __initSampleFolds(self) -> None:
         """ Construct the Order Queue for Each Fold """
@@ -201,6 +202,12 @@ class SampleManager(manager.Manager):
     def __repr__(self) -> str:
         """ Debug representation of instance """
         return "{0} w/ size = {1}".format(self.getName(),self.getSize())
+
+    def __iter__(self):
+        """ Iterate through the samples """
+        for ii in range(self._databaseSize):
+            yield self._sampleDatabase[ii]
+        return None
 
     # Static Interface
 
