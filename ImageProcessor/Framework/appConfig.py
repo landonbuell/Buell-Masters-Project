@@ -52,7 +52,7 @@ class AppConfig:
         """ Return the output Path """
         return self._pathOutput
 
-    def getIsSerializer(self) -> bool:
+    def getIsSerialized(self) -> bool:
         """ Return T/F is this instance has been serialized """
         return self._isSerialized
 

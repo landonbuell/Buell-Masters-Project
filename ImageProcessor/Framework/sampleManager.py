@@ -99,11 +99,15 @@ class SampleManager(manager.Manager):
         self._folds.append(newFold)
         return True
         
-    def getSamplesForNextBatch(self,foldIndex: int) -> np.ndarray:
+    def getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
         """ Get the sample Index's for the next Batch of """
         batchSize = self.getApp().getConfig().getBatchSize()
         batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
         return batchIndexes
+
+    def getSamplesFromIndexes(self,listOfIndexes: list) -> tuple:
+        """ Get Batch tensors from a list of indexes """
+
 
     def getSample(self,key: int):
         """ Get sample at specified int key """
@@ -116,10 +120,12 @@ class SampleManager(manager.Manager):
 
         def __init__(self,
                      filePath: str,
-                     classInt: int):
+                     classInt: int,
+                     classStr: str):
             """ Constructor """
             self.filePath   = filePath
             self.classInt   = classInt
+            self.classStr   = classStr
 
         def __del__(self):
             """ Destructor """
@@ -164,7 +170,8 @@ class SampleManager(manager.Manager):
             # Make a new Sample Instance & enqueue it
             sample = SampleManager.LabeledSample(
                 data.filePath,
-                data.classInt)
+                data.classInt,
+                data.classStr)
             self.__enqueueSample(sample)
             self.__registerWithDataManager(sample)
         # Finished w/ provided input file
@@ -180,7 +187,8 @@ class SampleManager(manager.Manager):
         """ Register this class w/ Class Database """
         dataMgr = self.getApp().getDataManager()
         dataMgr.registerClassWithDatabase(
-            labeledSample.classInt,labeledSample.classStr)
+            labeledSample.classInt,
+            labeledSample.classStr)
         return self
 
     def __initSampleFolds(self) -> None:
