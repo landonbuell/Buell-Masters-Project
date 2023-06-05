@@ -22,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="commonEnumerations.py" />
+    <Compile Include="imageIO.py" />
+    <Compile Include="plotting.py" />
+    <Compile Include="runInfo.py" />
     <Compile Include="simpleQueue.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>

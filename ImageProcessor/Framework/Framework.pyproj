@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="appConfig.py" />
     <Compile Include="augmentationManager.py" />
+    <Compile Include="batch.py" />
     <Compile Include="classificationManager.py" />
     <Compile Include="crossValidationFold.py" />
     <Compile Include="dataManager.py" />

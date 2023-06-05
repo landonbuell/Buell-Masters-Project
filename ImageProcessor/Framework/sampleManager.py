@@ -14,10 +14,13 @@ import os
 import numpy as np
 import pandas as pd
 
+
 import commonEnumerations
+import imageIO
 
 import manager
 import crossValidationFold
+import batch
 
         #### FUNCTION DEFINITIONS ####
 
@@ -36,7 +39,8 @@ class SampleManager(manager.Manager):
                  app): #imageClassifierApp.ImageClassifierApp
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
-        databaseCapacity        = int(1e5) # TEMP HARD-CODE TO FIX IMPORT ERRORS     
+        databaseCapacity        = int(1e5) # TEMP HARD-CODE TO FIX IMPORT ERRORS 
+        
         self._sampleDatabase    = np.empty(shape=(databaseCapacity,),dtype=object)
         self._databaseSize      = 0
         self._folds             = list([])
@@ -105,9 +109,13 @@ class SampleManager(manager.Manager):
         batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
         return batchIndexes
 
-    def getSamplesFromIndexes(self,listOfIndexes: list) -> tuple:
-        """ Get Batch tensors from a list of indexes """
+    def getBatch(self,listOfIndexes: list) -> batch.SampleBatch:
+        """ Get a Batch rom a list of indexes """
+        numSamples =  len(listOfIndexes)
+        imageToLoad = self.getSample(listOfIndexes[0]).filePath
+        X = imageIO.ImageIO.loadImage(imageToLoad)
 
+        return False
 
     def getSample(self,key: int):
         """ Get sample at specified int key """
