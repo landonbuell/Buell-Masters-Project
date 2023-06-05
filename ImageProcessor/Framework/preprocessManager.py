@@ -15,6 +15,7 @@ import os
 import commonEnumerations
 
 import manager
+import batch
 
         #### FUNCTION DEFINITIONS ####
 
@@ -31,6 +32,10 @@ class PreprocessManager(manager.Manager):
                  app): #imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,PreprocessManager.__NAME)
+        self._steps     = list()
+        self._scaler    = None
+
+
 
     def __del__(self):
         """ Destructor """
@@ -42,6 +47,9 @@ class PreprocessManager(manager.Manager):
         """ Initialize this Manager """
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
+
+        # Fit the standard scaler to the data
+        self.__fitStandardScaler()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -63,7 +71,24 @@ class PreprocessManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
+    def processBatch(self,batch: batch.SampleBatch):
+        """ Process a batch of Samples """
+        for ii,step in enumerate(self._steps):
+            batch = step.__call__(batch)
+        return batch
+
     # Private Interface 
+
+    def __registerPreprocessStep(self,step) -> None:
+        """ Register a Preprocessing Step with this manager """
+        self._steps.append(step)
+        return None
+
+    def __fitStandardScaler(self) -> None:
+        """ Fit a standard scaler to the current dataset in groups """
+
+
+        return None
 
 
 """
