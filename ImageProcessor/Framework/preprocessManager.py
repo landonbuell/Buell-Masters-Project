@@ -13,6 +13,7 @@
 import os
 
 import commonEnumerations
+import preprocessors
 
 import manager
 import batch
@@ -36,7 +37,6 @@ class PreprocessManager(manager.Manager):
         self._scaler    = None
 
 
-
     def __del__(self):
         """ Destructor """
         pass
@@ -49,7 +49,7 @@ class PreprocessManager(manager.Manager):
             return self._status
 
         # Fit the standard scaler to the data
-        self.__fitStandardScaler()
+        self.__fitStandardScalerParams()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -73,6 +73,7 @@ class PreprocessManager(manager.Manager):
 
     def processBatch(self,batch: batch.SampleBatch):
         """ Process a batch of Samples """
+        # TODO: self._scaler.applyTransformation(batch)
         for ii,step in enumerate(self._steps):
             batch = step.__call__(batch)
         return batch
@@ -84,12 +85,14 @@ class PreprocessManager(manager.Manager):
         self._steps.append(step)
         return None
 
-    def __fitStandardScaler(self) -> None:
+    def __fitStandardScalerParams(self) -> None:
         """ Fit a standard scaler to the current dataset in groups """
-
-
+        self._scaler.fitToDatabase(self.getApp().getSampleManager())
         return None
 
+    def __loadStandardScalerParams(self) -> None:
+        """ Load params for a standard scaler from disk """
+        return None
 
 """
     Author:         Landon Buell

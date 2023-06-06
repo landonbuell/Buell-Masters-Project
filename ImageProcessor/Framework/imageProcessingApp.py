@@ -16,8 +16,10 @@ import numpy as np
 
 import commonEnumerations
 
+
 import appConfig
 import textLogger
+import batch
 
 import sampleManager
 import dataManager
@@ -133,7 +135,18 @@ class ImageProcessingApp:
     def execute(self) -> int:
         """ Run App Execution """
 
+        loop = True
 
+        while (loop == True):
+
+            batch = self.getSampleManager().getNextBatch()
+            batch = self.getPreprocessManager().processBatch(batch)
+
+            # TODO: Register batch w/ Data Mgr
+
+            # TODO: Send to Classifier
+
+            # TOFO: Send to Segmenter
 
 
         return self._exitStatus
@@ -144,6 +157,22 @@ class ImageProcessingApp:
         return self._exitStatus
 
     # Private Interface
+
+    def __runTrain(self):
+        """ Run the App in Train-only mode """
+        return None
+
+    def __runTest(self):
+        """ Run the App in Test-only mode """
+        return None
+
+    def __runTrainTest(self):
+        """ Run the app in Train-Test mode """
+        return None
+
+    def __runCrossValidation(self):
+        """ Run the app in Cross Validation Mode """
+        return None
 
     # Static Interface
 

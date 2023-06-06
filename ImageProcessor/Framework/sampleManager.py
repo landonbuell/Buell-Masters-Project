@@ -14,7 +14,6 @@ import os
 import numpy as np
 import pandas as pd
 
-
 import commonEnumerations
 import imageIO
 
@@ -103,15 +102,14 @@ class SampleManager(manager.Manager):
         self._folds.append(newFold)
         return True
         
-    def getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
-        """ Get the sample Index's for the next Batch of """
-        batchSize = self.getApp().getConfig().getBatchSize()
-        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
-        return batchIndexes
 
-    def getBatch(self,listOfIndexes: list) -> batch.SampleBatch:
+    def getNextBatch(self,listOfIndexes: list) -> batch.SampleBatch:
         """ Get a Batch rom a list of indexes """
-        numSamples =  len(listOfIndexes)
+        listOfIndexes = self.__getIndexesForNextBatch()
+        batchCounter = batch.SampleBatch.getBatchCounter()
+        msg = "Retreving batch #{0} w/ {1} samples".format(batchCounter,len(listOfIndexes))
+        self.logMessage(msg)
+
         imageToLoad = self.getSample(listOfIndexes[0]).filePath
         X = imageIO.ImageIO.loadImage(imageToLoad)
 
@@ -208,6 +206,13 @@ class SampleManager(manager.Manager):
         # Invoke the Callback
         self._callbackInitFolds.__call__(self)  
         return None
+
+    def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
+        """ Get the sample Index's for the next Batch of """
+        batchSize = self.getApp().getConfig().getBatchSize()
+        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
+        return batchIndexes
+
 
     # Magic Methods
 

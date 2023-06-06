@@ -43,7 +43,7 @@ class SampleBatch:
         self._batchIndex    = SampleBatch.__batchCounter
         self._isOneHot      = isOneHot
 
-         SampleBatch.__batchCounter += 1
+        SampleBatch.__batchCounter += 1
 
     def __del__(self):
         """ Destructor """
@@ -52,11 +52,11 @@ class SampleBatch:
 
     # Accessors
 
-    def getX(self) -> np.ndarray
+    def getX(self) -> np.ndarray:
         """ Return Features """
         return self._X
 
-    def getY(self) -> np.ndarray
+    def getY(self) -> np.ndarray:
         """ Return Y """
         return self._y
 
@@ -91,6 +91,13 @@ class SampleBatch:
     def __repr__(self) -> str:
         """ Return debug representation of batch """
         return "Batch#{0} @ {1}".format(self._batchIndex,hex(id(self)))
+
+    # Static Interface
+
+    @staticmethod
+    def getBatchCounter() -> int:
+        """ Get the current batch counter """
+        return SampleBatch.__batchCounter
 
 """
     Author:         Landon Buell
