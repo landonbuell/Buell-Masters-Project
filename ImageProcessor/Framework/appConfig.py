@@ -35,7 +35,7 @@ class AppConfig:
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
         
-        self._crossValidationFolds  = 10
+        self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
     # Accessors
@@ -79,6 +79,10 @@ class AppConfig:
     def getTestSplitRatio(self) -> float:
         """ Ratio of the Test size to the full dataset """
         return self._testSplitRatio
+
+    def getTrainSplitRatio(self) -> float:
+        """ Ratio of the Train size to the full dataset """
+        return (1.0 - self._testSplitRatio)
 
     # Public Interface
 

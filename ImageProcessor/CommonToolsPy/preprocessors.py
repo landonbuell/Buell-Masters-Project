@@ -116,7 +116,7 @@ class CustomStandardScaler(BasePreprocessor):
                             featureMask: np.ndarray,
                             sampleMgr):
         """ Store a group of features across all samples """
-        for 
+        pass 
 
 """
     Author:         Landon Buell

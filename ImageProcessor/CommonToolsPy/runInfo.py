@@ -26,7 +26,7 @@ class RunInfo:
         self._outputPath    = app.getConfig().getOutputPath()
 
         self._shuffleSeed   = app.getConfig().getShuffleSeed()
-        self._numFolds      = app.getConfig().getNumFolds()
+        self._numFolds      = app.getConfig().getNumCrossValFolds()
 
         self._numClasses    = 0
 
