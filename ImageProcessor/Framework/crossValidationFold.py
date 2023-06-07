@@ -29,8 +29,6 @@ class CrossValidationFold:
 
     def __del__(self):
         """ Destructor """
-        self._seenSamples.clear()
-        self._usedSamples.clear()
 
     # Accessors
 

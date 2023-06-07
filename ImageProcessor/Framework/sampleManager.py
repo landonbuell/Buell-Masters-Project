@@ -86,14 +86,20 @@ class SampleManager(manager.Manager):
     def getNextBatch(self,listOfIndexes: list) -> batch.SampleBatch:
         """ Get a Batch rom a list of indexes """
         batchCounter = batch.SampleBatch.getBatchCounter()
-        msg = "\t\tRetreving batch #{0} w/ {1} samples".format(batchCounter,len(listOfIndexes))
+        numSamplesInBatch = len(listOfIndexes)
+        msg = "\t\tRetreving batch #{0} w/ {1} samples".format(batchCounter,numSamplesInBatch)
         self.logMessage(msg)
 
-        testSample = listOfIndexes[1]
-        imageToLoad = self[testSample].filePath
-        X = imageTools.ImageIO.loadImage(imageToLoad)
+        # Create + Populate Sample Batch Structure
+        batchData = batch.SampleBatch(numSamplesInBatch,batch.SHAPE_CHANNELS_FIRST)
+        for ii,idx in enumerate(listOfIndexes):
+            labeledSample = self[idx]
+            X = imageTools.ImageIO.loadImageAsTorchTensor(labeledSample.filePath)
+            y = labeledSample.classInt   
+            batchData[ii] = (X,y)
 
-        return False
+        # Finished collecting batch - return
+        return batchData
 
     def getSample(self,key: int):
         """ Get sample at specified int key """

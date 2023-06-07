@@ -223,8 +223,8 @@ class ImageProcessingApp:
             # TODO: call preprocess manager on batch
             # TODO: call augmentation manager on batch 
 
-            # TODO: train on classifier Manager
-            # TODO: train on segmentation Manager
+            # TODO: invoke callbackClassifier
+            # TODO: invoke callbackSegmenter
             
             # Check if there is any samples left in this fold
             if (fold.isFinished() == True):
