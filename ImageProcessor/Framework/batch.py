@@ -39,13 +39,15 @@ class SampleBatch:
 
     def __init__(self,
                  numSamples: int,
-                 sampleShape: tuple):
+                 sampleShape: tuple,
+                 dataTypeX=torch.uint8,
+                 dataTypeY=torch.int16):
         """ Constructor """
         shapeX = (numSamples,) + sampleShape
         shapeY = (numSamples,)
 
-        self._X = torch.zeros(size=shapeX,dtype=torch.uint8)
-        self._y = torch.zeros(size=shapeY,dtype=torch.int16)
+        self._X = torch.zeros(size=shapeX,dtype=dataTypeX)
+        self._y = torch.zeros(size=shapeY,dtype=dataTypeY)
 
         self._batchIndex    = SampleBatch.__batchCounter
         SampleBatch.__batchCounter += 1
@@ -56,6 +58,14 @@ class SampleBatch:
         self._y = None
 
     # Accessors
+
+    def getDataTypeX(self) -> torch.dtype:
+        """ Return the data type for features """
+        return self._X.dtype
+
+    def getDataTypeY(self) -> torch.dtype:
+        """ Return the data type for labels """
+        return self._Y.dtype
 
     def getX(self) -> torch.Tensor:
         """ Return Features """
@@ -87,8 +97,8 @@ class SampleBatch:
 
     def __setitem__(self,key: int, val: tuple):
         """ Set the (X,y) pair at specified index """
-        x = val[0]
-        y = val[1]
+        x = val[0].type(self.getDataTypeX())
+        y = torch.tensor(val[1],dtype=self.getDataTypey())
         self._X[key] = x
         self._y[key] = y
         return self
