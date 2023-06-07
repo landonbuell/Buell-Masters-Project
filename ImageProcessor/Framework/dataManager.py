@@ -35,7 +35,9 @@ class DataManager(manager.Manager):
         super().__init__(app,DataManager.__NAME)
         
         self._classDatabase = [None] * DataManager.__MAX_NUM_CLASSES
-        self._runInfo       = runInfo.RunInfo(self)
+        self._runInfo       = runInfo.RunInfo(app)
+
+        self._foldIndex     = 0
 
     def __del__(self):
         """ Destructor """

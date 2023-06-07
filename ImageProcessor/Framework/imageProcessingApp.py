@@ -84,7 +84,7 @@ class ImageProcessingApp:
         """ Return the App's Status """
         return self._exitStatus
 
-    def getSampleManager(self):
+    def getSampleManager(self) -> sampleManager.SampleManager:
         """ Return the sample manager """
         return self._sampleManager
 
@@ -128,25 +128,13 @@ class ImageProcessingApp:
         self._preprocessManager.init()
 
         self._classificationManager.init()
-        self._preprocessManager.init()
+        self._segmentationManager.init()
 
         return self._exitStatus
 
     def execute(self) -> int:
         """ Run App Execution """
 
-        loop = True
-
-        while (loop == True):
-
-            batch = self.getSampleManager().getNextBatch()
-            batch = self.getPreprocessManager().processBatch(batch)
-
-            # TODO: Register batch w/ Data Mgr
-
-            # TODO: Send to Classifier
-
-            # TOFO: Send to Segmenter
 
 
         return self._exitStatus
@@ -158,19 +146,26 @@ class ImageProcessingApp:
 
     # Private Interface
 
-    def __runTrain(self):
-        """ Run the App in Train-only mode """
+    def __runTrainOnFold(self,foldIndex: int):
+        """ Run the Training Sequence on the chosen Fold """
+        loop = True
+        fold = self._sampleManager.getFold(foldIndex)
+        while(loop == True):
+
+            
+
+
         return None
 
-    def __runTest(self):
+    def __runTestOnFold(self,foldIndex: int):
         """ Run the App in Test-only mode """
         return None
 
-    def __runTrainTest(self):
+    def __runTrainTest(self,foldIndex: int):
         """ Run the app in Train-Test mode """
         return None
 
-    def __runCrossValidation(self):
+    def __runCrossValidation(self,foldIndex: int):
         """ Run the app in Cross Validation Mode """
         return None
 

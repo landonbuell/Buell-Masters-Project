@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 import commonEnumerations
-import imageIO
+import imageTools
 
 import manager
 import crossValidationFold
@@ -71,8 +71,13 @@ class SampleManager(manager.Manager):
         """ Return the number of cross validation folds in use """
         return len(self._folds)
 
-    def getFold(self,index: int):
+    def getFold(self,index: int) -> crossValidationFold.CrossValidationFold
         """ Get the Fold at the supplied index """
+        if (index >= len(self._folds)):
+            msg = "Fold index at {0} is out of range for {1} number of folds".format(
+                index,len(self._folds))
+            self.logMessage(msg)
+            return None
         return self._folds[index]
         
     # Public Interface

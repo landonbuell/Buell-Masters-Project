@@ -99,6 +99,12 @@ class SampleBatch:
         """ Get the current batch counter """
         return SampleBatch.__batchCounter
 
+    @staticmethod
+    def resetBatchCounter() -> None:
+        """ Return the batch counter to zero """
+        SampleBatch.__batchCounter = 0
+        return None
+
 """
     Author:         Landon Buell
     Date:           June 2023
