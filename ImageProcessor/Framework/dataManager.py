@@ -11,6 +11,7 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
 
 import commonEnumerations
 import runInfo
@@ -88,16 +89,16 @@ class DataManager(manager.Manager):
 
     def getNumFolds(self) ->int:
         """ Return the number of cross validation folds in use """
-        return len(self._folds)
+        return len(self._foldDatabase)
 
-    def getFold(self,index: int) -> crossValidationFold.CrossValidationFold
+    def getFold(self,index: int) -> crossValidationFold.CrossValidationFold:
         """ Get the Fold at the supplied index """
-        if (index >= len(self._folds)):
+        if (index >= len(self._foldDatabase)):
             msg = "Fold index at {0} is out of range for {1} number of folds".format(
-                index,len(self._folds))
+                index,len(self._foldDatabase))
             self.logMessage(msg)
             return None
-        return self._folds[index]
+        return self._foldDatabase[index]
 
     # Public Interface
 
@@ -130,6 +131,11 @@ class DataManager(manager.Manager):
         self.__exportRunInfo()
         self._setShutdownFinished(True)
         return self._status
+
+    def registerFold(self, newFold) -> bool:
+        """ Register Fold w/ Sample Manager """
+        self._foldDatabase.append(newFold)
+        return True
 
     def registerClassWithDatabase(self,classInt: int, className: str) -> bool:
         """ Register a class w/ the Class Database """
@@ -176,7 +182,9 @@ class DataManager(manager.Manager):
             self.logMessage(msg)
             raise RuntimeError(msg)
         # Invoke the Callback
-        self._callbackInitFolds.__call__(self)  
+        sampleMgr   = self.getApp().getSampleManager()
+        dataMgr     = self
+        self._callbackInitFolds.__call__(sampleMgr,dataMgr)  
         return None
 
     def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
@@ -204,7 +212,7 @@ class DataManager(manager.Manager):
     # Static Interface
 
     @staticmethod
-    def callbackInitTrainTestFolds(sampleMgr) -> None:
+    def callbackInitTrainTestFolds(sampleMgr,dataMgr) -> None:
         """ Register a Train/Test pair of folds (NON-X-Validation) """
         allSamples      = np.arange(sampleMgr.getSize(),dtype=np.int32)
         np.random.shuffle(allSamples)
@@ -214,16 +222,16 @@ class DataManager(manager.Manager):
         trainFold = crossValidationFold.CrossValidationFold(
             foldIndex=0,
             samplesInFold=allSamples[:numTrainSamples])
-        sampleMgr.registerFold(trainFold)
+        dataMgr.registerFold(trainFold)
         # Make the Test Fold
         testFold = crossValidationFold.CrossValidationFold(
             foldIndex=1,
             samplesInFold=allSamples[numTrainSamples:])
-        sampleMgr.registerFold(testFold)
+        dataMgr.registerFold(testFold)
         return None
 
     @staticmethod
-    def callbackInitCrossValFolds(sampleMgr) -> None:
+    def callbackInitCrossValFolds(sampleMgr,dataMgr) -> None:
         """ Register a set of Cross Validation Folds """
         allSamples  = np.arange(sampleMgr.getSize(),dtype=np.int32)
         np.random.shuffle(allSamples)
@@ -236,7 +244,7 @@ class DataManager(manager.Manager):
             fold = crossValidationFold.CrossValidationFold(
                 foldIndex=foldIdx,
                 samplesInFold=foldSamples)
-            sampleMgr.registerFold(fold)
+            dataMgr.registerFold(fold)
             # Increment the start point
             foldStart += foldSize
         return None

@@ -35,7 +35,7 @@ class AppConfig:
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
         
-        self._crossValidationFolds  = 10
+        self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
     # Accessors

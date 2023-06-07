@@ -44,7 +44,7 @@ class CrossValidationFold:
 
     def getRemaining(self) -> int:
         """ Return the number of samples remaining """
-        return (self._sampleQueue.size - self._iter)
+        return (self._sampleQueue.size - self._queueIter)
 
     def getAll(self) -> np.ndarray:
         """ Get all indexes in this fold """
@@ -66,15 +66,15 @@ class CrossValidationFold:
         batchSize = min(batchSize,self.getRemaining())
         batchSamples = np.empty(shape=(batchSize,),dtype=np.int32)
         for ii in range(batchSize):
-            batchSamples[ii] = self._sampleQueue[self._iter]
-            self._iter += 1
+            batchSamples[ii] = self._sampleQueue[self._queueIter]
+            self._queueIter += 1
         return batchSamples
 
     # Public Interface
 
     def isFinished(self) -> bool:
         """ Return T/F if this fold has iterated through all samples """
-        return (self._iter >= self._sampleQueue.size)
+        return (self._queueIter >= self._sampleQueue.size)
 
     def resetIterator(self) -> None:
         """ Resest the internal iterator """

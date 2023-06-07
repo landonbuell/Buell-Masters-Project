@@ -83,21 +83,15 @@ class SampleManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
-    def registerFold(self, newFold) -> bool:
-        """ Register Fold w/ Sample Manager """
-        self._folds.append(newFold)
-        return True
-        
-
     def getNextBatch(self,listOfIndexes: list) -> batch.SampleBatch:
         """ Get a Batch rom a list of indexes """
-        listOfIndexes = self.__getIndexesForNextBatch()
         batchCounter = batch.SampleBatch.getBatchCounter()
-        msg = "Retreving batch #{0} w/ {1} samples".format(batchCounter,len(listOfIndexes))
+        msg = "\t\tRetreving batch #{0} w/ {1} samples".format(batchCounter,len(listOfIndexes))
         self.logMessage(msg)
 
-        imageToLoad = self.getSample(listOfIndexes[0]).filePath
-        X = imageIO.ImageIO.loadImage(imageToLoad)
+        testSample = listOfIndexes[1]
+        imageToLoad = self[testSample].filePath
+        X = imageTools.ImageIO.loadImage(imageToLoad)
 
         return False
 
@@ -142,7 +136,7 @@ class SampleManager(manager.Manager):
             # Otherwise, read the file
             self.__readInputFile(item)
         # All Done
-        msg = "Finished reading all input file. Sample Database has {0} items".format(
+        msg = "Finished reading all input files. Sample Database has {0} items".format(
             self.getSize())
         self.logMessage(msg)
         return self
@@ -182,9 +176,6 @@ class SampleManager(manager.Manager):
             labeledSample.classInt,
             labeledSample.classStr)
         return self
-
-
-
 
     # Magic Methods
 
