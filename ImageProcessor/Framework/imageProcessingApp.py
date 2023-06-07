@@ -148,10 +148,12 @@ class ImageProcessingApp:
 
     def __runTrainOnFold(self,foldIndex: int):
         """ Run the Training Sequence on the chosen Fold """
-        loop = True
-        fold = self._sampleManager.getFold(foldIndex)
-        while(loop == True):
+        fold = self._dataManager.getFold(foldIndex)
+        loop = (fold is not None)
+        
+        while (loop == True):
 
+            pass
             
 
 

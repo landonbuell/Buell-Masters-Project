@@ -16,6 +16,7 @@ import commonEnumerations
 import runInfo
 
 import manager
+import crossValidationFold
 
         #### FUNCTION DEFINITIONS ####
 
@@ -28,6 +29,7 @@ class DataManager(manager.Manager):
 
     __NAME = "DataManager"
     __MAX_NUM_CLASSES = 32
+    __MAX_NUM_FOLDS = 10
 
     def __init__(self,
                  app): #imageProcessingApp.ImageProcessingApp
@@ -35,13 +37,18 @@ class DataManager(manager.Manager):
         super().__init__(app,DataManager.__NAME)
         
         self._classDatabase = [None] * DataManager.__MAX_NUM_CLASSES
-        self._runInfo       = runInfo.RunInfo(app)
+        self._foldDatabase  = list([])
 
-        self._foldIndex     = 0
+        self._runInfo           = runInfo.RunInfo(app)
+        self._callbackInitFolds = DataManager.callbackInitTrainTestFolds
+
+        if (self.getApp().crossValEnabled() == True):
+            # Cross Validation is Enabled
+            self._callbackInitFolds = DataManager.callbackInitCrossValFolds
 
     def __del__(self):
         """ Destructor """
-        pass
+        super().__del__()
 
     # Accessors
 
@@ -79,6 +86,19 @@ class DataManager(manager.Manager):
                 classes.append( item.classInt )
         return classes
 
+    def getNumFolds(self) ->int:
+        """ Return the number of cross validation folds in use """
+        return len(self._folds)
+
+    def getFold(self,index: int) -> crossValidationFold.CrossValidationFold
+        """ Get the Fold at the supplied index """
+        if (index >= len(self._folds)):
+            msg = "Fold index at {0} is out of range for {1} number of folds".format(
+                index,len(self._folds))
+            self.logMessage(msg)
+            return None
+        return self._folds[index]
+
     # Public Interface
 
     def init(self) -> commonEnumerations.Status:
@@ -86,7 +106,8 @@ class DataManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Plot Distrobution of Classes
+        # Initialize the Folds for Train/Test
+        self.__initSampleFolds()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -148,6 +169,16 @@ class DataManager(manager.Manager):
 
     # Private Interface 
 
+    def __initSampleFolds(self) -> None:
+        """ Construct the Order Queue for Each Fold """
+        if (self._callbackInitFolds is None):
+            msg = "Cannot initialize folds if _callbackInitFolds is set to None"
+            self.logMessage(msg)
+            raise RuntimeError(msg)
+        # Invoke the Callback
+        self._callbackInitFolds.__call__(self)  
+        return None
+
     def __plotClassDistrobution(self) -> None:
         """ Plot the Distrobution of classes in the data set """
         msg = "WARNING: Plotting distrobution of class data is not yet implemented"
@@ -164,8 +195,45 @@ class DataManager(manager.Manager):
         self._runInfo.toDisk(exportPath)
         return None
 
-    
+    # Static Interface
 
+    @staticmethod
+    def callbackInitTrainTestFolds(sampleMgr) -> None:
+        """ Register a Train/Test pair of folds (NON-X-Validation) """
+        allSamples      = np.arange(sampleMgr.getSize(),dtype=np.int32)
+        np.random.shuffle(allSamples)
+        numTestSamples  = int(allSamples.size * sampleMgr.getApp().getConfig().getTestSplitRatio())
+        numTrainSamples = int(allSamples.size - numTestSamples)
+        # Make the Train Fold
+        trainFold = crossValidationFold.CrossValidationFold(
+            foldIndex=0,
+            samplesInFold=allSamples[:numTrainSamples])
+        sampleMgr.registerFold(trainFold)
+        # Make the Test Fold
+        testFold = crossValidationFold.CrossValidationFold(
+            foldIndex=1,
+            samplesInFold=allSamples[numTrainSamples:])
+        sampleMgr.registerFold(testFold)
+        return None
+
+    @staticmethod
+    def callbackInitCrossValFolds(sampleMgr) -> None:
+        """ Register a set of Cross Validation Folds """
+        allSamples  = np.arange(sampleMgr.getSize(),dtype=np.int32)
+        np.random.shuffle(allSamples)
+        numFolds    = sampleMgr.getApp().getConfig().getNumCrossValFolds()
+        foldSize    = int(allSamples.size / numFolds)
+        foldStart   = 0
+        for foldIdx in range(numFolds):
+            # Create the Fold + Register it
+            foldSamples = allSamples[foldStart:foldStart + foldSize]
+            fold = crossValidationFold.CrossValidationFold(
+                foldIndex=foldIdx,
+                samplesInFold=foldSamples)
+            sampleMgr.registerFold(fold)
+            # Increment the start point
+            foldStart += foldSize
+        return None
 
 """
     Author:         Landon Buell
