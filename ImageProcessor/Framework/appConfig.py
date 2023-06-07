@@ -80,6 +80,10 @@ class AppConfig:
         """ Ratio of the Test size to the full dataset """
         return self._testSplitRatio
 
+    def getTrainSplitRatio(self) -> float:
+        """ Ratio of the Train size to the full dataset """
+        return (1.0 - self._testSplitRatio)
+
     # Public Interface
 
     # Private Interface

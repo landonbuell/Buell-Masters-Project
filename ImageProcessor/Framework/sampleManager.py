@@ -183,13 +183,7 @@ class SampleManager(manager.Manager):
             labeledSample.classStr)
         return self
 
-    
 
-    def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
-        """ Get the sample Index's for the next Batch of """
-        batchSize = self.getApp().getConfig().getBatchSize()
-        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
-        return batchIndexes
 
 
     # Magic Methods

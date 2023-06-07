@@ -179,6 +179,12 @@ class DataManager(manager.Manager):
         self._callbackInitFolds.__call__(self)  
         return None
 
+    def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
+        """ Get the sample Index's for the next Batch of """
+        batchSize = self.getApp().getConfig().getBatchSize()
+        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
+        return batchIndexes
+
     def __plotClassDistrobution(self) -> None:
         """ Plot the Distrobution of classes in the data set """
         msg = "WARNING: Plotting distrobution of class data is not yet implemented"

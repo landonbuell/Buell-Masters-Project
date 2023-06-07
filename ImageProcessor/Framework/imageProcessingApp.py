@@ -135,7 +135,20 @@ class ImageProcessingApp:
     def execute(self) -> int:
         """ Run App Execution """
 
+        if (self.crossValEnabled() == True):
+            # Cross-Validation is enabled
+            numFolds = self.getConfig().getNumCrossValFolds()
+            msg = "Cross Validation is enabled w/ {0} folds".format(numFolds)
+            self.logMessage(msg)
+            self.__runCrossValidation()
+        else:
+            # Basic Train-Test is enabled
+            sizeTestRatio = self.getConfig().getTestSplitRatio() * 100.0
+            msg = "Basic Train-Test is enabled w/ {0}% test ratio".format(sizeTestRatio)
+            self.logMessage(msg)
+            self.__runTrainTest()
 
+        # Cleanup?
 
         return self._exitStatus
 
@@ -146,29 +159,109 @@ class ImageProcessingApp:
 
     # Private Interface
 
-    def __runTrainOnFold(self,foldIndex: int):
+    def __runTrainTest(self):
+        """ Run the app in Train-Test mode """
+
+        # Train the Model on the 0-th Fold
+        indexTrainFold = 0
+        self.__runTrainOnFold(indexTrainFold)
+
+        # Test the Model on the 1-th Fold
+        indexTestFold = 1
+        self.__runTestOnFold(indexTestFold)
+
+        return None
+
+    def __runCrossValidation(self):
+        """ Run the app in Cross Validation Mode """
+        numFolds = self.getConfig().getNumCrossValFolds()
+        foldIndexes = np.arange(numFolds)
+
+        for foldIndex in foldIndexes:
+            msg = "Performing Cross Validation on Fold #{0}".format(foldIndex)
+            self.logMessage(msg)
+
+            testFold    = foldIndex
+            trainFolds  = np.delete(foldIndexes,testFold)
+
+            # Train on each of the training Folds
+            for x in trainFolds:
+                msg = "\tTraining on Fold #{0}".format(x)
+                self.logMessage(msg)
+
+                self.__runTrainOnFold(x,False)
+           
+
+            # Test in the remaining test fold
+            msg = "\tTesting on Fold #{0}".format(testFold)
+            self.logMessage(msg)
+            self.__runTestOnFold(testFold)
+
+            # Cleanup After Each Fold 
+            # TODO: Export Classifier Model
+            # TODO: Export Segmentation Model 
+            batch.SampleBatch.resetBatchCounter()
+        
+        # Cleanup
+
+        return None
+
+
+
+    def __runTrainOnFold(self,
+                         foldIndex: int,
+                         resetBatchCounter=True):
         """ Run the Training Sequence on the chosen Fold """
         fold = self._dataManager.getFold(foldIndex)
         loop = (fold is not None)
         
         while (loop == True):
 
-            pass
+            batchIndexes    = fold.getNextBatchIndexes()
+            batchData       = self._sampleManager.getNextBatch(batchIndexes)
+
+            # TODO: call preprocess manager on batch
+            # TODO: call augmentation manager on batch 
+
+            # TODO: train on classifier Manager
+            # TODO: train on segmentation Manager
             
+            # Check if there is any samples left in this fold
+            if (fold.isFinished() == True):
+                loop = False
+                fold.resetIterator()
 
-
+        # Cleanup
+        if (resetBatchCounter == True):
+            batch.SampleBatch.resetBatchCounter()
         return None
 
-    def __runTestOnFold(self,foldIndex: int):
+    def __runTestOnFold(self,
+                        foldIndex: int,
+                        resetBatchCounter=True):
         """ Run the App in Test-only mode """
-        return None
+        fold = self._dataManager.getFold(foldIndex)
+        loop = (fold is not None)
+        
+        while (loop == True):
 
-    def __runTrainTest(self,foldIndex: int):
-        """ Run the app in Train-Test mode """
-        return None
+            batchIndexes    = fold.getNextBatchIndexes()
+            batchData       = self._sampleManager.getNextBatch(batchIndexes)
 
-    def __runCrossValidation(self,foldIndex: int):
-        """ Run the app in Cross Validation Mode """
+            # TODO: call preprocess manager on batch
+            # TODO: call augmentation manager on batch 
+
+            # TODO: test on classifier Manager
+            # TODO: test on segmentation Manager
+            
+            # Check if there is any samples left in this fold
+            if (fold.isFinished() == True):
+                loop = False
+                fold.resetIterator()
+
+        # Cleanup
+        if (resetBatchCounter == True):
+            batch.SampleBatch.resetBatchCounter()
         return None
 
     # Static Interface
