@@ -11,8 +11,10 @@
         #### IMPORTS ####
 
 import os
-import matplotlib.pyplot as plt
-import matplotlib.image as img
+
+import torch
+import torchvision
+
 
         #### CLASS DEFINITIONS ####
 
@@ -26,12 +28,10 @@ class ImageIO:
 
     # Image Loaders
 
-    def loadImage(imagePath: str):
+    def loadImageAsTorchTensor(imagePath: str) -> torch.Tensor:
         """ Load a JPG image as a torch tensor """
-        imageData = img.imread(imagePath)
-        plt.imshow(imageData)
-        return imageData
-
+        torchImage = torchvision.io.read_image(imagePath)
+        return torchImage
 
 
 

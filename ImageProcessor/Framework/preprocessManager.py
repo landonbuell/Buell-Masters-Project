@@ -87,7 +87,7 @@ class PreprocessManager(manager.Manager):
 
     def __fitStandardScalerParams(self) -> None:
         """ Fit a standard scaler to the current dataset in groups """
-        self._scaler.fitToDatabase(self.getApp().getSampleManager())
+        #self._scaler.fitToDatabase(self.getApp().getSampleManager())
         return None
 
     def __loadStandardScalerParams(self) -> None:

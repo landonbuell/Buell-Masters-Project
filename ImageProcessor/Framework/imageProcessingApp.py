@@ -84,11 +84,11 @@ class ImageProcessingApp:
         """ Return the App's Status """
         return self._exitStatus
 
-    def getSampleManager(self):
+    def getSampleManager(self) -> sampleManager.SampleManager:
         """ Return the sample manager """
         return self._sampleManager
 
-    def getDataManager(self):
+    def getDataManager(self) -> dataManager.DataManager:
         """ Return the Data Manager """
         return self._dataManager
 
@@ -128,26 +128,27 @@ class ImageProcessingApp:
         self._preprocessManager.init()
 
         self._classificationManager.init()
-        self._preprocessManager.init()
+        self._segmentationManager.init()
 
         return self._exitStatus
 
     def execute(self) -> int:
         """ Run App Execution """
 
-        loop = True
+        if (self.crossValEnabled() == True):
+            # Cross-Validation is enabled
+            numFolds = self.getConfig().getNumCrossValFolds()
+            msg = "Cross Validation is enabled w/ {0} folds".format(numFolds)
+            self.logMessage(msg)
+            self.__runCrossValidation()
+        else:
+            # Basic Train-Test is enabled
+            sizeTestRatio = self.getConfig().getTestSplitRatio() * 100.0
+            msg = "Basic Train-Test is enabled w/ {0}% test ratio".format(sizeTestRatio)
+            self.logMessage(msg)
+            self.__runTrainTest()
 
-        while (loop == True):
-
-            batch = self.getSampleManager().getNextBatch()
-            batch = self.getPreprocessManager().processBatch(batch)
-
-            # TODO: Register batch w/ Data Mgr
-
-            # TODO: Send to Classifier
-
-            # TOFO: Send to Segmenter
-
+        # Cleanup?
 
         return self._exitStatus
 
@@ -158,20 +159,111 @@ class ImageProcessingApp:
 
     # Private Interface
 
-    def __runTrain(self):
-        """ Run the App in Train-only mode """
-        return None
-
-    def __runTest(self):
-        """ Run the App in Test-only mode """
-        return None
-
     def __runTrainTest(self):
         """ Run the app in Train-Test mode """
+
+        # Train the Model on the 0-th Fold
+        indexTrainFold = 0
+        self.__runTrainOnFold(indexTrainFold)
+
+        # Test the Model on the 1-th Fold
+        indexTestFold = 1
+        self.__runTestOnFold(indexTestFold)
+
         return None
 
     def __runCrossValidation(self):
         """ Run the app in Cross Validation Mode """
+        numFolds = self.getConfig().getNumCrossValFolds()
+        foldIndexes = np.arange(numFolds)
+
+        for foldIndex in foldIndexes:
+            msg = "Performing Cross Validation on Fold #{0}".format(foldIndex)
+            self.logMessage(msg)
+
+            testFold    = foldIndex
+            trainFolds  = np.delete(foldIndexes,testFold)
+
+            # Train on each of the training Folds
+            for x in trainFolds:
+                msg = "\tTraining on Fold #{0}".format(x)
+                self.logMessage(msg)
+
+                self.__runTrainOnFold(x,False)
+           
+
+            # Test in the remaining test fold
+            msg = "\tTesting on Fold #{0}".format(testFold)
+            self.logMessage(msg)
+            self.__runTestOnFold(testFold)
+
+            # Cleanup After Each Fold 
+            # TODO: Export Classifier Model
+            # TODO: Export Segmentation Model 
+            batch.SampleBatch.resetBatchCounter()
+        
+        # Cleanup
+        return None
+
+    def __runOnFold(self,
+                    foldIndex: int,
+                    resetBatchCounter=True,
+                    callbackClassifier=None,
+                    callbackSegmenter=None):
+        """ Run samples in a fold. Choose what each Model does with that Fold """
+        batchSize = self.getConfig().getBatchSize() 
+        fold = self._dataManager.getFold(foldIndex)
+        loop = (fold is not None)
+        
+        while (loop == True):
+
+            batchIndexes    = fold.getNextBatchIndexes(batchSize)
+            batchData       = self._sampleManager.getNextBatch(batchIndexes)
+
+            # TODO: call preprocess manager on batch
+            # TODO: call augmentation manager on batch 
+
+            # TODO: invoke callbackClassifier
+            # TODO: invoke callbackSegmenter
+            
+            # Check if there is any samples left in this fold
+            if (fold.isFinished() == True):
+                loop = False
+                fold.resetIterator()
+
+        # Cleanup
+        if (resetBatchCounter == True):
+            batch.SampleBatch.resetBatchCounter()
+        return None
+
+    def __runTrainOnFold(self,
+                         foldIndex: int,
+                         resetBatchCounter=True):
+        """ Run the Training Sequence on the chosen Fold """
+        callbackClassifierMgr   = None
+        callbackSegmentationMgr = None
+
+        self.__runOnFold(
+            foldIndex,
+            resetBatchCounter,
+            callbackClassifierMgr,
+            callbackSegmentationMgr)
+
+        return None
+
+    def __runTestOnFold(self,
+                        foldIndex: int,
+                        resetBatchCounter=True):
+        """ Run the App in Test-only mode """
+        callbackClassifierMgr   = None
+        callbackSegmentationMgr = None
+
+        self.__runOnFold(
+            foldIndex,
+            resetBatchCounter,
+            callbackClassifierMgr,
+            callbackSegmentationMgr)
+
         return None
 
     # Static Interface

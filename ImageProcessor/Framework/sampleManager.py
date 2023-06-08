@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 import commonEnumerations
-import imageIO
+import imageTools
 
 import manager
 import crossValidationFold
@@ -32,7 +32,7 @@ class SampleManager(manager.Manager):
     """
 
     __NAME = "SampleManager"
-    __MAX_NUM_FOLDS = 10
+    
 
     def __init__(self,
                  app): #imageClassifierApp.ImageClassifierApp
@@ -42,13 +42,7 @@ class SampleManager(manager.Manager):
         
         self._sampleDatabase    = np.empty(shape=(databaseCapacity,),dtype=object)
         self._databaseSize      = 0
-        self._folds             = list([])
-        self._callbackInitFolds = SampleManager.callbackInitTrainTestFolds
-
-        if (self.getApp().crossValEnabled() == True):
-            # Cross Validation is Enabled
-            self._callbackInitFolds = SampleManager.callbackInitCrossValFolds
-
+        
     def __del__(self):
         """ Destructor """
         pass
@@ -66,15 +60,7 @@ class SampleManager(manager.Manager):
     def isEmpty(self) -> bool:
         """ Return T/F is the sample Database Is empty """
         return (self._databaseSize == 0)
-
-    def getNumFolds(self) ->int:
-        """ Return the number of cross validation folds in use """
-        return len(self._folds)
-
-    def getFold(self,index: int):
-        """ Get the Fold at the supplied index """
-        return self._folds[index]
-        
+ 
     # Public Interface
 
     def init(self) -> commonEnumerations.Status:
@@ -84,7 +70,7 @@ class SampleManager(manager.Manager):
 
         # Populate Sample Databse 
         self.__initSampleDatabase()
-        self.__initSampleFolds()
+        
         
         self._setInitFinished(True)
         return self._status
@@ -97,23 +83,23 @@ class SampleManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
-    def registerFold(self, newFold) -> bool:
-        """ Register Fold w/ Sample Manager """
-        self._folds.append(newFold)
-        return True
-        
-
     def getNextBatch(self,listOfIndexes: list) -> batch.SampleBatch:
         """ Get a Batch rom a list of indexes """
-        listOfIndexes = self.__getIndexesForNextBatch()
         batchCounter = batch.SampleBatch.getBatchCounter()
-        msg = "Retreving batch #{0} w/ {1} samples".format(batchCounter,len(listOfIndexes))
+        numSamplesInBatch = len(listOfIndexes)
+        msg = "\t\tRetreving batch #{0} w/ {1} samples".format(batchCounter,numSamplesInBatch)
         self.logMessage(msg)
 
-        imageToLoad = self.getSample(listOfIndexes[0]).filePath
-        X = imageIO.ImageIO.loadImage(imageToLoad)
+        # Create + Populate Sample Batch Structure
+        batchData = batch.SampleBatch(numSamplesInBatch,batch.SHAPE_CHANNELS_FIRST)
+        for ii,idx in enumerate(listOfIndexes):
+            labeledSample = self[idx]
+            X = imageTools.ImageIO.loadImageAsTorchTensor(labeledSample.filePath)
+            y = labeledSample.classInt   
+            batchData[ii] = (X,y)
 
-        return False
+        # Finished collecting batch - return
+        return batchData
 
     def getSample(self,key: int):
         """ Get sample at specified int key """
@@ -156,7 +142,7 @@ class SampleManager(manager.Manager):
             # Otherwise, read the file
             self.__readInputFile(item)
         # All Done
-        msg = "Finished reading all input file. Sample Database has {0} items".format(
+        msg = "Finished reading all input files. Sample Database has {0} items".format(
             self.getSize())
         self.logMessage(msg)
         return self
@@ -197,23 +183,6 @@ class SampleManager(manager.Manager):
             labeledSample.classStr)
         return self
 
-    def __initSampleFolds(self) -> None:
-        """ Construct the Order Queue for Each Fold """
-        if (self._callbackInitFolds is None):
-            msg = "Cannot initialize folds if _callbackInitFolds is set to None"
-            self.logMessage(msg)
-            raise RuntimeError(msg)
-        # Invoke the Callback
-        self._callbackInitFolds.__call__(self)  
-        return None
-
-    def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
-        """ Get the sample Index's for the next Batch of """
-        batchSize = self.getApp().getConfig().getBatchSize()
-        batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
-        return batchIndexes
-
-
     # Magic Methods
 
     def __getitem__(self,key: int):
@@ -229,47 +198,6 @@ class SampleManager(manager.Manager):
         for ii in range(self._databaseSize):
             yield self._sampleDatabase[ii]
         return None
-
-    # Static Interface
-
-    @staticmethod
-    def callbackInitTrainTestFolds(sampleMgr) -> None:
-        """ Register a Train/Test pair of folds (NON-X-Validation) """
-        allSamples      = np.arange(sampleMgr.getSize(),dtype=np.int32)
-        np.random.shuffle(allSamples)
-        numTestSamples  = int(allSamples.size * sampleMgr.getApp().getConfig().getTestSplitRatio())
-        numTrainSamples = int(allSamples.size - numTestSamples)
-        # Make the Train Fold
-        trainFold = crossValidationFold.CrossValidationFold(
-            foldIndex=0,
-            samplesInFold=allSamples[:numTrainSamples])
-        sampleMgr.registerFold(trainFold)
-        # Make the Test Fold
-        testFold = crossValidationFold.CrossValidationFold(
-            foldIndex=1,
-            samplesInFold=allSamples[numTrainSamples:])
-        sampleMgr.registerFold(testFold)
-        return None
-
-    @staticmethod
-    def callbackInitCrossValFolds(sampleMgr) -> None:
-        """ Register a set of Cross Validation Folds """
-        allSamples  = np.arange(sampleMgr.getSize(),dtype=np.int32)
-        np.random.shuffle(allSamples)
-        numFolds    = sampleMgr.getApp().getConfig().getNumCrossValFolds()
-        foldSize    = int(allSamples.size / numFolds)
-        foldStart   = 0
-        for foldIdx in range(numFolds):
-            # Create the Fold + Register it
-            foldSamples = allSamples[foldStart:foldStart + foldSize]
-            fold = crossValidationFold.CrossValidationFold(
-                foldIndex=foldIdx,
-                samplesInFold=foldSamples)
-            sampleMgr.registerFold(fold)
-            # Increment the start point
-            foldStart += foldSize
-        return None
-
 
 """
     Author:         Landon Buell

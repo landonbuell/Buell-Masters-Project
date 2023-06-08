@@ -29,8 +29,6 @@ class CrossValidationFold:
 
     def __del__(self):
         """ Destructor """
-        self._seenSamples.clear()
-        self._usedSamples.clear()
 
     # Accessors
 
@@ -44,7 +42,7 @@ class CrossValidationFold:
 
     def getRemaining(self) -> int:
         """ Return the number of samples remaining """
-        return (self._sampleQueue.size - self._iter)
+        return (self._sampleQueue.size - self._queueIter)
 
     def getAll(self) -> np.ndarray:
         """ Get all indexes in this fold """
@@ -54,31 +52,31 @@ class CrossValidationFold:
         """ Get the next sample Index """
         if (self.isFinished() == True):
             # Iterated through all items
-            self.resetIter()
+            self.resetIterator()
             return -1
 
         nextIndex = self._sampleQueue[self._queueIter]
         self._queueIter += 1
         return nextIndex
 
-    def getNextBatch(self,batchSize: int) -> np.ndarray:
-        """ Get the next # of samples Indexes """
+    def getNextBatchIndexes(self,batchSize: int) -> np.ndarray:
+        """ Get the indexes for the next batch of samples """
         batchSize = min(batchSize,self.getRemaining())
         batchSamples = np.empty(shape=(batchSize,),dtype=np.int32)
         for ii in range(batchSize):
-            batchSamples[ii] = self._sampleQueue[self._iter]
-            self._iter += 1
+            batchSamples[ii] = self._sampleQueue[self._queueIter]
+            self._queueIter += 1
         return batchSamples
 
     # Public Interface
 
     def isFinished(self) -> bool:
         """ Return T/F if this fold has iterated through all samples """
-        return (self._iter >= self._sampleQueue.size)
+        return (self._queueIter >= self._sampleQueue.size)
 
-    def resetIter(self) -> None:
+    def resetIterator(self) -> None:
         """ Resest the internal iterator """
-        msg = "\tReseting the iterator on {0}".format(str(self))
+        msg = "\tReseting the iterator on fold #{0}".format(str(self))
         # TODO: Log this message
         self._queueIter = 0
         return None
