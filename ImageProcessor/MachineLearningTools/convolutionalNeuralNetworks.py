@@ -11,12 +11,10 @@
         #### IMPORTS ####
 
 import torch
-from torch._C import Module
-
 
         #### FUNCTION DEFINITIONS ####
 
-class Conv2dVGG16(torch.nn,Module):
+class Conv2dVGG16(torch.nn.Module):
     """ 2D Convolutional Neural Network inspired from the VGG-16 architecture """
 
     def __init__(self):
