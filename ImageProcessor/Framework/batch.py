@@ -65,7 +65,17 @@ class SampleBatch:
 
     def getDataTypeY(self) -> torch.dtype:
         """ Return the data type for labels """
-        return self._Y.dtype
+        return self._y.dtype
+
+    def setDataTypeX(self,torchType: torch.dtype):
+        """ Set the data type for the features """
+        self._X.type(dtype=torchType)
+        return self
+
+    def setDataTypeY(self,torchType: torch.dtype):
+        """ Set the data dtype for labels """
+        self._y.type(dtype=torchType)
+        return self
 
     def getX(self) -> torch.Tensor:
         """ Return Features """
