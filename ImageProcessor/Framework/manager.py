@@ -10,9 +10,13 @@
 
         #### IMPORTS ####
 
+import os
+import torch
+
 import commonEnumerations
 
 import imageProcessingApp
+import batch
 
         #### CLASS DEFINITIONS ####
 
@@ -151,7 +155,101 @@ class Manager:
         return None
 
     # Static Interface
-    
+
+    # Magic Methods
+
+    def __repr__(self) -> str:
+        """ Debug representation of instance """
+        return "{0} @ {1}".format(self._name,hex(id(self)))
+
+class ModelManager(Manager):
+    """
+        Parent class for all classes that store + manage and AI/ML model
+    """
+
+    def __init__(self,
+                 app: imageProcessingApp.ImageProcessingApp,
+                 name: str):
+        """ Constructor """
+        super().__init__(app,name)
+        self._randomSeed = torch.randint(0,999999,size=(1,))
+        self._callbackGetModel  = None
+        self._model             = None
+
+    def __del__(self):
+        """ Destructor """
+        pass
+
+    # Accessors
+
+    # Public Interface
+
+    def init(self) -> commonEnumerations.Status:
+        """ Initialize this Manager """
+        if (super().init() == commonEnumerations.Status.ERROR):
+            return self._status
+
+        # Generate the Model
+        self._model = self.__invokeGetModel()
+
+        # Populate Sample Databse 
+        self._setInitFinished(True)
+        return self._status
+
+    def cleanup(self) -> commonEnumerations.Status:
+        """ Cleanup this manager """
+        if (super().cleanup() == commonEnumerations.Status.ERROR):
+            return self._status
+
+        self._setShutdownFinished(True)
+        return self._status
+
+    def trainOnBatch(self,batchData: batch.SampleBatch) -> None:
+        """ Train the model on the batch of data provided """
+        self.__verifyModelExists()
+
+        return None
+
+    def testOnBatch(self, batchData: batch.SampleBatch) -> None:
+        """ Test the model on the batch of data provided """
+        self.__verifyModelExists()
+
+        return None
+
+    def exportModel(self,modelName: str) -> bool:
+        """ Export the current classifier Model to the outputs folder """
+        self.__verifyModelExists()
+        outPath = os.path.join(self.getApp().getConfig().getOutputPath(),modelName)
+
+        return False
+
+    def resetState(self):
+        """ Reset the Classifier Manager """
+        self._model = self.__invokeGetModel()
+
+    # Private Interface 
+
+    def __verifyModelExists(self) -> bool:
+        """ Verify that the model associated with this instance exists """
+        if (self._model is None):
+            msg = "{0} does not contain an initialized model",format(repr(self))
+            raise RuntimeError(msg)
+        return True
+
+    def __invokeGetModel(self) -> torch.nn.Module:
+        """ Invoke the callback that returns a new classifier Model """
+        if (self._callbackGetModel is None):
+            msg = "No callback is defined to fetch a neural network model"
+            self.logMessage(msg)
+            raise RuntimeError(msg)
+        model = self._callbackGetModel.__call__()
+        return model
+
+    def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
+        """ Execute a forward pass using the provided inputs """
+        outputs = inputs
+        return outputs
+
 """
     Author:         Landon Buell
     Date:           May 2023
