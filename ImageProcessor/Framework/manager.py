@@ -15,7 +15,7 @@ import torch
 
 import commonEnumerations
 
-import imageProcessingApp
+#import imageProcessingApp
 import batch
 
         #### CLASS DEFINITIONS ####
@@ -168,7 +168,7 @@ class ModelManager(Manager):
     """
 
     def __init__(self,
-                 app: imageProcessingApp.ImageProcessingApp,
+                 app,   #: imageProcessingApp.ImageProcessingApp,
                  name: str):
         """ Constructor """
         super().__init__(app,name)

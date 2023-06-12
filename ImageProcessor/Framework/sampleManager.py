@@ -32,13 +32,14 @@ class SampleManager(manager.Manager):
     """
 
     __NAME = "SampleManager"
+    __DATA_BASE_CAPACITY = 100000
     
 
     def __init__(self,
                  app): #imageClassifierApp.ImageClassifierApp
         """ Constructor """
         super().__init__(app,SampleManager.__NAME)
-        databaseCapacity        = int(1e5) # TEMP HARD-CODE TO FIX IMPORT ERRORS 
+        databaseCapacity = min(SampleManager.__DATA_BASE_CAPACITY,app.getConfig().getSampleDatabaseCapacity())
         
         self._sampleDatabase    = np.empty(shape=(databaseCapacity,),dtype=object)
         self._databaseSize      = 0
@@ -53,9 +54,13 @@ class SampleManager(manager.Manager):
         """ Return the size of the database """
         return self._databaseSize
 
+    def getCapacity(self) -> int:
+        """ Return the capacity of the database """
+        return self._sampleDatabase.size
+
     def isFull(self) -> bool:
         """ Return T/F if the sample Database is full """
-        return (self._databaseSize >= self._sampleDatabase.size - 1)
+        return (self._databaseSize >= self._sampleDatabase.size)
 
     def isEmpty(self) -> bool:
         """ Return T/F is the sample Database Is empty """
@@ -70,8 +75,7 @@ class SampleManager(manager.Manager):
 
         # Populate Sample Databse 
         self.__initSampleDatabase()
-        
-        
+          
         self._setInitFinished(True)
         return self._status
 
