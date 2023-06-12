@@ -12,6 +12,7 @@
 
 import os
 import torch
+import torchinfo
 
 import commonEnumerations
 
@@ -192,6 +193,8 @@ class ModelManager(Manager):
         # Generate the Model
         self._model = self.__invokeGetModel()
 
+        self.__showModelInfo()
+
         # Populate Sample Databse 
         self._setInitFinished(True)
         return self._status
@@ -244,6 +247,14 @@ class ModelManager(Manager):
             raise RuntimeError(msg)
         model = self._callbackGetModel.__call__()
         return model
+
+    def __showModelInfo(self) -> None:
+        """ Display Information about this Model to the console """
+        self.__verifyModelExists()
+
+
+
+        return None
 
     def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
         """ Execute a forward pass using the provided inputs """
