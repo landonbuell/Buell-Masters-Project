@@ -15,7 +15,6 @@ import os
 import commonEnumerations
 
 #import imageProcessingApp
-import batch
 
         #### CLASS DEFINITIONS ####
 

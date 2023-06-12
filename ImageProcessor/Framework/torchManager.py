@@ -14,6 +14,7 @@ import torch
 import torchinfo
 
 import manager
+import batch
 
         #### CLASS DEFINITIONS ####
 
@@ -119,6 +120,28 @@ class TorchManager(manager.Manager):
         return outputs
 
 
+class ClassificationManager(manager.ModelManager):
+    """
+        ClassificationManager handles all image-classification related tasks
+    """
+
+    __NAME = "ClassificationManager"
+
+    def __init__(self,
+                 app):  # imageProcessingApp.ImageProcessingApp
+        """ Constructor """
+        super().__init__(app,ClassificationManager.__NAME,
+                         objective=torch.nn.CrossEntropyLoss(),
+                         optimizer=torch.optim.Adam())
+
+
+    def __del__(self):
+        """ Destructor """
+        pass
+
+    # Accessors
+
+    # Public Interface 
 
 
 """
