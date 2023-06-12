@@ -15,7 +15,12 @@
       "ProjectGuid": "f3e14f42-715e-402a-9d8a-deb3df3c87a3",
       "DisplayName": "CommonToolsPy",
       "ColorIndex": 2
+    },
+    "ad466b77-1454-498d-8e55-cd013f77907c": {
+      "ProjectGuid": "ad466b77-1454-498d-8e55-cd013f77907c",
+      "DisplayName": "MachineLearningTools",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 3
+  "NextColorIndex": 4
 }
