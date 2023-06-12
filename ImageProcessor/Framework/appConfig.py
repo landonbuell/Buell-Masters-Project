@@ -34,6 +34,8 @@ class AppConfig:
 
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
+
+        self._sampleDatabaseCapacity = 4096 # temp limit for development
         
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
@@ -71,6 +73,10 @@ class AppConfig:
     def getShuffleSeed(self) -> int:
         """ Return the shuffle Seed """
         return self._shuffleSeed
+
+    def getSampleDatabaseCapacity(self) -> int:
+        """ Return the intended capacity for the sample database """
+        return self._sampleDatabaseCapacity
 
     def getNumCrossValFolds(self) -> int:
         """ Return the Number of folds for cross validation """
