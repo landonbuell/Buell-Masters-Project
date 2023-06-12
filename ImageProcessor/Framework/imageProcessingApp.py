@@ -25,8 +25,7 @@ import sampleManager
 import dataManager
 import augmentationManager
 import preprocessManager
-import classificationManager
-import segmentationManager
+import torchManager
 
         #### CLASS DEFINITIONS ####
 
@@ -59,8 +58,8 @@ class ImageProcessingApp:
         self._augmentationManager   = augmentationManager.AugmentationManager(self)
         self._preprocessManager     = preprocessManager.PreprocessManager(self)
 
-        self._classificationManager = classificationManager.ClassificationManager(self)
-        self._segmentationManager   = segmentationManager.SegmentationManager(self)
+        self._classificationManager = torchManager.ClassificationManager(self)
+        self._segmentationManager   = torchManager.SegmentationManager(self)
 
     def __del__(self):
         """ Destructor """
