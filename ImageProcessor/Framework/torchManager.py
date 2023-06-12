@@ -13,6 +13,8 @@
 import torch
 import torchinfo
 
+import commonEnumerations
+
 import manager
 import batch
 
@@ -35,12 +37,30 @@ class TorchManager(manager.Manager):
         self._model             = None
         self._objective         = objective
         self._optimizer         = optimizer
+        self._epochsPerBatch    = 4
+        self._numClasses        = self.getApp().getDataManager().getNumClasses()
 
     def __del__(self):
         """ Destructor """
         pass
 
     # Accessors
+
+    def getModel(self) -> torch.nn.Module:
+        """ Get the active torch Model """
+        return self._model
+
+    def getObjective(self) -> torch.nn.Module:
+        """ Return the objective function """
+        return self._objective
+
+    def getOptimizer(self) -> torch.nn.Module:
+        """ Return the optimizer strategy """
+        return self._optimizer
+
+    def getEpochsPerBatch(self) -> int:
+        """ Return the Number of epochs to use per batch """
+        return self._epochsPerBatch
 
     # Public Interface
 
@@ -69,8 +89,6 @@ class TorchManager(manager.Manager):
     def trainOnBatch(self,batchData: batch.SampleBatch) -> None:
         """ Train the model on the batch of data provided """
         self.__verifyModelExists(True)
-
-
 
         return None
 

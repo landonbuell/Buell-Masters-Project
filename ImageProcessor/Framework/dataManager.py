@@ -30,7 +30,6 @@ class DataManager(manager.Manager):
 
     __NAME = "DataManager"
     __MAX_NUM_CLASSES = 32
-    __MAX_NUM_FOLDS = 10
 
     def __init__(self,
                  app): #imageProcessingApp.ImageProcessingApp
@@ -38,6 +37,7 @@ class DataManager(manager.Manager):
         super().__init__(app,DataManager.__NAME)
         
         self._classDatabase = [None] * DataManager.__MAX_NUM_CLASSES
+        self._classSet      = set()
         self._foldDatabase  = list([])
 
         self._runInfo           = runInfo.RunInfo(app)
@@ -73,19 +73,11 @@ class DataManager(manager.Manager):
 
     def getNumClasses(self) -> int:
         """ Get the Number of classes in Use """
-        numClasses = 0
-        for item in self._classDatabase:
-            if (item is not None):
-                numClasses += 1
-        return numClasses
+        return max(self._classSet)
 
     def getClassesInUse(self) -> list:
         """ Return a list of the class ints in use """
-        classes = []
-        for item in self._classDatabase:
-            if (item is not None):
-                classes.append( item.classInt )
-        return classes
+        return list(self._classSet)
 
     def getNumFolds(self) ->int:
         """ Return the number of cross validation folds in use """
@@ -146,6 +138,7 @@ class DataManager(manager.Manager):
             return False
 
         # Otherwise, store the info
+        self._classSet.add(classInt)
         if (self._classDatabase[classInt] is None):
             self._classDatabase[classInt] = DataManager.ClassDataStruct(
                 classInt,className)
