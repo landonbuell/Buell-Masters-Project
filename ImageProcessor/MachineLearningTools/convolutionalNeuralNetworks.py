@@ -12,6 +12,12 @@
 
 import torch
 
+        #### FUNCTION DEFINTIONS ####
+
+def getInspiredVisualGeometryGroup(numClasses: int):
+    """ Return an Instance of this model """
+    return InspiredVisualGeometryGroup(numClasses)
+    
         #### CLASS DEFINTIONS ####
 
 class InspiredVisualGeometryGroup(torch.nn.Module):
@@ -20,7 +26,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
     def __init__(self,numClasses: int):
         """ Constructor """
         self._numClasses = numClasses
-        self._layers  = [None] * 24
+        self._layers  = [None] * 18
         
         self.__initLayerGroup01()
         self.__initLayerGroup02()
@@ -31,6 +37,17 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
     def __del__(self):
         """ Destructor """
         pass
+
+        # Public Interface
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        """ Define Forward pass mechanism """
+        x = torch.clone(inputs)
+        for ii,layer in enumerate(self._layers):
+            x = layer(x)
+        return x
+
+    # Private Interface
     
     def __initLayerGroup01(self):
         """ Initialize Layer Chain """
@@ -152,17 +169,9 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
                 out_features=self._numClasses),
             torch.nn.Softmax())
         return None
-    
-    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
-        """ Define Forward pass mechanism """
-        x = torch.clone(inputs)
-        for ii,layer in enumerate(self._layers):
-            if (layer is None):
-                continue
-            x = layer(x)
-            msg = "Layer {0}: Output Shape = {1}".format(ii,x.shape)
-            print(msg)
-        return x
+
+
+
         
 
 """

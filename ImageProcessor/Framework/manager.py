@@ -170,12 +170,16 @@ class ModelManager(Manager):
 
     def __init__(self,
                  app,   #: imageProcessingApp.ImageProcessingApp,
-                 name: str):
+                 name: str,
+                 objective: torch.nn.Module,
+                 optimizer: torch.nn.Module):
         """ Constructor """
         super().__init__(app,name)
-        self._randomSeed = torch.randint(0,999999,size=(1,))
+        self._randomSeed        = torch.randint(0,999999,size=(1,))
         self._callbackGetModel  = None
         self._model             = None
+        self._objective         = objective
+        self._optimizer         = optimizer
 
     def __del__(self):
         """ Destructor """
@@ -209,13 +213,13 @@ class ModelManager(Manager):
 
     def trainOnBatch(self,batchData: batch.SampleBatch) -> None:
         """ Train the model on the batch of data provided """
-        self.__verifyModelExists()
+        self.__verifyModelExists(True)
 
         return None
 
     def testOnBatch(self, batchData: batch.SampleBatch) -> None:
         """ Test the model on the batch of data provided """
-        self.__verifyModelExists()
+        self.__verifyModelExists(True)
 
         return None
 
@@ -226,17 +230,20 @@ class ModelManager(Manager):
 
         return False
 
-    def resetState(self):
+    def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model = self.__invokeGetModel()
+        return None
 
     # Private Interface 
 
-    def __verifyModelExists(self) -> bool:
+    def __verifyModelExists(self,throwErr=False) -> bool:
         """ Verify that the model associated with this instance exists """
         if (self._model is None):
-            msg = "{0} does not contain an initialized model",format(repr(self))
-            raise RuntimeError(msg)
+            msg = "\t{0} does not contain a registered model",format(repr(self))
+            if (throwErr == True):
+                raise RuntimeError(msg)
+            return False
         return True
 
     def __invokeGetModel(self) -> torch.nn.Module:
@@ -247,14 +254,6 @@ class ModelManager(Manager):
             raise RuntimeError(msg)
         model = self._callbackGetModel.__call__()
         return model
-
-    def __showModelInfo(self) -> None:
-        """ Display Information about this Model to the console """
-        self.__verifyModelExists()
-
-
-
-        return None
 
     def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
         """ Execute a forward pass using the provided inputs """

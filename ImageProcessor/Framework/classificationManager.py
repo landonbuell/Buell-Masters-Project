@@ -32,10 +32,10 @@ class ClassificationManager(manager.ModelManager):
     def __init__(self,
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
-        super().__init__(app,ClassificationManager.__NAME)
-        self._modelRandomSeed   = app.getConfig().getShuffleSeed()
-        self._callbackGetModel  = None      # Callback that returns a "new" Classification Conv Neural Net
-        self._model             = None  
+        super().__init__(app,ClassificationManager.__NAME,
+                         objective=torch.nn.CrossEntropyLoss(),
+                         optimizer=torch.optim.Adam())
+
 
     def __del__(self):
         """ Destructor """
