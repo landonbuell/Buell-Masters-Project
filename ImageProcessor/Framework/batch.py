@@ -95,7 +95,7 @@ class SampleBatch:
 
     # Public Interface
 
-    def getOneHotLabels(self,numClasses: int) -> torch.Tensor:
+    def getOneHotY(self,numClasses: int) -> torch.Tensor:
         """ One-hot-encode this batch's labels """
         return oneHotEncode(self._y,numClasses)
 

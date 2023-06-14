@@ -10,10 +10,12 @@
 
         #### IMPORTS ####
 
+import os
 import torch
-import torchinfo
 
 import commonEnumerations
+
+import convolutionalNeuralNetworks
 
 import manager
 import batch
@@ -27,18 +29,20 @@ class TorchManager(manager.Manager):
 
     def __init__(self,
                  app,   #: imageProcessingApp.ImageProcessingApp,
-                 name: str,
-                 objective: torch.nn.Module,
-                 optimizer: torch.nn.Module):
+                 name: str):
         """ Constructor """
         super().__init__(app,name)
         self._randomSeed        = torch.randint(0,999999,size=(1,))
+        self._numClasses        = 0
+
         self._callbackGetModel  = None
+
         self._model             = None
-        self._objective         = objective
-        self._optimizer         = optimizer
-        self._epochsPerBatch    = 4
-        self._numClasses        = self.getApp().getDataManager().getNumClasses()
+        self._optimizer         = None
+
+        self._objective         = torch.nn.CrossEntropyLoss()   
+        self._epochsPerBatch    = 2
+        
 
     def __del__(self):
         """ Destructor """
@@ -69,10 +73,12 @@ class TorchManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Generate the Model
-        self._model = self.__invokeGetModel()
+        # Get the number of classes:
+        self._numClasses = self.getApp().getDataManager().getNumClasses()
 
-        self.__showModelInfo()
+        # Generate the Model
+        self._model     = self.__invokeGetModel()
+        self._optimizer = torch.optim.Adam(params=self._model.parameters())
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -86,10 +92,21 @@ class TorchManager(manager.Manager):
         self._setShutdownFinished(True)
         return self._status
 
+    def registerGetModelCallback(self,callback) -> None:
+        """ Register the callback that returns a pytorch model """
+        self._callbackGetModel = callback
+        return None
+
     def trainOnBatch(self,batchData: batch.SampleBatch) -> None:
         """ Train the model on the batch of data provided """
         self.__verifyModelExists(True)
+        self.__verifyOptimizerExists(True)
+        
+        # Log Message to Console
+        msg = "\tTraining model w/ batch: {0}".format(str(batch))
+        self.logMessage(msg)
 
+        self.__trainOnBatchHelper(batchData)
         return None
 
     def testOnBatch(self, batchData: batch.SampleBatch) -> None:
@@ -98,18 +115,19 @@ class TorchManager(manager.Manager):
 
         return None
 
+
     def exportModel(self,modelName: str) -> bool:
         """ Export the current classifier Model to the outputs folder """
-        self.__verifyModelExists()
-        outPath = os.path.join(self.getApp().getConfig().getOutputPath(),modelName)
-        torch.save(self._model,outPath)
+        self.__verifyModelExists(True)
+        outPath = os.path.join( self.getApp().getConfig().getOutputPath(), modelName ) 
+        torch.save(self._model , outPath)
 
         return False
 
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
-        self._model = self.__invokeGetModel()
-        
+        self._model     = self.__invokeGetModel()
+        self._optimizer = torch.optim.Adam(params=self._model.parameters())
         return None
 
     # Private Interface 
@@ -123,14 +141,39 @@ class TorchManager(manager.Manager):
             return False
         return True
 
+    def __verifyOptimizerExists(self,throwErr=False) -> bool:
+        """ Verify that the optimizer associated with this instance exists """
+        if (self._optimizer is None):
+            msg = "\t{0} does not contain a registered optimizer",format(repr(self))
+            if (throwErr == True):
+                raise RuntimeError(msg)
+            return False
+        return True
+
     def __invokeGetModel(self) -> torch.nn.Module:
         """ Invoke the callback that returns a new classifier Model """
         if (self._callbackGetModel is None):
             msg = "No callback is defined to fetch a neural network model"
             self.logMessage(msg)
             raise RuntimeError(msg)
-        model = self._callbackGetModel.__call__()
+        model = self._callbackGetModel.__call__(self._numClasses)
         return model
+
+    def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
+        """ Helper Function to Train the model on the batch of data provided """
+                # Isolate X + Y Data
+        X = batchData.getX()
+        Y = batchData.getOneHotY(self._numClasses)
+
+        for epoch in range(self._epochsPerBatch):
+            self._optimizer.zero_grad()
+            outputs = self._model(batch)
+            cost = self._objective(outputs,Y)
+
+            cost.backward()
+            self._optimizer.step()
+
+        return None
 
     def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
         """ Execute a forward pass using the provided inputs """
@@ -138,7 +181,7 @@ class TorchManager(manager.Manager):
         return outputs
 
 
-class ClassificationManager(manager.ModelManager):
+class ClassificationManager(TorchManager):
     """
         ClassificationManager handles all image-classification related tasks
     """
@@ -148,9 +191,8 @@ class ClassificationManager(manager.ModelManager):
     def __init__(self,
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
-        super().__init__(app,ClassificationManager.__NAME,
-                         objective=torch.nn.CrossEntropyLoss(),
-                         optimizer=torch.optim.Adam())
+        super().__init__(app,ClassificationManager.__NAME)
+        self.registerGetModelCallback( convolutionalNeuralNetworks.getInspiredVisualGeometryGroup )
 
 
     def __del__(self):
@@ -161,7 +203,7 @@ class ClassificationManager(manager.ModelManager):
 
     # Public Interface 
 
-class SegmentationManager(manager.ModelManager):
+class SegmentationManager(TorchManager):
     """
         ClassificationManager handles all image-classification related tasks
     """
@@ -171,9 +213,7 @@ class SegmentationManager(manager.ModelManager):
     def __init__(self,
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
-        super().__init__(app,SegmentationManager.__NAME,
-                         objective=torch.nn.CrossEntropyLoss(),
-                         optimizer=torch.optim.Adam())
+        super().__init__(app,SegmentationManager.__NAME,)
 
     def __del__(self):
         """ Destructor """

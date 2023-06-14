@@ -73,6 +73,9 @@ class DataManager(manager.Manager):
 
     def getNumClasses(self) -> int:
         """ Get the Number of classes in Use """
+        if (len(self._classSet) == 0):
+            # No classes yet!
+            return 0
         return max(self._classSet)
 
     def getClassesInUse(self) -> list:

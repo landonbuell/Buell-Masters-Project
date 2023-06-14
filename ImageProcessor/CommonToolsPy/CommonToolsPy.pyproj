@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="callbacks.py" />
     <Compile Include="commonEnumerations.py" />
     <Compile Include="imageTools.py" />
     <Compile Include="plotting.py" />

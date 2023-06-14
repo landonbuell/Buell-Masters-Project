@@ -25,6 +25,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
     
     def __init__(self,numClasses: int):
         """ Constructor """
+        super().__init__()
         self._numClasses = numClasses
         self._layers  = [None] * 18
         

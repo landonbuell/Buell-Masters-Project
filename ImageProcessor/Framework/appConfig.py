@@ -104,13 +104,6 @@ class AppConfig:
         config = AppConfig(inputPaths,outputPath)
         return config
 
-class Constants:
-    """ Static Class of Constants """
-
-    MAX_SAMPLE_DATA_BASE_SIZE   = int(1e5)
-    MAX_RECURSION_DEPTH         = 4
-
-
 """
     Author:         Landon Buell
     Date:           May 2023

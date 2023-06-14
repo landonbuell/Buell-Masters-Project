@@ -222,7 +222,7 @@ class ImageProcessingApp:
             # TODO: call preprocess manager on batch
             # TODO: call augmentation manager on batch 
 
-            # TODO: invoke callbackClassifier
+            self._classificationManager.trainOnBatch(batchData)
             # TODO: invoke callbackSegmenter
             
             # Check if there is any samples left in this fold
