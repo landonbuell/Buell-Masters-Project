@@ -14,11 +14,33 @@ import torch
 
         #### FUNCTION DEFINTIONS ####
 
+def getAffineModel(numClasses: int):
+    """ Callback does Nothing """
+    return AffineModel(numClasses)
+
 def getInspiredVisualGeometryGroup(numClasses: int):
     """ Return an Instance of this model """
     return InspiredVisualGeometryGroup(numClasses)
+
+
     
         #### CLASS DEFINTIONS ####
+
+class AffineModel(torch.nn.Module):
+    """ Represents a Dummy (does nothing) Neural Network """
+
+    def __init__(self,numClasses:int):
+        """ constructor """
+        super().__init__()
+        self._numClasses = numClasses
+        self.params = torch.nn.ParameterList([torch.nn.Linear(10,numClasses,True)])
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        """ Define forward pass behavior for this model """
+        outputs = torch.clone(inputs)
+        for ii,item in self.params:
+            outputs = item(outputs)
+        return outputs
 
 class InspiredVisualGeometryGroup(torch.nn.Module):
     """ Class for a Model inspired by Visual Geometry Group (2014) """
@@ -27,7 +49,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         """ Constructor """
         super().__init__()
         self._numClasses = numClasses
-        self._layers  = [None] * 18
+        self._layers  = torch.nn.ParameterList([None] * 18)
         
         self.__initLayerGroup01()
         self.__initLayerGroup02()

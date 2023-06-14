@@ -26,7 +26,7 @@ def oneHotEncode(labels: torch.Tensor,
         msg = "Cannot encode labels w/ ndim={0}. Expected ndim=1".format(labels.ndim)
         raise RuntimeError(msg)
     oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype)
-    for ii,tgt in labels:
+    for ii,tgt in enumerate(labels):
         oneHot[ii,tgt] = 1
     return oneHot
 
@@ -108,14 +108,14 @@ class SampleBatch:
     def __setitem__(self,key: int, val: tuple):
         """ Set the (X,y) pair at specified index """
         x = val[0].type(self.getDataTypeX())
-        y = torch.tensor(val[1],dtype=self.getDataTypey())
+        y = torch.tensor(val[1],dtype=self.getDataTypeY())
         self._X[key] = x
         self._y[key] = y
         return self
 
     def __str__(self) -> str:
         """ Return string representaion of instance """
-        return "Batch#{0} w/ size={1}".format(self._batchIndex,self.getSize())
+        return "Batch#{0} w/ size={1}".format(self._batchIndex,self.getNumSamples())
 
     def __repr__(self) -> str:
         """ Return debug representation of batch """

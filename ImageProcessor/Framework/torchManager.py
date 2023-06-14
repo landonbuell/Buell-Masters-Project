@@ -33,7 +33,7 @@ class TorchManager(manager.Manager):
         """ Constructor """
         super().__init__(app,name)
         self._randomSeed        = torch.randint(0,999999,size=(1,))
-        self._numClasses        = 0
+        self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
 
@@ -73,9 +73,6 @@ class TorchManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Get the number of classes:
-        self._numClasses = self.getApp().getDataManager().getNumClasses()
-
         # Generate the Model
         self._model     = self.__invokeGetModel()
         self._optimizer = torch.optim.Adam(params=self._model.parameters())
@@ -102,10 +99,6 @@ class TorchManager(manager.Manager):
         self.__verifyModelExists(True)
         self.__verifyOptimizerExists(True)
         
-        # Log Message to Console
-        msg = "\tTraining model w/ batch: {0}".format(str(batch))
-        self.logMessage(msg)
-
         self.__trainOnBatchHelper(batchData)
         return None
 
@@ -167,7 +160,7 @@ class TorchManager(manager.Manager):
 
         for epoch in range(self._epochsPerBatch):
             self._optimizer.zero_grad()
-            outputs = self._model(batch)
+            outputs = self._model(X)
             cost = self._objective(outputs,Y)
 
             cost.backward()
@@ -194,7 +187,6 @@ class ClassificationManager(TorchManager):
         super().__init__(app,ClassificationManager.__NAME)
         self.registerGetModelCallback( convolutionalNeuralNetworks.getInspiredVisualGeometryGroup )
 
-
     def __del__(self):
         """ Destructor """
         pass
@@ -214,6 +206,7 @@ class SegmentationManager(TorchManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,SegmentationManager.__NAME,)
+        self.registerGetModelCallback( convolutionalNeuralNetworks.getAffineModel )
 
     def __del__(self):
         """ Destructor """

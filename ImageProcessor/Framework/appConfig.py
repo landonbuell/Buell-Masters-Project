@@ -36,6 +36,7 @@ class AppConfig:
         self._shuffleSeed   = 123456789
 
         self._sampleDatabaseCapacity = 4096 # temp limit for development
+        self._numClasses            = 29 # temp hard-code for development
         
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
@@ -77,6 +78,10 @@ class AppConfig:
     def getSampleDatabaseCapacity(self) -> int:
         """ Return the intended capacity for the sample database """
         return self._sampleDatabaseCapacity
+
+    def getNumClasses(self) -> int:
+        """ Get the Number of Classes in the dataset """
+        return self._numClasses
 
     def getNumCrossValFolds(self) -> int:
         """ Return the Number of folds for cross validation """
