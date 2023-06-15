@@ -220,6 +220,7 @@ class ImageProcessingApp:
             batchData       = self._sampleManager.getNextBatch(batchIndexes)
 
             # TODO: call preprocess manager on batch
+            self._preprocessManager.processBatch(batchData)
             # TODO: call augmentation manager on batch 
 
             self._classificationManager.trainOnBatch(batchData)

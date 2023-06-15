@@ -69,12 +69,12 @@ class SampleBatch:
 
     def setDataTypeX(self,torchType: torch.dtype):
         """ Set the data type for the features """
-        self._X.type(dtype=torchType)
+        self._X = self._X.type(dtype=torchType)
         return self
 
     def setDataTypeY(self,torchType: torch.dtype):
         """ Set the data dtype for labels """
-        self._y.type(dtype=torchType)
+        self._y = self._y.type(dtype=torchType)
         return self
 
     def getX(self) -> torch.Tensor:
@@ -92,6 +92,10 @@ class SampleBatch:
     def getNumSamples(self) -> int:
         """ Return the size of the batch """
         return self._y.shape[0]
+
+    def getSampleShape(self) -> tuple:
+        """ Return the Shape of each item in the design matrix """
+        return self._X.shape[1:]
 
     # Public Interface
 

@@ -34,8 +34,9 @@ class PreprocessManager(manager.Manager):
         """ Constructor """
         super().__init__(app,PreprocessManager.__NAME)
         self._steps     = list()
-        self._scaler    = None
-
+        
+        self.__registerPreprocessStep( preprocessors.castToSinglePrecision )
+        self.__registerPreprocessStep( preprocessors.torchVisionScaler )
 
     def __del__(self):
         """ Destructor """
@@ -48,19 +49,8 @@ class PreprocessManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Fit the standard scaler to the data
-        self.__fitStandardScalerParams()
-
         # Populate Sample Databse 
         self._setInitFinished(True)
-        return self._status
-
-    def call(self) -> commonEnumerations.Status:
-        """ Run this manager """
-        if (super().call() == commonEnumerations.Status.ERROR):
-            return self._status
-
-        self._setExecuteFinished(True)
         return self._status
 
     def cleanup(self) -> commonEnumerations.Status:
@@ -75,7 +65,7 @@ class PreprocessManager(manager.Manager):
         """ Process a batch of Samples """
         # TODO: self._scaler.applyTransformation(batch)
         for ii,step in enumerate(self._steps):
-            batch = step.__call__(batch)
+             batch = step.__call__(batch)
         return batch
 
     # Private Interface 
