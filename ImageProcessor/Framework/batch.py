@@ -85,6 +85,15 @@ class SampleBatch:
         """ Return Y """
         return self._y
 
+    def setX(self, newX: torch.Tensor) -> None:
+        """ Set the Tensor for the features """
+        if (newX.shape[0] != self._X.shape[0]):
+            msg = "Expected new features to have {0} samples but got {1}".format(
+                self._X.shape[0],newX.shape[0])
+            raise RuntimeError(msg)
+        self._X = newX
+        return None
+
     def getBatchIndex(self) -> int:
         """ Get the batch Index """
         return self._batchIndex

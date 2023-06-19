@@ -72,8 +72,14 @@ def castToSinglePrecision(sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
 
 def torchVisionNormalize(sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
     """ Scale input features to have unit variance and zero mean """
-    means = torch.mean(sampleBatch.getX(),dim=0)
-    stdds = torch.std(sampleBatch.getX(),dim=0)
+    normLayer = torch.nn.BatchNorm2d(
+                    num_features=3,
+                    eps=1e-6,
+                    momentum=0.1,
+                    affine=False,
+                    track_running_stats=True)
+    X_norm = normLayer(sampleBatch.getX())
+
 
     return sampleBatch
 
