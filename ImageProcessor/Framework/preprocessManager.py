@@ -44,11 +44,11 @@ class PreprocessManager(manager.Manager):
                                     affine=False,
                                     track_running_stats=True)
 
-        self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
+        #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
         self.__registerPreprocessStep( Preprocessors.castToSinglePrecision )
         self.__registerPreprocessStep( Preprocessors.torchVisionNormalize )
-        self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
+        #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
 
 
     def __del__(self):
