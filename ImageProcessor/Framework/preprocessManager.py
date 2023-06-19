@@ -35,8 +35,12 @@ class PreprocessManager(manager.Manager):
         super().__init__(app,PreprocessManager.__NAME)
         self._steps     = list()
         
+        self.__registerPreprocessStep( preprocessors.showSampleAtIndex )
+        self.__registerPreprocessStep( preprocessors.crop8PixelsFromEdges )
         self.__registerPreprocessStep( preprocessors.castToSinglePrecision )
-        self.__registerPreprocessStep( preprocessors.torchVisionScaler )
+        self.__registerPreprocessStep( preprocessors.torchVisionNormalize )
+        self.__registerPreprocessStep( preprocessors.showSampleAtIndex )
+
 
     def __del__(self):
         """ Destructor """

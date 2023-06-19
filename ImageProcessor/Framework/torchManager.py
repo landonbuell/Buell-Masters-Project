@@ -173,6 +173,8 @@ class TorchManager(manager.Manager):
         outputs = inputs
         return outputs
 
+    # Static Interface
+
 
 class ClassificationManager(TorchManager):
     """

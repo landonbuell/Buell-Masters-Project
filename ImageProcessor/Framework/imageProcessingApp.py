@@ -204,12 +204,10 @@ class ImageProcessingApp:
         # Cleanup
         return None
 
-    def __runOnFold(self,
-                    foldIndex: int,
-                    resetBatchCounter=True,
-                    callbackClassifier=None,
-                    callbackSegmenter=None):
-        """ Run samples in a fold. Choose what each Model does with that Fold """
+    def __runTrainOnFold(self,
+                         foldIndex: int,
+                         resetBatchCounter=True):
+        """ Run the Training Sequence on the chosen Fold """
         batchSize = self.getConfig().getBatchSize() 
         fold = self._dataManager.getFold(foldIndex)
         loop = (fold is not None)
@@ -224,7 +222,7 @@ class ImageProcessingApp:
             # TODO: call augmentation manager on batch 
 
             self._classificationManager.trainOnBatch(batchData)
-            # TODO: invoke callbackSegmenter
+            # TODO: invoke segmentation manager
             
             # Check if there is any samples left in this fold
             if (fold.isFinished() == True):
@@ -236,35 +234,36 @@ class ImageProcessingApp:
             batch.SampleBatch.resetBatchCounter()
         return None
 
-    def __runTrainOnFold(self,
-                         foldIndex: int,
-                         resetBatchCounter=True):
-        """ Run the Training Sequence on the chosen Fold """
-        callbackClassifierMgr   = None
-        callbackSegmentationMgr = None
-
-        self.__runOnFold(
-            foldIndex,
-            resetBatchCounter,
-            callbackClassifierMgr,
-            callbackSegmentationMgr)
-
-        return None
-
     def __runTestOnFold(self,
                         foldIndex: int,
                         resetBatchCounter=True):
         """ Run the App in Test-only mode """
-        callbackClassifierMgr   = None
-        callbackSegmentationMgr = None
+        batchSize = self.getConfig().getBatchSize() 
+        fold = self._dataManager.getFold(foldIndex)
+        loop = (fold is not None)
+        
+        while (loop == True):
 
-        self.__runOnFold(
-            foldIndex,
-            resetBatchCounter,
-            callbackClassifierMgr,
-            callbackSegmentationMgr)
+            batchIndexes    = fold.getNextBatchIndexes(batchSize)
+            batchData       = self._sampleManager.getNextBatch(batchIndexes)
 
+            # TODO: call preprocess manager on batch
+            self._preprocessManager.processBatch(batchData)
+
+            self._classificationManager.testOnBatch(batchData)
+            # TODO: invoke segmentation Manager
+            
+            # Check if there is any samples left in this fold
+            if (fold.isFinished() == True):
+                loop = False
+                fold.resetIterator()
+
+        # Cleanup
+        if (resetBatchCounter == True):
+            batch.SampleBatch.resetBatchCounter()
         return None
+
+    # Private Callbacks
 
     # Static Interface
 
