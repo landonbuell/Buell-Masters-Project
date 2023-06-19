@@ -61,7 +61,7 @@ class PreprocessManager(manager.Manager):
         """ Return the batch normalization layer """
         normX = self._batchNormalizer(sampleBatch.getX())
         sampleBatch.setX( normX )
-        return None
+        return sampleBatch
 
     # Public Interface
 
