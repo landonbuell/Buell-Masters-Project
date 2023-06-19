@@ -1,7 +1,7 @@
 """
     Repository:     Buell-MSES-Project
     Solution:       ImageProcessing
-    Project:        Segmentation
+    Project:        MachineLearningTools
     Namespace:      N/A
     File:           __init__.py
     Author:         Landon Buell

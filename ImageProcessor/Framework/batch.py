@@ -26,7 +26,7 @@ def oneHotEncode(labels: torch.Tensor,
         msg = "Cannot encode labels w/ ndim={0}. Expected ndim=1".format(labels.ndim)
         raise RuntimeError(msg)
     oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype)
-    for ii,tgt in labels:
+    for ii,tgt in enumerate(labels):
         oneHot[ii,tgt] = 1
     return oneHot
 
@@ -65,7 +65,17 @@ class SampleBatch:
 
     def getDataTypeY(self) -> torch.dtype:
         """ Return the data type for labels """
-        return self._Y.dtype
+        return self._y.dtype
+
+    def setDataTypeX(self,torchType: torch.dtype):
+        """ Set the data type for the features """
+        self._X = self._X.type(dtype=torchType)
+        return self
+
+    def setDataTypeY(self,torchType: torch.dtype):
+        """ Set the data dtype for labels """
+        self._y = self._y.type(dtype=torchType)
+        return self
 
     def getX(self) -> torch.Tensor:
         """ Return Features """
@@ -75,6 +85,15 @@ class SampleBatch:
         """ Return Y """
         return self._y
 
+    def setX(self, newX: torch.Tensor) -> None:
+        """ Set the Tensor for the features """
+        if (newX.shape[0] != self._X.shape[0]):
+            msg = "Expected new features to have {0} samples but got {1}".format(
+                self._X.shape[0],newX.shape[0])
+            raise RuntimeError(msg)
+        self._X = newX
+        return None
+
     def getBatchIndex(self) -> int:
         """ Get the batch Index """
         return self._batchIndex
@@ -83,9 +102,13 @@ class SampleBatch:
         """ Return the size of the batch """
         return self._y.shape[0]
 
+    def getSampleShape(self) -> tuple:
+        """ Return the Shape of each item in the design matrix """
+        return self._X.shape[1:]
+
     # Public Interface
 
-    def getOneHotLabels(self,numClasses: int) -> torch.Tensor:
+    def getOneHotY(self,numClasses: int) -> torch.Tensor:
         """ One-hot-encode this batch's labels """
         return oneHotEncode(self._y,numClasses)
 
@@ -98,14 +121,14 @@ class SampleBatch:
     def __setitem__(self,key: int, val: tuple):
         """ Set the (X,y) pair at specified index """
         x = val[0].type(self.getDataTypeX())
-        y = torch.tensor(val[1],dtype=self.getDataTypey())
+        y = torch.tensor(val[1],dtype=self.getDataTypeY())
         self._X[key] = x
         self._y[key] = y
         return self
 
     def __str__(self) -> str:
         """ Return string representaion of instance """
-        return "Batch#{0} w/ size={1}".format(self._batchIndex,self.getSize())
+        return "Batch#{0} w/ size={1}".format(self._batchIndex,self.getNumSamples())
 
     def __repr__(self) -> str:
         """ Return debug representation of batch """

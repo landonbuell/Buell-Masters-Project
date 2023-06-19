@@ -10,9 +10,11 @@
 
         #### IMPORTS ####
 
+import os
+
 import commonEnumerations
 
-import imageProcessingApp
+#import imageProcessingApp
 
         #### CLASS DEFINITIONS ####
 
@@ -151,7 +153,14 @@ class Manager:
         return None
 
     # Static Interface
-    
+
+    # Magic Methods
+
+    def __repr__(self) -> str:
+        """ Debug representation of instance """
+        return "{0} @ {1}".format(self._name,hex(id(self)))
+
+
 """
     Author:         Landon Buell
     Date:           May 2023

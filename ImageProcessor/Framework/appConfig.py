@@ -34,6 +34,9 @@ class AppConfig:
 
         self._batchSize     = 128
         self._shuffleSeed   = 123456789
+
+        self._sampleDatabaseCapacity = 4096 # temp limit for development
+        self._numClasses            = 29 # temp hard-code for development
         
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
@@ -72,6 +75,14 @@ class AppConfig:
         """ Return the shuffle Seed """
         return self._shuffleSeed
 
+    def getSampleDatabaseCapacity(self) -> int:
+        """ Return the intended capacity for the sample database """
+        return self._sampleDatabaseCapacity
+
+    def getNumClasses(self) -> int:
+        """ Get the Number of Classes in the dataset """
+        return self._numClasses
+
     def getNumCrossValFolds(self) -> int:
         """ Return the Number of folds for cross validation """
         return max(self._crossValidationFolds,1)
@@ -97,13 +108,6 @@ class AppConfig:
         outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
         config = AppConfig(inputPaths,outputPath)
         return config
-
-class Constants:
-    """ Static Class of Constants """
-
-    MAX_SAMPLE_DATA_BASE_SIZE   = int(1e5)
-    MAX_RECURSION_DEPTH         = 4
-
 
 """
     Author:         Landon Buell

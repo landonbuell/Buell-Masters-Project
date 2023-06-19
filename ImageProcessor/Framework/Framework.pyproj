@@ -24,15 +24,14 @@
     <Compile Include="appConfig.py" />
     <Compile Include="augmentationManager.py" />
     <Compile Include="batch.py" />
-    <Compile Include="classificationManager.py" />
     <Compile Include="crossValidationFold.py" />
     <Compile Include="dataManager.py" />
     <Compile Include="imageProcessingApp.py" />
     <Compile Include="manager.py" />
     <Compile Include="preprocessManager.py" />
     <Compile Include="sampleManager.py" />
-    <Compile Include="segmentationManager.py" />
     <Compile Include="textLogger.py" />
+    <Compile Include="torchManager.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

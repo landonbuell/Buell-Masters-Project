@@ -5,13 +5,11 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "CommonToolsPy", "CommonToolsPy\CommonToolsPy.pyproj", "{F3E14F42-715E-402A-9D8A-DEB3DF3C87A3}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Classification", "Classification\Classification.pyproj", "{1437CE5C-4483-48BF-96D4-0478A9103554}"
-EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Segmentation", "Segmentation\Segmentation.pyproj", "{28F5CA23-7086-4E12-B7D1-169E20C08059}"
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Framework", "Framework\Framework.pyproj", "{460E390A-9887-440E-AB18-52FCE9282B9B}"
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Source", "Source\Source.pyproj", "{766313C1-B264-48C2-A681-3B63C7A8B4EE}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MachineLearningTools", "MachineLearningTools\MachineLearningTools.pyproj", "{AD466B77-1454-498D-8E55-CD013F77907C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,14 +19,12 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F3E14F42-715E-402A-9D8A-DEB3DF3C87A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F3E14F42-715E-402A-9D8A-DEB3DF3C87A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1437CE5C-4483-48BF-96D4-0478A9103554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1437CE5C-4483-48BF-96D4-0478A9103554}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28F5CA23-7086-4E12-B7D1-169E20C08059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28F5CA23-7086-4E12-B7D1-169E20C08059}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{460E390A-9887-440E-AB18-52FCE9282B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{460E390A-9887-440E-AB18-52FCE9282B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{766313C1-B264-48C2-A681-3B63C7A8B4EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{766313C1-B264-48C2-A681-3B63C7A8B4EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD466B77-1454-498D-8E55-CD013F77907C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD466B77-1454-498D-8E55-CD013F77907C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
