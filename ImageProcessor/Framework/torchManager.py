@@ -16,6 +16,7 @@ import torch
 import commonEnumerations
 
 import convolutionalNeuralNetworks
+import modelHistoryInfo
 
 import manager
 import batch
@@ -36,11 +37,14 @@ class TorchManager(manager.Manager):
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
-
         self._model             = None
-        self._optimizer         = None
 
-        self._objective         = torch.nn.CrossEntropyLoss()   
+        self._optimizer         = None
+        self._objective         = torch.nn.CrossEntropyLoss()  
+
+        self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
+        self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
+
         self._epochsPerBatch    = 2
         
 
@@ -107,6 +111,13 @@ class TorchManager(manager.Manager):
         self.__verifyModelExists(True)
         return None
 
+    def exportTrainingHistory(self,foldIndex: int) -> None:
+        """ Show + Export Training History """
+        outputFileName = "trainingHistoryFold{0}.csv".format(foldIndex)
+        outputPath = os.path.join(self.getOutputPath(),outputFileName)
+        self._trainHistory.export(outputPath)
+        return None
+
     def exportModel(self,modelName: str) -> bool:
         """ Export the current classifier Model to the outputs folder """
         self.__verifyModelExists(True)
@@ -163,6 +174,9 @@ class TorchManager(manager.Manager):
 
             cost.backward()
             self._optimizer.step()
+
+            # Update local History
+            self._trainHistory.appendLossScore(cost.item())
 
         return None
 

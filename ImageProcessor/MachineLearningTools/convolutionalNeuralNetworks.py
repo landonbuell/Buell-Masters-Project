@@ -68,8 +68,6 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         x = torch.clone(inputs)
         for ii,layer in enumerate(self._layers):
             x = layer(x)
-            #msg = "\t\tLayer {0} shape: {1}".format(ii,x.shape)
-            #print(msg)     
         return x
 
     # Private Interface

@@ -51,6 +51,10 @@ class Manager:
         """ Get the Name of this Manager """
         return self._name
 
+    def getOutputPath(self) -> str:
+        """ Return the run's output Path """
+        return self._app.getConfig().getOutputPath()
+
     def getInitStarted(self) -> bool:
         """ Return T/F if initialization has started """
         return self._progress[0]
