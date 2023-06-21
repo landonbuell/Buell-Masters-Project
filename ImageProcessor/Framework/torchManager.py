@@ -105,9 +105,7 @@ class TorchManager(manager.Manager):
     def testOnBatch(self, batchData: batch.SampleBatch) -> None:
         """ Test the model on the batch of data provided """
         self.__verifyModelExists(True)
-
         return None
-
 
     def exportModel(self,modelName: str) -> bool:
         """ Export the current classifier Model to the outputs folder """
@@ -156,7 +154,7 @@ class TorchManager(manager.Manager):
         """ Helper Function to Train the model on the batch of data provided """
                 # Isolate X + Y Data
         X = batchData.getX()
-        Y = batchData.getOneHotY(self._numClasses)
+        Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
         for epoch in range(self._epochsPerBatch):
             self._optimizer.zero_grad()

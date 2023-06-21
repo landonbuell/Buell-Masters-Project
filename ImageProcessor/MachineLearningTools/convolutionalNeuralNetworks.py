@@ -49,7 +49,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         """ Constructor """
         super().__init__()
         self._numClasses = numClasses
-        self._layers  = torch.nn.ParameterList([None] * 18)
+        self._layers  = torch.nn.ParameterList([None] * 16)
         
         self.__initLayerGroup01()
         self.__initLayerGroup02()
@@ -64,10 +64,12 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         # Public Interface
 
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
-        """ Define Forward pass mechanism """
+        """Helper for  Forward pass mechanism """
         x = torch.clone(inputs)
         for ii,layer in enumerate(self._layers):
             x = layer(x)
+            #msg = "\t\tLayer {0} shape: {1}".format(ii,x.shape)
+            #print(msg)     
         return x
 
     # Private Interface
@@ -121,14 +123,14 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         self._layers[6] = torch.nn.Sequential(
             torch.nn.Conv2d(
                 in_channels=64,
-                out_channels=32,
+                out_channels=64,
                 kernel_size=(3,3),
                 stride=(1,1)),
             torch.nn.ReLU())
         self._layers[7] = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=32,
+                in_channels=64,
+                out_channels=64,
                 kernel_size=(3,3),
                 stride=(1,1)),
             torch.nn.ReLU())
@@ -142,22 +144,22 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         """ Initialize Layer Chain """
         self._layers[9] = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=32,
+                in_channels=64,
+                out_channels=64,
                 kernel_size=(3,3),
                 stride=(1,1)),
             torch.nn.ReLU())
         self._layers[10] = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=32,
+                in_channels=64,
+                out_channels=64,
                 kernel_size=(3,3),
                 stride=(1,1)),
             torch.nn.ReLU())
         self._layers[11] = torch.nn.Sequential(
             torch.nn.MaxPool2d(
                 kernel_size=(3,3),
-                stride=(1,1)))
+                stride=(2,2)))
         return None
     
     def __initDenseLayers(self):
@@ -168,25 +170,15 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
                 end_dim=-1))
         self._layers[13] = torch.nn.Sequential(
             torch.nn.Linear(
-                in_features=6272,
-                out_features=4096),
-            torch.nn.ReLU())
-        self._layers[14] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=4096,
-                out_features=2048),
-            torch.nn.ReLU())
-        self._layers[15] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=2048,
+                in_features=2304,   # (64 x 6 x 6)
                 out_features=1024),
             torch.nn.ReLU())
-        self._layers[16] = torch.nn.Sequential(
+        self._layers[14] = torch.nn.Sequential(
             torch.nn.Linear(
                 in_features=1024,
                 out_features=512),
             torch.nn.ReLU())
-        self._layers[17] = torch.nn.Sequential(
+        self._layers[15] = torch.nn.Sequential(
             torch.nn.Linear(
                 in_features=512,
                 out_features=self._numClasses),
