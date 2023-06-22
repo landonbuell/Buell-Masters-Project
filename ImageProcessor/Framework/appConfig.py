@@ -32,10 +32,10 @@ class AppConfig:
         self._logToConsole  = True
         self._logToFile     = True
 
-        self._batchSize     = 128
+        self._batchSize     = 256
         self._shuffleSeed   = 123456789
 
-        self._sampleDatabaseCapacity = int(2**14) # temp limit for development
+        self._sampleDatabaseCapacity = int(2**18) # temp limit for development
         self._numClasses            = 29 # temp hard-code for development
         
         self._crossValidationFolds  = 1
@@ -104,8 +104,8 @@ class AppConfig:
     @staticmethod
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
-        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamplesCondensed.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
+        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamples.csv")),]
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun1"))
         config = AppConfig(inputPaths,outputPath)
         return config
 
