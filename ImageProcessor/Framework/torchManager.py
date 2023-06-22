@@ -45,10 +45,7 @@ class TorchManager(manager.Manager):
 
         self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
         self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
-
-        self._epochsPerBatch    = 1
         
-
     def __del__(self):
         """ Destructor """
         pass
@@ -69,7 +66,7 @@ class TorchManager(manager.Manager):
 
     def getEpochsPerBatch(self) -> int:
         """ Return the Number of epochs to use per batch """
-        return self._epochsPerBatch
+        return self.getApp().getConfig().getNumEpochsPerBatch()
 
     # Public Interface
 
@@ -104,6 +101,7 @@ class TorchManager(manager.Manager):
         self.__verifyModelExists(True)
         self.__verifyOptimizerExists(True)
         
+        self._model.train()
         self.__trainOnBatchHelper(batchData)
         return None
 
@@ -130,7 +128,7 @@ class TorchManager(manager.Manager):
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model     = self.__invokeGetModel()
-        self._optimizer = torch.optim.Adam(params=self._model.parameters())
+        self._initOptimizer()
         return None
 
     # Protected Interface
@@ -175,19 +173,19 @@ class TorchManager(manager.Manager):
         X = batchData.getX()
         Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
-        for epoch in range(self._epochsPerBatch):
+        for epoch in range(self.getEpochsPerBatch()):
             self._optimizer.zero_grad()
 
             # Forward Pass + Compute cost of batch
             outputs = self._model(X)
             cost = self._objective(outputs,Y)
 
-            # Backwards pass           
+            # Backwards pass + update the weights          
             cost.backward()
+            self._optimizer.step()
 
             # Update the weights + Log cost
-            self._optimizer.step()
-            self._trainHistory.appendLossScore(cost.item())
+            self._trainHistory.appendLossScore( cost.item() )
 
         return None
 
@@ -225,9 +223,9 @@ class ClassificationManager(TorchManager):
     def _initOptimizer(self) -> None:
         """ VIRTUAL: Initialize the Optimizer for this Model """     
         super()._initOptimizer()
-        self._optimizer = torch.nn.Adam(
-                            params=self._model.params(),
-                            lr=0.01,
+        self._optimizer = torch.optim.Adam(
+                            params=self._model.parameters(),
+                            lr=0.1,
                             betas=(0.9,0.999),
                             eps=1e-6)
         return None

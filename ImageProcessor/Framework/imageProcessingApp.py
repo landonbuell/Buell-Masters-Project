@@ -154,6 +154,15 @@ class ImageProcessingApp:
     def shutdown(self) -> int:
         """ Run App shutdown """
 
+        self._sampleManager.cleanup()
+        self._dataManager.cleanup()
+
+        self._augmentationManager.cleanup()
+        self._preprocessManager.cleanup()
+
+        self._classificationManager.cleanup()
+        self._segmentationManager.cleanup()
+
         return self._exitStatus
 
     # Private Interface
@@ -228,12 +237,13 @@ class ImageProcessingApp:
             if (fold.isFinished() == True):
                 loop = False
                 fold.resetIterator()
+                fold.shuffle()
 
         # Cleanup
         self._classificationManager.exportTrainingHistory(foldIndex)
 
         if (resetBatchCounter == True):
-            batch.SampleBatch.resetBatchCounter()
+            batch.SampleBatch.resetBatchCounter()          
         return None
 
     def __runTestOnFold(self,
@@ -259,6 +269,7 @@ class ImageProcessingApp:
             if (fold.isFinished() == True):
                 loop = False
                 fold.resetIterator()
+                fold.shuffle()
 
         # Cleanup
         if (resetBatchCounter == True):

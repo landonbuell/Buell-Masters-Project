@@ -41,6 +41,9 @@ class AppConfig:
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
+        self._epochsPerBatch        = 2     # Number of consecutive times we see a bach
+        self._epochsPerFold         = 1     # Number of time we train on a fold
+
     # Accessors
 
     def getStartupPath(self) -> str:
@@ -95,6 +98,14 @@ class AppConfig:
         """ Ratio of the Train size to the full dataset """
         return (1.0 - self._testSplitRatio)
 
+    def getNumEpochsPerBatch(self) -> int:
+        """ Return the number of times a model is trained on a batch in a row """
+        return self._epochsPerBatch
+
+    def getNumEpochsPerFold(self) -> int:
+        """ Return the number of times a fold is seen by a model for training """
+        return self._epochsPerFold
+
     # Public Interface
 
     # Private Interface
@@ -104,8 +115,8 @@ class AppConfig:
     @staticmethod
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
-        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun1"))
+        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamplesCondensed.csv")),]
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
         config = AppConfig(inputPaths,outputPath)
         return config
 
