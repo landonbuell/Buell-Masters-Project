@@ -12,6 +12,7 @@
 
 import os
 import torch
+from torch.optim.adam import Adam
 
 import commonEnumerations
 
@@ -79,9 +80,7 @@ class TorchManager(manager.Manager):
 
         # Generate the Model
         self._model     = self.__invokeGetModel()
-        self._optimizer = torch.optim.Adam(params=self._model.parameters(),
-                                           lr=0.01)
-        self.__iterModelParameters()
+        self._initOptimizer()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -134,6 +133,13 @@ class TorchManager(manager.Manager):
         self._optimizer = torch.optim.Adam(params=self._model.parameters())
         return None
 
+    # Protected Interface
+
+    def _initOptimizer(self) -> None:
+        """ VIRTUAL: Initialize the Optimizer for this Model """     
+        self.__verifyModelExists()
+        return None
+
     # Private Interface 
 
     def __verifyModelExists(self,throwErr=False) -> bool:
@@ -163,13 +169,6 @@ class TorchManager(manager.Manager):
         model = self._callbackGetModel.__call__(self._numClasses)
         return model
 
-    def __iterModelParameters(self):
-        """ Iterate over all model parameters """
-        params = self._model.parameters()
-        for item in params:
-            print(item)
-        return None
-
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
                 # Isolate X + Y Data
@@ -177,12 +176,13 @@ class TorchManager(manager.Manager):
         Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
         for epoch in range(self._epochsPerBatch):
+            self._optimizer.zero_grad()
+
             # Forward Pass + Compute cost of batch
             outputs = self._model(X)
             cost = self._objective(outputs,Y)
 
-            # Backwards pass
-            self._optimizer.zero_grad()
+            # Backwards pass           
             cost.backward()
 
             # Update the weights + Log cost
@@ -220,6 +220,18 @@ class ClassificationManager(TorchManager):
 
     # Public Interface 
 
+    # Protected Interface
+
+    def _initOptimizer(self) -> None:
+        """ VIRTUAL: Initialize the Optimizer for this Model """     
+        super()._initOptimizer()
+        self._optimizer = torch.nn.Adam(
+                            params=self._model.params(),
+                            lr=0.01,
+                            betas=(0.9,0.999),
+                            eps=1e-6)
+        return None
+
 class SegmentationManager(TorchManager):
     """
         ClassificationManager handles all image-classification related tasks
@@ -240,6 +252,7 @@ class SegmentationManager(TorchManager):
     # Accessors
 
     # Public Interface 
+
 
 
 """
