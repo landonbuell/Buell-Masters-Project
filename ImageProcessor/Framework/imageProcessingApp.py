@@ -230,6 +230,8 @@ class ImageProcessingApp:
                 fold.resetIterator()
 
         # Cleanup
+        self._classificationManager.exportTrainingHistory(foldIndex)
+
         if (resetBatchCounter == True):
             batch.SampleBatch.resetBatchCounter()
         return None
