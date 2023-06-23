@@ -12,6 +12,9 @@
 
 import pandas as pd
 import numpy as np
+import torch
+
+import callbacks
 
         #### CLASS DEFINITIONS ####
 
@@ -48,20 +51,19 @@ class ModelHistoryInfo:
 
     # Public Interface
 
-    def appendLossScore(self,loss: float) -> None:
-        """ Add Loss score to the running history """
-        self._losses = np.append(self._losses,loss)
+    def updateWithTrainBatch(self,preds,truth,numClasses) -> None:
+        """ Update state w/ outputs + truth of a training batch """
+        lossScore           = torch.
+        precisionScore      = callbacks.multiclassPrecisionScore(preds,truth)
+        recallScore         = callbacks.multiclassRecallScore(preds,truth)
+
+        self._losses    = np.append(self._losses,cost)
+        self._precision = np.append(self._precision,precisionScore)
+        self._recalls   = np.append(self._recalls,recallScore)
+
         return None
 
-    def appendPrecisionScore(self,precision: float) -> None:
-        """ Add precision score to the running history """
-        self._precision = np.append(self._precision,precision)
-        return None
 
-    def appendRecallScore(self,recall: float) -> None:
-        """ Add recall score to the running history """
-        self._recalls = np.append(self._recalls,recall)
-        return None
 
     def plotAll(self,show=True,save=None) -> None:
         """ Generate and optionally show and save history of all scores """
@@ -70,10 +72,10 @@ class ModelHistoryInfo:
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"Loss"      : self._losses,}
-                #"Precision" : self._precision,
-                #"Recall"    : self._recalls,
-                #"F1"        : self.getF1History()}
+        data = {"Loss"      : self._losses,
+                "Precision" : self._precision,
+                "Recall"    : self._recalls,
+                "F1"        : self.getF1History()}
         frame = pd.DataFrame(data=data,index=None)
         return frame
 

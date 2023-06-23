@@ -12,10 +12,10 @@
 
 import os
 import torch
-from torch.optim.adam import Adam
 
 import commonEnumerations
 
+import callbacks
 import convolutionalNeuralNetworks
 import modelHistoryInfo
 
@@ -183,15 +183,15 @@ class TorchManager(manager.Manager):
             self._optimizer.zero_grad()
 
             # Forward Pass + Compute cost of batch
-            outputs = self._model(X)
-            cost = self._objective(outputs,Y)
+            outputs     = self._model(X)
+            cost        = self._objective(outputs,Y)
 
             # Backwards pass + update the weights          
             cost.backward()
             self._optimizer.step()
 
-            # Update the weights + Log cost
-            self._trainHistory.appendLossScore( cost.item() )
+            # Log the Cost, Precision, Recall, Accuracy
+            self._trainHistory.updateWithTrainBatch(outputs,Y,cost)
 
         return None
 
@@ -231,7 +231,7 @@ class ClassificationManager(TorchManager):
         super()._initOptimizer()
         self._optimizer = torch.optim.Adam(
                             params=self._model.parameters(),
-                            lr=0.001,
+                            lr=0.01,
                             betas=(0.9,0.999),
                             eps=1e-6)
         return None

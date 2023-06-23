@@ -178,7 +178,9 @@ class ImageProcessingApp:
         # Train the Model on the 0-th Fold
         indexTrainFold = 0
         self._currentFold = indexTrainFold
-        self.__runTrainOnFold(indexTrainFold)
+        for ii in range(self.getConfig().getNumEpochsPerFold()):
+            self.__runTrainOnFold(indexTrainFold,False)
+        self._classificationManager.exportTrainingHistory(self._currentFold)
 
         # Test the Model on the 1-th Fold
         indexTestFold = 1
@@ -247,8 +249,6 @@ class ImageProcessingApp:
                 fold.shuffle()
 
         # Cleanup
-        self._classificationManager.exportTrainingHistory(foldIndex)
-
         if (resetBatchCounter == True):
             batch.SampleBatch.resetBatchCounter()          
         return None

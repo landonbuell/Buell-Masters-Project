@@ -42,8 +42,8 @@ class AppConfig:
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
-        self._epochsPerBatch        = 2     # Number of consecutive times we see a bach
-        self._epochsPerFold         = 1     # Number of time we train on a fold
+        self._epochsPerBatch        = 1     # Number of consecutive times we see a bach
+        self._epochsPerFold         = 4     # Number of time we train on a fold
 
     # Accessors
 
