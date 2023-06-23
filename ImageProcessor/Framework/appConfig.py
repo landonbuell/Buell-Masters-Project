@@ -116,7 +116,7 @@ class AppConfig:
     @staticmethod
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
-        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamplesCondensed.csv")),]
+        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","labeledSamples.csv")),]
         outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
         config = AppConfig(inputPaths,outputPath)
         return config

@@ -49,7 +49,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         """ Constructor """
         super().__init__()
         self._numClasses = numClasses
-        self.layers  = torch.nn.ParameterList([None] * 14)
+        self.layers  = torch.nn.ParameterList([None] * 15)
         
         self.__initLayerGroup01()
         self.__initLayerGroup02()
@@ -79,6 +79,8 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         x = self.layers[11].__call__(x)
         x = self.layers[12].__call__(x)
         x = self.layers[13].__call__(x)
+        x = self.layers[14].__call__(x)
+        x = self.layers[15].__call__(x)
         return x
 
     # Private Interface
@@ -180,13 +182,19 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         self.layers[13] = torch.nn.Sequential(
             torch.nn.Linear(
                 in_features=3136,   # (64 x 7 x 7)
+                out_features=256),
+            torch.nn.ReLU())
+        self.layers[14] = torch.nn.Sequential(
+            torch.nn.Linear(
+                in_features=256,   
+                out_features=128),
+            torch.nn.ReLU())
+        self.layers[15] = torch.nn.Sequential(
+            torch.nn.Linear(
+                in_features=128,   
                 out_features=self._numClasses),
-            torch.nn.Softmax())
+            torch.nn.Softmax(dim=-1))
         return None
-
-
-
-        
 
 """
     Author:         Landon Buell

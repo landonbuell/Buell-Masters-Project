@@ -26,6 +26,7 @@ class ModelHistoryInfo:
         self._losses    = np.array([],dtype=np.float32)
         self._precision = np.array([],dtype=np.float32)
         self._recalls   = np.array([],dtype=np.float32)
+        self._exportCounts = 0
         
     def __del__(self):
         """ Destructor """
@@ -66,7 +67,12 @@ class ModelHistoryInfo:
 
         return None
 
-
+    def reset(self) -> None:
+        """ Reset the state of instance to construction """
+        self._losses    = np.array([],dtype=np.float32)
+        self._precision = np.array([],dtype=np.float32)
+        self._recalls   = np.array([],dtype=np.float32)
+        return None
 
     def plotAll(self,show=True,save=None) -> None:
         """ Generate and optionally show and save history of all scores """
@@ -85,7 +91,8 @@ class ModelHistoryInfo:
     def export(self,outputPath) -> bool:
         """ Write history info to specified path. Return T/F if successful """
         frame = self.toDataFrame()
-        frame.to_csv(outputPath,index=False)
+        frame.to_csv(outputPath,index=False,mode="w")
+        self._exportCounts += 1
         return True
 
     # Private Interface
