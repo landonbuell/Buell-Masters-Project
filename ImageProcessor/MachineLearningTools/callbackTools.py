@@ -10,39 +10,41 @@
 
         #### IMPORTS ####
 
-import torch
+import numpy as np
 import sklearn.metrics as metrics
 
 DEVICE_CPU  = "cpu"
 
         #### FUNCTION DEFINITIONS ####
 
-def multiclassPrecisionScore(preds: torch.Tensor,
-                             truth: torch.Tensor,
+def multiclassPrecisionScore(preds: np.ndarray,
+                             truth: np.ndarray,
                              numClasses: int):
     """ Compute & Return the precision score for each class """
-    result = torch.empty(size=(numClasses,),dtype=torch.float32,device=DEVICE_CPU)
-    preds = torch.argmax(preds,dim=0).to(device=DEVICE_CPU)
-    truth = torch.argmax(truth,dim=0).to(device=DEVICE_CPU)
+    result  = np.empty(shape=(numClasses,),dtype=np.float32)
+    preds   = np.argmax(preds,axis=-1)
+    truth   = np.argmax(truth,axis=-1)
+
     # Iterate through the classes
     for ii in range(numClasses):
         classPreds = (preds == ii)
         classTruth = (truth == ii)
-        result[ii] = metrics.precision_score(classTruth,classPreds)
+        result[ii] = metrics.precision_score(classTruth,classPreds,zero_division=0)
     return result
 
-def multiclassRecallScore(preds: torch.Tensor,
-                             truth: torch.Tensor,
-                             numClasses: int):
+def multiclassRecallScore(  preds: np.ndarray,
+                            truth: np.ndarray,
+                            numClasses: int):
     """ Compute & Return the recall score for each class """
-    result = torch.empty(size=(numClasses,),dtype=torch.float32,device=DEVICE_CPU)
-    preds = torch.argmax(preds,dim=0).to(device=DEVICE_CPU)
-    truth = torch.argmax(truth,dim=0).to(device=DEVICE_CPU)
+    result  = np.empty(shape=(numClasses,),dtype=np.float32)
+    preds   = np.argmax(preds,axis=-1)
+    truth   = np.argmax(truth,axis=-1)
+
     # Iterate through the classes
     for ii in range(numClasses):
         classPreds = (preds == ii)
         classTruth = (truth == ii)
-        result[ii] = metrics.recall_score(classTruth,classPreds)
+        result[ii] = metrics.recall_score(classTruth,classPreds,zero_division=0)
     return result
 
 

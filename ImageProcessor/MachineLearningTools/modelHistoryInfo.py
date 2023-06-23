@@ -51,14 +51,18 @@ class ModelHistoryInfo:
 
     # Public Interface
 
-    def updateWithTrainBatch(self,preds,truth,cost,numClasses) -> None:
+    def updateWithTrainBatch(self,
+                             outputs: np.ndarray,
+                             truth: np.ndarray,
+                             cost:  np.float32,
+                             numClasses: int) -> None:
         """ Update state w/ outputs + truth of a training batch """
-        precisionScore      = callbackTools.multiclassPrecisionScore(preds,truth,numClasses)
-        recallScore         = callbackTools.multiclassRecallScore(preds,truth,numClasses)
+        precisionScore      = callbackTools.multiclassPrecisionScore(outputs,truth,numClasses)
+        recallScore         = callbackTools.multiclassRecallScore(outputs,truth,numClasses)
 
-        self._losses    = np.append(self._losses,cost)
-        self._precision = np.append(self._precision,precisionScore)
-        self._recalls   = np.append(self._recalls,recallScore)
+        self._losses    = np.append(self._losses,       cost)
+        self._precision = np.append(self._precision,    np.mean(precisionScore))
+        self._recalls   = np.append(self._recalls,      np.mean(recallScore))
 
         return None
 

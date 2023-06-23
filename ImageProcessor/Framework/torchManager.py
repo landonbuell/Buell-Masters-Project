@@ -11,11 +11,11 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
 import torch
 
 import commonEnumerations
 
-import callbacks
 import convolutionalNeuralNetworks
 import modelHistoryInfo
 
@@ -191,7 +191,11 @@ class TorchManager(manager.Manager):
             self._optimizer.step()
 
             # Log the Cost, Precision, Recall, Accuracy
-            self._trainHistory.updateWithTrainBatch(outputs,Y,cost,self._numClasses)
+            self._trainHistory.updateWithTrainBatch(
+                outputs.detach().cpu().numpy(),
+                Y.detach().cpu().numpy(),
+                np.float32(cost.item()),
+                self._numClasses)
 
         return None
 
