@@ -11,6 +11,8 @@
         #### IMPORTS ####
 
 import torch
+from torch._C import device
+import imageProcessingApp
 
         #### CONSTANTS ####
 
@@ -19,13 +21,17 @@ SHAPE_CHANNELS_LAST     = (200,200,3)
 
         #### FUNCTION DEFINITONS ####
 
+def _getDevice() -> torch.device:
+    """ Return the Torch Device that is in use """
+    return imageProcessingApp.ImageProcessingApp.getInstance().getConfig().getTorchConfig().getActiveDevice()
+
 def oneHotEncode(labels: torch.Tensor,
                  numClasses: int):
     """ One-Hot encode a vector of labels """
     if (labels.ndim > 1):
         msg = "Cannot encode labels w/ ndim={0}. Expected ndim=1".format(labels.ndim)
         raise RuntimeError(msg)
-    oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype)
+    oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype,device=_getDevice())
     for ii,tgt in enumerate(labels):
         oneHot[ii,tgt] = 1
     return oneHot
@@ -46,8 +52,8 @@ class SampleBatch:
         shapeX = (numSamples,) + sampleShape
         shapeY = (numSamples,)
 
-        self._X = torch.zeros(size=shapeX,dtype=dataTypeX)
-        self._y = torch.zeros(size=shapeY,dtype=dataTypeY)
+        self._X = torch.zeros(size=shapeX,dtype=dataTypeX,device=_getDevice())
+        self._y = torch.zeros(size=shapeY,dtype=dataTypeY,device=_getDevice())
 
         self._batchIndex    = SampleBatch.__batchCounter
         SampleBatch.__batchCounter += 1

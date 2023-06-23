@@ -42,7 +42,8 @@ class PreprocessManager(manager.Manager):
                                     eps=1e-6,
                                     momentum=0.1,
                                     affine=False,
-                                    track_running_stats=True)
+                                    track_running_stats=True,
+                                    device=self.getApp().getConfig().getTorchConfig().getActiveDevice())
 
         #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )

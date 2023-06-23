@@ -75,8 +75,7 @@ class TorchManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Generate the Model
-        self._model     = self.__invokeGetModel()
+        self._initModel()
         self._initOptimizer()
 
         # Populate Sample Databse 
@@ -132,6 +131,13 @@ class TorchManager(manager.Manager):
         return None
 
     # Protected Interface
+
+    def _initModel(self) -> None:
+        """ VIRTUAL: Initialize the Model for this manager """
+        self._model = self.__invokeGetModel()
+        toDevice = self.getApp().getConfig().getTorchConfig().getActiveDevice()
+        self._model.to(device=toDevice)
+        return None
 
     def _initOptimizer(self) -> None:
         """ VIRTUAL: Initialize the Optimizer for this Model """     
@@ -225,7 +231,7 @@ class ClassificationManager(TorchManager):
         super()._initOptimizer()
         self._optimizer = torch.optim.Adam(
                             params=self._model.parameters(),
-                            lr=0.1,
+                            lr=0.001,
                             betas=(0.9,0.999),
                             eps=1e-6)
         return None

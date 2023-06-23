@@ -50,6 +50,7 @@ class ImageProcessingApp:
         self._config        = config
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
         self._exitStatus    = commonEnumerations.Status.SUCCESS
+        self._currentFold   = 0
         np.random.seed(config.getShuffleSeed()) # Set the numpy Random Seed
 
         self._sampleManager = sampleManager.SampleManager(self)
@@ -82,6 +83,10 @@ class ImageProcessingApp:
     def getStatus(self) -> commonEnumerations.Status:
         """ Return the App's Status """
         return self._exitStatus
+
+    def getCurrentFold(self) -> int:
+        """ Get the Index of the current fold that we are working on """
+        return self._currentFold
 
     def getSampleManager(self) -> sampleManager.SampleManager:
         """ Return the sample manager """
@@ -172,10 +177,12 @@ class ImageProcessingApp:
 
         # Train the Model on the 0-th Fold
         indexTrainFold = 0
+        self._currentFold = indexTrainFold
         self.__runTrainOnFold(indexTrainFold)
 
         # Test the Model on the 1-th Fold
         indexTestFold = 1
+        self._currentFold = indexTestFold
         self.__runTestOnFold(indexTestFold)
 
         return None
