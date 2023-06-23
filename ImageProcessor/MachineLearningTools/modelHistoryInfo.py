@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 import torch
 
-import callbacks
+import callbackTools
 
         #### CLASS DEFINITIONS ####
 
@@ -51,11 +51,10 @@ class ModelHistoryInfo:
 
     # Public Interface
 
-    def updateWithTrainBatch(self,preds,truth,numClasses) -> None:
+    def updateWithTrainBatch(self,preds,truth,cost,numClasses) -> None:
         """ Update state w/ outputs + truth of a training batch """
-        lossScore           = torch.
-        precisionScore      = callbacks.multiclassPrecisionScore(preds,truth)
-        recallScore         = callbacks.multiclassRecallScore(preds,truth)
+        precisionScore      = callbackTools.multiclassPrecisionScore(preds,truth,numClasses)
+        recallScore         = callbackTools.multiclassRecallScore(preds,truth,numClasses)
 
         self._losses    = np.append(self._losses,cost)
         self._precision = np.append(self._precision,precisionScore)

@@ -191,7 +191,7 @@ class TorchManager(manager.Manager):
             self._optimizer.step()
 
             # Log the Cost, Precision, Recall, Accuracy
-            self._trainHistory.updateWithTrainBatch(outputs,Y,cost)
+            self._trainHistory.updateWithTrainBatch(outputs,Y,cost,self._numClasses)
 
         return None
 
