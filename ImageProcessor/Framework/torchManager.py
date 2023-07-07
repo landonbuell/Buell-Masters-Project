@@ -21,6 +21,7 @@ import modelHistoryInfo
 
 import manager
 import batch
+import preprocessManager
 
         #### CLASS DEFINITIONS ####
 
@@ -67,6 +68,10 @@ class TorchManager(manager.Manager):
     def getEpochsPerBatch(self) -> int:
         """ Return the Number of epochs to use per batch """
         return self.getApp().getConfig().getNumEpochsPerBatch()
+
+    def getDevice(self) -> torch.device:
+        """ Get the active torch device (CPU vs. GPU) """
+        return self.getApp().getConfig().getTorchConfig().getActiveDevice()
 
     # Public Interface
 
@@ -175,9 +180,12 @@ class TorchManager(manager.Manager):
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-                # Isolate X + Y Data
+        dev = self.getDevice()        
+        batchData.toDevice(dev)
         X = batchData.getX()
         Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
+
+        #preprocessManager.Preprocessors.showSampleAtIndex(None,batchData)
 
         for epoch in range(self.getEpochsPerBatch()):
             self._optimizer.zero_grad()
@@ -218,7 +226,7 @@ class ClassificationManager(TorchManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( convolutionalNeuralNetworks.getInspiredVisualGeometryGroup )
+        self.registerGetModelCallback( convolutionalNeuralNetworks.getBasicCNN )
 
     def __del__(self):
         """ Destructor """

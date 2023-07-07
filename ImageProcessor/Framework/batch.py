@@ -11,7 +11,6 @@
         #### IMPORTS ####
 
 import torch
-from torch._C import device
 import imageProcessingApp
 
         #### CONSTANTS ####
@@ -52,8 +51,8 @@ class SampleBatch:
         shapeX = (numSamples,) + sampleShape
         shapeY = (numSamples,)
 
-        self._X = torch.zeros(size=shapeX,dtype=dataTypeX,device=_getDevice())
-        self._y = torch.zeros(size=shapeY,dtype=dataTypeY,device=_getDevice())
+        self._X = torch.zeros(size=shapeX,dtype=dataTypeX)
+        self._y = torch.zeros(size=shapeY,dtype=dataTypeY)
 
         self._batchIndex    = SampleBatch.__batchCounter
         SampleBatch.__batchCounter += 1
@@ -117,6 +116,12 @@ class SampleBatch:
     def getOneHotY(self,numClasses: int) -> torch.Tensor:
         """ One-hot-encode this batch's labels """
         return oneHotEncode(self._y,numClasses)
+
+    def toDevice(self,deviceName: torch.device) -> None:
+        """ Cast the X & y members to the chosen device """
+        self._X = self._X.to(device=deviceName)
+        self._y = self._y.to(device=deviceName)
+        return None
 
     # Magic Methods
 

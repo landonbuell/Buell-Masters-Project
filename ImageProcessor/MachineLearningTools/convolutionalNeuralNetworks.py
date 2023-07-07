@@ -22,6 +22,9 @@ def getInspiredVisualGeometryGroup(numClasses: int):
     """ Return an Instance of this model """
     return InspiredVisualGeometryGroup(numClasses)
 
+def getBasicCNN(numClasses: int):
+    """ Return an instance of a basic CNN """
+    return BasicCNN(numClasses)
 
     
         #### CLASS DEFINTIONS ####
@@ -49,7 +52,7 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
         """ Constructor """
         super().__init__()
         self._numClasses = numClasses
-        self.layers  = torch.nn.ParameterList([None] * 15)
+        self.layers  = torch.nn.ParameterList([None] * 16)
         
         self.__initLayerGroup01()
         self.__initLayerGroup02()
@@ -195,6 +198,129 @@ class InspiredVisualGeometryGroup(torch.nn.Module):
                 out_features=self._numClasses),
             torch.nn.Softmax(dim=-1))
         return None
+
+class BasicCNN(torch.nn.Module):
+    """ Stores a basic PyTorch Model """
+    
+    def __init__(self,numClasses: int):
+        """ Constructor """
+        super().__init__()
+        self._numClasses = numClasses
+        self.layers  = torch.nn.ParameterList([None] * 12)
+
+        self.__initLayerGroup01()
+        self.__initLayerGroup02()
+        self.__initLayerGroup03()
+        self.__initDenseLayers()
+
+    def __del__(self):
+        """ Destructor """
+        pass
+
+    # Public Interface
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Helper for  Forward pass mechanism """
+        x = self.layers[0].__call__(x)
+        x = self.layers[1].__call__(x)
+        x = self.layers[2].__call__(x)
+        x = self.layers[3].__call__(x)
+        x = self.layers[4].__call__(x)
+        x = self.layers[5].__call__(x)
+        x = self.layers[6].__call__(x)
+        x = self.layers[7].__call__(x)
+        x = self.layers[8].__call__(x)
+        x = self.layers[9].__call__(x)
+        x = self.layers[10].__call__(x)
+        x = self.layers[11].__call__(x)        
+        return x
+
+    # Private Interface
+
+    def __initLayerGroup01(self):
+        """ Initialize Layer Chain """
+        self.layers[0] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=3,
+                out_channels=16,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[1] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=16,
+                out_channels=16,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[2] = torch.nn.Sequential(
+            torch.nn.MaxPool2d(
+                kernel_size=(2,2),
+                stride=(2,2)))
+        return None
+    
+    def __initLayerGroup02(self):
+        """ Initialize Layer Chain """
+        self.layers[3] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=16,
+                out_channels=32,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[4] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=32,
+                out_channels=32,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[5] = torch.nn.Sequential(
+            torch.nn.MaxPool2d(
+                kernel_size=(2,2),
+                stride=(2,2)))
+        return None
+        
+    def __initLayerGroup03(self):
+        """ Initialize Layer Chain """
+        self.layers[6] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=32,
+                out_channels=64,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[7] = torch.nn.Sequential(
+            torch.nn.Conv2d(
+                in_channels=64,
+                out_channels=64,
+                kernel_size=(3,3),
+                stride=(1,1)),
+            torch.nn.ReLU())
+        self.layers[8] = torch.nn.Sequential(
+            torch.nn.MaxPool2d(
+                kernel_size=(2,2),
+                stride=(2,2)))
+        return None
+
+    def __initDenseLayers(self):
+        """ Initialize Dense Layers of Chain """
+        self.layers[9] = torch.nn.Sequential(
+            torch.nn.Flatten(
+                start_dim=1,
+                end_dim=-1))
+        self.layers[10] = torch.nn.Sequential(
+            torch.nn.Linear(
+                in_features=1024,
+                out_features=256),
+            torch.nn.ReLU())
+        self.layers[11] = torch.nn.Sequential(
+            torch.nn.Linear(
+                in_features=256,
+                out_features=self._numClasses),
+            torch.nn.Softmax(dim=-1))
+        return None
+
 
 """
     Author:         Landon Buell
