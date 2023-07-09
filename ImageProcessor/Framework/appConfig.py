@@ -33,7 +33,7 @@ class AppConfig:
         self._logToConsole  = True
         self._logToFile     = True
 
-        self._batchSize     = 256
+        self._batchSize     = 32
         self._shuffleSeed   = 123456789
 
         self._sampleDatabaseCapacity = int(2**18) # temp limit for development

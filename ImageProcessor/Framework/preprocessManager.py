@@ -37,20 +37,16 @@ class PreprocessManager(manager.Manager):
         """ Constructor """
         super().__init__(app,PreprocessManager.__NAME)
         self._steps     = list()
-        self._batchNormalizer = torch.nn.BatchNorm2d(
-                                    num_features=3,
-                                    eps=1e-6,
-                                    momentum=0.1,
-                                    affine=False,
-                                    track_running_stats=True,
-                                    device=self.getApp().getConfig().getTorchConfig().getActiveDevice())
+        self._batchNormalizer = torchvision.transforms.Normalize(
+            mean = (0.5,0.5,0.5),
+            std = (0.25,0.25,0.25))
 
         #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
         self.__registerPreprocessStep( Preprocessors.castToSinglePrecision )
         #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
         self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
-        #self.__registerPreprocessStep( Preprocessors.divideBy255 )
+        self.__registerPreprocessStep( Preprocessors.divideBy255 )
         self.__registerPreprocessStep( Preprocessors.torchVisionNormalize )
         #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
 

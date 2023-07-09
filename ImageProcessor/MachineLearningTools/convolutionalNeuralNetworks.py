@@ -59,9 +59,10 @@ class MultiTierImageClassifer(torch.nn.Module):
         self._conv3A    = torch.nn.Conv2d(in_channels=32,out_channels=64,kernel_size=(3,3),stride=(1,1))
         self._conv3B    = torch.nn.Conv2d(in_channels=64,out_channels=64,kernel_size=(3,3),stride=(1,1))
 
-        self._conv4A    = torch.nn.Conv2d(in_channels=64,out_channels=64,kernel_size=(3,3),stride=(1,1))
-        self._conv4B    = torch.nn.Conv2d(in_channels=128,out_channels=128,kernel_size=(3,3),stride=(1,1))
-
+        self._affine1   = torch.nn.Linear(in_features=(64 * 4 * 4),out_features=512)
+        self._affine2   = torch.nn.Linear(in_features=512,out_features=256)
+        self._affine3   = torch.nn.Linear(in_features=256,out_features=128)
+        self._affine4   = torch.nn.Linear(in_features=128,out_features=numClasses)
 
     def __del__(self):
         """ Destructor """
@@ -72,22 +73,26 @@ class MultiTierImageClassifer(torch.nn.Module):
         x   = torch.nn.functional.relu( self._conv1A(x) )
         x   = torch.nn.functional.relu( self._conv1B(x) )
         x   = self._maxPool(x)
-        print(x.shape)
+        #print(x.shape)
 
         x   = torch.nn.functional.relu( self._conv2A(x) )
         x   = torch.nn.functional.relu( self._conv2B(x) )
         x   = self._maxPool(x)
-        print(x.shape)
+        #print(x.shape)
 
         x   = torch.nn.functional.relu( self._conv3A(x) )
         x   = torch.nn.functional.relu( self._conv3B(x) )
         x   = self._maxPool(x)
-        print(x.shape)
+        #print(x.shape)
 
-        x   = torch.nn.functional.relu( self._conv4A(x) )
-        x   = torch.nn.functional.relu( self._conv4B(x) )
-        x   = self._maxPool(x)
-        print(x.shape)
+        x  = torch.flatten(x,start_dim=1,end_dim=-1)
+        #print(x.shape)
+
+        x   = torch.nn.functional.relu( self._affine1(x) )
+        x   = torch.nn.functional.relu( self._affine2(x) )
+        x   = torch.nn.functional.relu( self._affine3(x) )
+        x   = torch.nn.functional.softmax( self._affine4(x),dim=1 )
+        #print(x.shape)
 
         return x
 
