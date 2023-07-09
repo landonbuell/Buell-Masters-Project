@@ -18,13 +18,9 @@ def getAffineModel(numClasses: int):
     """ Callback does Nothing """
     return AffineModel(numClasses)
 
-def getInspiredVisualGeometryGroup(numClasses: int):
-    """ Return an Instance of this model """
-    return InspiredVisualGeometryGroup(numClasses)
-
-def getBasicCNN(numClasses: int):
+def getMultiTierImageClassifer(numClasses: int):
     """ Return an instance of a basic CNN """
-    return BasicCNN(numClasses)
+    return MultiTierImageClassifer(numClasses)
 
     
         #### CLASS DEFINTIONS ####
@@ -45,282 +41,55 @@ class AffineModel(torch.nn.Module):
             outputs = item(outputs)
         return outputs
 
-class InspiredVisualGeometryGroup(torch.nn.Module):
-    """ Class for a Model inspired by Visual Geometry Group (2014) """
-    
+class MultiTierImageClassifer(torch.nn.Module):
+    """ Multiple-Tiered Convolutional Nueral Network classifier """
+
     def __init__(self,numClasses: int):
         """ Constructor """
         super().__init__()
         self._numClasses = numClasses
-        self.layers  = torch.nn.ParameterList([None] * 16)
-        
-        self.__initLayerGroup01()
-        self.__initLayerGroup02()
-        self.__initLayerGroup03()
-        self.__initLayerGroup04()
-        self.__initDenseLayers()
-        
-    def __del__(self):
-        """ Destructor """
-        pass
+        self._maxPool   = torch.nn.MaxPool2d(kernel_size=(2,2),stride=(2,2))
 
-        # Public Interface
+        self._conv1A    = torch.nn.Conv2d(in_channels=3,out_channels=16,kernel_size=(3,3),stride=(1,1))
+        self._conv1B    = torch.nn.Conv2d(in_channels=16,out_channels=16,kernel_size=(3,3),stride=(1,1))
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Helper for  Forward pass mechanism """
-        x = self.layers[0].__call__(x)
-        x = self.layers[1].__call__(x)
-        x = self.layers[2].__call__(x)
-        x = self.layers[3].__call__(x)
-        x = self.layers[4].__call__(x)
-        x = self.layers[5].__call__(x)
-        x = self.layers[6].__call__(x)
-        x = self.layers[7].__call__(x)
-        x = self.layers[8].__call__(x)
-        x = self.layers[9].__call__(x)
-        x = self.layers[10].__call__(x)
-        x = self.layers[11].__call__(x)
-        x = self.layers[12].__call__(x)
-        x = self.layers[13].__call__(x)
-        x = self.layers[14].__call__(x)
-        x = self.layers[15].__call__(x)
-        return x
+        self._conv2A    = torch.nn.Conv2d(in_channels=16,out_channels=32,kernel_size=(3,3),stride=(1,1))
+        self._conv2B    = torch.nn.Conv2d(in_channels=32,out_channels=32,kernel_size=(3,3),stride=(1,1))
 
-    # Private Interface
-    
-    def __initLayerGroup01(self):
-        """ Initialize Layer Chain """
-        self.layers[0] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=3,
-                out_channels=8,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[1] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=8,
-                out_channels=8,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[2] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-    
-    def __initLayerGroup02(self):
-        """ Initialize Layer Chain """
-        self.layers[3] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=8,
-                out_channels=16,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[4] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=16,
-                out_channels=16,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[5] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-    
-    def __initLayerGroup03(self):
-        """ Initialize Layer Chain """
-        self.layers[6] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=16,
-                out_channels=32,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[7] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=32,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[8] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-    
-    def __initLayerGroup04(self):
-        """ Initialize Layer Chain """
-        self.layers[9] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=64,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[10] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=64,
-                out_channels=64,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[11] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-    
-    def __initDenseLayers(self):
-        """ Initialize Dense Layers """
-        self.layers[12] = torch.nn.Sequential(
-            torch.nn.Flatten(
-                start_dim=1,
-                end_dim=-1))
-        self.layers[13] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=3136,   # (64 x 7 x 7)
-                out_features=256),
-            torch.nn.ReLU())
-        self.layers[14] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=256,   
-                out_features=128),
-            torch.nn.ReLU())
-        self.layers[15] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=128,   
-                out_features=self._numClasses),
-            torch.nn.Softmax(dim=-1))
-        return None
+        self._conv3A    = torch.nn.Conv2d(in_channels=32,out_channels=64,kernel_size=(3,3),stride=(1,1))
+        self._conv3B    = torch.nn.Conv2d(in_channels=64,out_channels=64,kernel_size=(3,3),stride=(1,1))
 
-class BasicCNN(torch.nn.Module):
-    """ Stores a basic PyTorch Model """
-    
-    def __init__(self,numClasses: int):
-        """ Constructor """
-        super().__init__()
-        self._numClasses = numClasses
-        self.layers  = torch.nn.ParameterList([None] * 12)
+        self._conv4A    = torch.nn.Conv2d(in_channels=64,out_channels=64,kernel_size=(3,3),stride=(1,1))
+        self._conv4B    = torch.nn.Conv2d(in_channels=128,out_channels=128,kernel_size=(3,3),stride=(1,1))
 
-        self.__initLayerGroup01()
-        self.__initLayerGroup02()
-        self.__initLayerGroup03()
-        self.__initDenseLayers()
 
     def __del__(self):
         """ Destructor """
-        pass
+        super().__del__()
 
-    # Public Interface
+    def forward(self,x: torch.tensor) -> torch.Tensor:
+        """ Forward pass behavior """
+        x   = torch.nn.functional.relu( self._conv1A(x) )
+        x   = torch.nn.functional.relu( self._conv1B(x) )
+        x   = self._maxPool(x)
+        print(x.shape)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """Helper for  Forward pass mechanism """
-        x = self.layers[0].__call__(x)
-        x = self.layers[1].__call__(x)
-        x = self.layers[2].__call__(x)
-        x = self.layers[3].__call__(x)
-        x = self.layers[4].__call__(x)
-        x = self.layers[5].__call__(x)
-        x = self.layers[6].__call__(x)
-        x = self.layers[7].__call__(x)
-        x = self.layers[8].__call__(x)
-        x = self.layers[9].__call__(x)
-        x = self.layers[10].__call__(x)
-        x = self.layers[11].__call__(x)        
+        x   = torch.nn.functional.relu( self._conv2A(x) )
+        x   = torch.nn.functional.relu( self._conv2B(x) )
+        x   = self._maxPool(x)
+        print(x.shape)
+
+        x   = torch.nn.functional.relu( self._conv3A(x) )
+        x   = torch.nn.functional.relu( self._conv3B(x) )
+        x   = self._maxPool(x)
+        print(x.shape)
+
+        x   = torch.nn.functional.relu( self._conv4A(x) )
+        x   = torch.nn.functional.relu( self._conv4B(x) )
+        x   = self._maxPool(x)
+        print(x.shape)
+
         return x
-
-    # Private Interface
-
-    def __initLayerGroup01(self):
-        """ Initialize Layer Chain """
-        self.layers[0] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=3,
-                out_channels=16,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[1] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=16,
-                out_channels=16,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[2] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-    
-    def __initLayerGroup02(self):
-        """ Initialize Layer Chain """
-        self.layers[3] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=16,
-                out_channels=32,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[4] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=32,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[5] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-        
-    def __initLayerGroup03(self):
-        """ Initialize Layer Chain """
-        self.layers[6] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=32,
-                out_channels=64,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[7] = torch.nn.Sequential(
-            torch.nn.Conv2d(
-                in_channels=64,
-                out_channels=64,
-                kernel_size=(3,3),
-                stride=(1,1)),
-            torch.nn.ReLU())
-        self.layers[8] = torch.nn.Sequential(
-            torch.nn.MaxPool2d(
-                kernel_size=(2,2),
-                stride=(2,2)))
-        return None
-
-    def __initDenseLayers(self):
-        """ Initialize Dense Layers of Chain """
-        self.layers[9] = torch.nn.Sequential(
-            torch.nn.Flatten(
-                start_dim=1,
-                end_dim=-1))
-        self.layers[10] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=1024,
-                out_features=256),
-            torch.nn.ReLU())
-        self.layers[11] = torch.nn.Sequential(
-            torch.nn.Linear(
-                in_features=256,
-                out_features=self._numClasses),
-            torch.nn.Softmax(dim=-1))
-        return None
-
 
 """
     Author:         Landon Buell

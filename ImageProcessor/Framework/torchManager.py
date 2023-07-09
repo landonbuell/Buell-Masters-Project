@@ -188,6 +188,7 @@ class TorchManager(manager.Manager):
         #preprocessManager.Preprocessors.showSampleAtIndex(None,batchData)
 
         for epoch in range(self.getEpochsPerBatch()):
+            # Zero the Gradient
             self._optimizer.zero_grad()
 
             # Forward Pass + Compute cost of batch
@@ -226,7 +227,7 @@ class ClassificationManager(TorchManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( convolutionalNeuralNetworks.getBasicCNN )
+        self.registerGetModelCallback( convolutionalNeuralNetworks.getMultiTierImageClassifer )
 
     def __del__(self):
         """ Destructor """
