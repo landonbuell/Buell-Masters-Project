@@ -12,6 +12,9 @@
 
 import pandas as pd
 import numpy as np
+import torch
+
+import callbackTools
 
         #### CLASS DEFINITIONS ####
 
@@ -23,6 +26,7 @@ class ModelHistoryInfo:
         self._losses    = np.array([],dtype=np.float32)
         self._precision = np.array([],dtype=np.float32)
         self._recalls   = np.array([],dtype=np.float32)
+        self._exportCounts = 0
         
     def __del__(self):
         """ Destructor """
@@ -48,19 +52,26 @@ class ModelHistoryInfo:
 
     # Public Interface
 
-    def appendLossScore(self,loss: float) -> None:
-        """ Add Loss score to the running history """
-        self._losses = np.append(self._losses,loss)
+    def updateWithTrainBatch(self,
+                             outputs: np.ndarray,
+                             truth: np.ndarray,
+                             cost:  np.float32,
+                             numClasses: int) -> None:
+        """ Update state w/ outputs + truth of a training batch """
+        precisionScore      = callbackTools.multiclassPrecisionScore(outputs,truth,numClasses)
+        recallScore         = callbackTools.multiclassRecallScore(outputs,truth,numClasses)
+
+        self._losses    = np.append(self._losses,       cost)
+        self._precision = np.append(self._precision,    np.mean(precisionScore))
+        self._recalls   = np.append(self._recalls,      np.mean(recallScore))
+
         return None
 
-    def appendPrecisionScore(self,precision: float) -> None:
-        """ Add precision score to the running history """
-        self._precision = np.append(self._precision,precision)
-        return None
-
-    def appendRecallScore(self,recall: float) -> None:
-        """ Add recall score to the running history """
-        self._recalls = np.append(self._recalls,recall)
+    def reset(self) -> None:
+        """ Reset the state of instance to construction """
+        self._losses    = np.array([],dtype=np.float32)
+        self._precision = np.array([],dtype=np.float32)
+        self._recalls   = np.array([],dtype=np.float32)
         return None
 
     def plotAll(self,show=True,save=None) -> None:
@@ -70,17 +81,18 @@ class ModelHistoryInfo:
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"Loss"      : self._losses,}
-                #"Precision" : self._precision,
-                #"Recall"    : self._recalls,
-                #"F1"        : self.getF1History()}
+        data = {"Loss"      : self._losses,
+                "Precision" : self._precision,
+                "Recall"    : self._recalls,
+                "F1"        : self.getF1History()}
         frame = pd.DataFrame(data=data,index=None)
         return frame
 
     def export(self,outputPath) -> bool:
         """ Write history info to specified path. Return T/F if successful """
         frame = self.toDataFrame()
-        frame.to_csv(outputPath,index=False)
+        frame.to_csv(outputPath,index=False,mode="w")
+        self._exportCounts += 1
         return True
 
     # Private Interface

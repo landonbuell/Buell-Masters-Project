@@ -50,6 +50,7 @@ class ImageProcessingApp:
         self._config        = config
         self._logger        = textLogger.TextLogger.fromConfig(appConfig)
         self._exitStatus    = commonEnumerations.Status.SUCCESS
+        self._currentFold   = 0
         np.random.seed(config.getShuffleSeed()) # Set the numpy Random Seed
 
         self._sampleManager = sampleManager.SampleManager(self)
@@ -82,6 +83,10 @@ class ImageProcessingApp:
     def getStatus(self) -> commonEnumerations.Status:
         """ Return the App's Status """
         return self._exitStatus
+
+    def getCurrentFold(self) -> int:
+        """ Get the Index of the current fold that we are working on """
+        return self._currentFold
 
     def getSampleManager(self) -> sampleManager.SampleManager:
         """ Return the sample manager """
@@ -154,6 +159,15 @@ class ImageProcessingApp:
     def shutdown(self) -> int:
         """ Run App shutdown """
 
+        self._sampleManager.cleanup()
+        self._dataManager.cleanup()
+
+        self._augmentationManager.cleanup()
+        self._preprocessManager.cleanup()
+
+        self._classificationManager.cleanup()
+        self._segmentationManager.cleanup()
+
         return self._exitStatus
 
     # Private Interface
@@ -163,10 +177,13 @@ class ImageProcessingApp:
 
         # Train the Model on the 0-th Fold
         indexTrainFold = 0
-        self.__runTrainOnFold(indexTrainFold)
-
+        self._currentFold = indexTrainFold
+        for ii in range(self.getConfig().getNumEpochsPerFold()):
+            self.__runTrainOnFold(indexTrainFold,False)
+        
         # Test the Model on the 1-th Fold
         indexTestFold = 1
+        self._currentFold = indexTestFold
         self.__runTestOnFold(indexTestFold)
 
         return None
@@ -228,12 +245,12 @@ class ImageProcessingApp:
             if (fold.isFinished() == True):
                 loop = False
                 fold.resetIterator()
+                fold.shuffle()
 
         # Cleanup
         self._classificationManager.exportTrainingHistory(foldIndex)
-
         if (resetBatchCounter == True):
-            batch.SampleBatch.resetBatchCounter()
+            batch.SampleBatch.resetBatchCounter()          
         return None
 
     def __runTestOnFold(self,
@@ -259,6 +276,7 @@ class ImageProcessingApp:
             if (fold.isFinished() == True):
                 loop = False
                 fold.resetIterator()
+                fold.shuffle()
 
         # Cleanup
         if (resetBatchCounter == True):

@@ -81,6 +81,11 @@ class CrossValidationFold:
         self._queueIter = 0
         return None
 
+    def shuffle(self) -> None:
+        """ Reshuffle the order of all samples in this fold """
+        np.random.shuffle(self._sampleQueue)
+        return None
+
     # Magic Methods
 
     def __str__(self) -> str:

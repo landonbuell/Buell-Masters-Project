@@ -11,6 +11,7 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
 import torch
 
 import commonEnumerations
@@ -20,6 +21,7 @@ import modelHistoryInfo
 
 import manager
 import batch
+import preprocessManager
 
         #### CLASS DEFINITIONS ####
 
@@ -44,10 +46,7 @@ class TorchManager(manager.Manager):
 
         self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
         self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
-
-        self._epochsPerBatch    = 1
         
-
     def __del__(self):
         """ Destructor """
         pass
@@ -68,7 +67,11 @@ class TorchManager(manager.Manager):
 
     def getEpochsPerBatch(self) -> int:
         """ Return the Number of epochs to use per batch """
-        return self._epochsPerBatch
+        return self.getApp().getConfig().getNumEpochsPerBatch()
+
+    def getDevice(self) -> torch.device:
+        """ Get the active torch device (CPU vs. GPU) """
+        return self.getApp().getConfig().getTorchConfig().getActiveDevice()
 
     # Public Interface
 
@@ -77,11 +80,8 @@ class TorchManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Generate the Model
-        self._model     = self.__invokeGetModel()
-        self._optimizer = torch.optim.Adam(params=self._model.parameters(),
-                                           lr=0.01)
-        self.__iterModelParameters()
+        self._initModel()
+        self._initOptimizer()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -105,6 +105,7 @@ class TorchManager(manager.Manager):
         self.__verifyModelExists(True)
         self.__verifyOptimizerExists(True)
         
+        self._model.train()
         self.__trainOnBatchHelper(batchData)
         return None
 
@@ -131,7 +132,21 @@ class TorchManager(manager.Manager):
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model     = self.__invokeGetModel()
-        self._optimizer = torch.optim.Adam(params=self._model.parameters())
+        self._initOptimizer()
+        return None
+
+    # Protected Interface
+
+    def _initModel(self) -> None:
+        """ VIRTUAL: Initialize the Model for this manager """
+        self._model = self.__invokeGetModel()
+        toDevice = self.getApp().getConfig().getTorchConfig().getActiveDevice()
+        self._model.to(device=toDevice)
+        return None
+
+    def _initOptimizer(self) -> None:
+        """ VIRTUAL: Initialize the Optimizer for this Model """     
+        self.__verifyModelExists()
         return None
 
     # Private Interface 
@@ -163,31 +178,33 @@ class TorchManager(manager.Manager):
         model = self._callbackGetModel.__call__(self._numClasses)
         return model
 
-    def __iterModelParameters(self):
-        """ Iterate over all model parameters """
-        params = self._model.parameters()
-        for item in params:
-            print(item)
-        return None
-
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-                # Isolate X + Y Data
+        dev = self.getDevice()        
+        batchData.toDevice(dev)
         X = batchData.getX()
         Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
-        for epoch in range(self._epochsPerBatch):
-            # Forward Pass + Compute cost of batch
-            outputs = self._model(X)
-            cost = self._objective(outputs,Y)
+        #preprocessManager.Preprocessors.showSampleAtIndex(None,batchData)
 
-            # Backwards pass
+        for epoch in range(self.getEpochsPerBatch()):
+            # Zero the Gradient
             self._optimizer.zero_grad()
-            cost.backward()
 
-            # Update the weights + Log cost
+            # Forward Pass + Compute cost of batch
+            outputs     = self._model(X)
+            cost        = self._objective(outputs,Y)
+
+            # Backwards pass + update the weights          
+            cost.backward()
             self._optimizer.step()
-            self._trainHistory.appendLossScore(cost.item())
+
+            # Log the Cost, Precision, Recall, Accuracy
+            self._trainHistory.updateWithTrainBatch(
+                outputs.detach().cpu().numpy(),
+                Y.detach().cpu().numpy(),
+                np.float32(cost.item()),
+                self._numClasses)
 
         return None
 
@@ -210,7 +227,7 @@ class ClassificationManager(TorchManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( convolutionalNeuralNetworks.getInspiredVisualGeometryGroup )
+        self.registerGetModelCallback( convolutionalNeuralNetworks.getMultiTierImageClassifer )
 
     def __del__(self):
         """ Destructor """
@@ -219,6 +236,18 @@ class ClassificationManager(TorchManager):
     # Accessors
 
     # Public Interface 
+
+    # Protected Interface
+
+    def _initOptimizer(self) -> None:
+        """ VIRTUAL: Initialize the Optimizer for this Model """     
+        super()._initOptimizer()
+        self._optimizer = torch.optim.Adam(
+                            params=self._model.parameters(),
+                            lr=0.01,
+                            betas=(0.9,0.999),
+                            eps=1e-6)
+        return None
 
 class SegmentationManager(TorchManager):
     """
@@ -240,6 +269,7 @@ class SegmentationManager(TorchManager):
     # Accessors
 
     # Public Interface 
+
 
 
 """

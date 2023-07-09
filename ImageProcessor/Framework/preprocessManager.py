@@ -37,19 +37,18 @@ class PreprocessManager(manager.Manager):
         """ Constructor """
         super().__init__(app,PreprocessManager.__NAME)
         self._steps     = list()
-        self._batchNormalizer = torch.nn.BatchNorm2d(
-                                    num_features=3,
-                                    eps=1e-6,
-                                    momentum=0.1,
-                                    affine=False,
-                                    track_running_stats=True)
+        self._batchNormalizer = torchvision.transforms.Normalize(
+            mean = (0.5,0.5,0.5),
+            std = (0.25,0.25,0.25))
 
         #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
         self.__registerPreprocessStep( Preprocessors.castToSinglePrecision )
+        #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
+        self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
+        self.__registerPreprocessStep( Preprocessors.divideBy255 )
         self.__registerPreprocessStep( Preprocessors.torchVisionNormalize )
         #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
-
 
     def __del__(self):
         """ Destructor """
@@ -97,7 +96,7 @@ class PreprocessManager(manager.Manager):
         return None
 
 class Preprocessors:
-    """ Static Class of Prepreocessors for batches of images """
+    """ Static Class of Preprocessors for batches of images """
 
     @staticmethod
     def showSampleAtIndex(  preprocessMgr: PreprocessManager,
@@ -106,9 +105,13 @@ class Preprocessors:
         sampleIndex = 0
         image,label = sampleBatch[sampleIndex]
         X = image.permute(1,2,0)
+        X = X.to(device="cpu")
         if (X.dtype != torch.uint8):
             X = X.type(torch.uint8)
         plt.imshow(X)
+        plt.xticks([])
+        plt.yticks([])
+        plt.xlabel("Class Num: {0}".format(label))
         plt.show()
         return sampleBatch
 
@@ -136,6 +139,36 @@ class Preprocessors:
                                 sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
         """ Cast the features of an input tensor to Single-Precision floats """
         sampleBatch.setDataTypeX(torch.float32)
+        return sampleBatch
+
+    @staticmethod
+    def rescaleTo32by32(preprocessMgr: PreprocessManager,
+                        sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Resize each input image to 32 x 32 """
+        resizer = torchvision.transforms.Resize(
+            size=(32,32),
+            interpolation=torchvision.transforms.InterpolationMode.BILINEAR ) 
+        Xresized = resizer.forward(sampleBatch.getX())
+        sampleBatch.setX( Xresized ) 
+        return sampleBatch
+
+    @staticmethod
+    def rescaleTo64by64(preprocessMgr: PreprocessManager,
+                        sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Resize each input image to 64 x 64 """
+        resizer = torchvision.transforms.Resize(
+            size=(64,64),
+            interpolation=torchvision.transforms.InterpolationMode.BILINEAR,
+           antialias=True) 
+        Xresized = resizer.forward(sampleBatch.getX())
+        sampleBatch.setX( Xresized ) 
+        return sampleBatch
+
+    @staticmethod
+    def divideBy255(   preprocessMgr: PreprocessManager,
+                            sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Divide each element in the Batch by 255 """
+        sampleBatch._X = sampleBatch._X / 255.0
         return sampleBatch
 
     @staticmethod

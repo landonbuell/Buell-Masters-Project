@@ -11,6 +11,7 @@
         #### IMPORTS ####
 
 import torch
+import imageProcessingApp
 
         #### CONSTANTS ####
 
@@ -19,13 +20,17 @@ SHAPE_CHANNELS_LAST     = (200,200,3)
 
         #### FUNCTION DEFINITONS ####
 
+def _getDevice() -> torch.device:
+    """ Return the Torch Device that is in use """
+    return imageProcessingApp.ImageProcessingApp.getInstance().getConfig().getTorchConfig().getActiveDevice()
+
 def oneHotEncode(labels: torch.Tensor,
                  numClasses: int):
     """ One-Hot encode a vector of labels """
     if (labels.ndim > 1):
         msg = "Cannot encode labels w/ ndim={0}. Expected ndim=1".format(labels.ndim)
         raise RuntimeError(msg)
-    oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype)
+    oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype,device=_getDevice())
     for ii,tgt in enumerate(labels):
         oneHot[ii,tgt] = 1
     return oneHot
@@ -111,6 +116,12 @@ class SampleBatch:
     def getOneHotY(self,numClasses: int) -> torch.Tensor:
         """ One-hot-encode this batch's labels """
         return oneHotEncode(self._y,numClasses)
+
+    def toDevice(self,deviceName: torch.device) -> None:
+        """ Cast the X & y members to the chosen device """
+        self._X = self._X.to(device=deviceName)
+        self._y = self._y.to(device=deviceName)
+        return None
 
     # Magic Methods
 
