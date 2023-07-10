@@ -47,6 +47,10 @@ class Manager:
         """ Return Reference to Parent Application """
         return self._app
 
+    def getConfig(self):
+        """ Return the app's configuration structure """
+        return self._app.getConfig()
+
     def getName(self) -> str:
         """ Get the Name of this Manager """
         return self._name

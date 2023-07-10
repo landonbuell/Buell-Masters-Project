@@ -69,7 +69,7 @@ class PreprocessManager(manager.Manager):
         if (super().init() == commonEnumerations.Status.ERROR):
             return self._status
 
-        # Populate Sample Databse 
+        
         self._setInitFinished(True)
         return self._status
 

@@ -21,7 +21,6 @@ import modelHistoryInfo
 
 import manager
 import batch
-import preprocessManager
 
         #### CLASS DEFINITIONS ####
 
@@ -42,7 +41,7 @@ class TorchManager(manager.Manager):
         self._model             = None
 
         self._optimizer         = None
-        self._objective         = torch.nn.CrossEntropyLoss()  
+        self._objective         = torch.nn.functional.cross_entropy
 
         self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
         self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
@@ -183,6 +182,7 @@ class TorchManager(manager.Manager):
         dev = self.getDevice()        
         batchData.toDevice(dev)
         X = batchData.getX()
+        #Y = batchData.getY().type(dtype=torch.float32)
         Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
         #preprocessManager.Preprocessors.showSampleAtIndex(None,batchData)
@@ -201,9 +201,9 @@ class TorchManager(manager.Manager):
 
             # Log the Cost, Precision, Recall, Accuracy
             self._trainHistory.updateWithTrainBatch(
-                outputs.detach().cpu().numpy(),
-                Y.detach().cpu().numpy(),
-                np.float32(cost.item()),
+                outputs.detach().cpu(),
+                Y.detach().cpu(),
+                cost.item(),
                 self._numClasses)
 
         return None
