@@ -111,6 +111,9 @@ class TorchManager(manager.Manager):
     def testOnBatch(self, batchData: batch.SampleBatch) -> None:
         """ Test the model on the batch of data provided """
         self.__verifyModelExists(True)
+
+        self._model.eval()
+        self.__testOnBatchHelper(batchData)
         return None
 
     def exportTrainingHistory(self,foldIndex: int) -> None:
@@ -205,6 +208,13 @@ class TorchManager(manager.Manager):
                 Y.detach().cpu(),
                 cost.item(),
                 self._numClasses)
+
+        return None
+
+    def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
+        """ Helper function to test the model n the batch of provided data """
+
+
 
         return None
 
