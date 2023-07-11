@@ -96,14 +96,14 @@ class StrategyManager(manager.Manager):
         self._currentFold = indexTrainFold
         for ii in range(self.getConfig().getNumEpochsPerFold()):
             self.__runTrainOnFold(indexTrainFold,False)
-            self.__exportClassificiationHistoryAndModel(indexTrainFold)
+            self.__exportClassificiationTrainHistoryAndModel(indexTrainFold)
+        self.__resetClassificationAndLoadModel(indexTrainFold)    # load the model from the TRAIN index
         
         # Test the Model on the 1-th Fold
         indexTestFold = 1
-        self._currentFold = indexTestFold
-        self.__resetClassificationAndLoadModel(indexTrainFold)    # load the model from the TRAIN index
+        self._currentFold = indexTestFold     
         self.__runTestOnFold(indexTestFold)
-
+        self.__exportClassificiationTestHistory(indexTestFold)
         return None
 
     def __runCrossValidation(self):
@@ -124,18 +124,16 @@ class StrategyManager(manager.Manager):
                 self.logMessage(msg)
 
                 self.__runTrainOnFold(x,False)
-            self.getApp().getClassificationManager().exportTrainingHistory(
-                "trainingHistoryFold{0}.csv".format(foldIndex))
-           
-
+            self.__exportClassificiationTrainHistoryAndModel(foldIndex)
+            self.__resetClassificationAndLoadModel(foldIndex)
+          
             # Test in the remaining test fold
             msg = "\tTesting on Fold #{0}".format(testFold)
             self.logMessage(msg)
+            
             self.__runTestOnFold(testFold)
-
+            self.__exportClassificiationTestHistory(testFold)
             # Cleanup After Each Fold 
-            # TODO: Export Classifier Model
-            # TODO: Export Segmentation Model 
             batch.SampleBatch.resetBatchCounter()
         
         # Cleanup
@@ -203,12 +201,18 @@ class StrategyManager(manager.Manager):
             batch.SampleBatch.resetBatchCounter()
         return None
 
-    def __exportClassificiationHistoryAndModel(self,foldIndex: int) -> None:
+    def __exportClassificiationTrainHistoryAndModel(self,foldIndex: int) -> None:
         """ Export the Training History & Model using the fold index as the name """
         self.getApp().getClassificationManager().exportTrainingHistory(
                 "trainingHistoryFold{0}.csv".format(foldIndex))
         self.getApp().getClassificationManager().exportModel(
                 "modelFold{0}.pth".format(foldIndex))
+        return None
+
+    def __exportClassificiationTestHistory(self,foldIndex: int) -> None:
+        """ Export the Testing History & Model using the fold index as the name """
+        self.getApp().getClassificationManager().exportTestingHistory(
+                "testingHistoryFold{0}.csv".format(foldIndex))
         return None
 
     def __resetClassificationAndLoadModel(self,foldIndex: int) -> None:
