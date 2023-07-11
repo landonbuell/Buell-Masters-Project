@@ -152,14 +152,16 @@ class TorchManager(manager.Manager):
     def loadModel(self,importPathName: str) -> None:
         """ Import the model from specified path """
         self.__verifyModelExists(True)
-        importPath = os.path.joun(self.getOutputPath(),importPathName)
+        importPath = os.path.join(self.getOutputPath(),importPathName)
         msg = "Importing model from: {0}".format(importPath)
         self.logMessage(msg)
-        if os.path.exists(importPathName) == False):
-            msg = "Cannot load model from {0} because it does not exist".format(importPathName)
+        if (os.path.exists(importPath) == False):
+            msg = "Cannot load model from {0} because it does not exist".format(importPath)
             self.logMessage(msg)
             raise RuntimeError(msg)
         self._model.load_state_dict(torch.load(importPath))
+        toDevice = self.getApp().getConfig().getTorchConfig().getActiveDevice()
+        self._model.to(device=toDevice)
         return None
 
     # Protected Interface
@@ -236,15 +238,16 @@ class TorchManager(manager.Manager):
         batchData.toDevice(device)
 
         X = batchData.getX()
-        Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
+        Y = batchData.getY().type(torch.int16)
 
         with torch.no_grad():
             # No gradients required for Predictions
             outputs = self._model(X)
             maxItem,maxIndx = torch.max(outputs.data,dim=1)
 
-
-
+            # Store the label, the prediction int, and the confidence in that int
+            self._testHistory.updatedWithBatch(
+                Y.cpu(),maxIndx.cpu(),maxItem.cpu())
 
         return None
 

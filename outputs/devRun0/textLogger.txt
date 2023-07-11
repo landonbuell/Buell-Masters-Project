@@ -1,0 +1,117 @@
+	                                	
+----------------------------------------------------------------
+
+	                                	ImageProcessingApp
+	                                	2023.07.11.02.39.07.528903
+	                                	
+----------------------------------------------------------------
+
+	2023.07.11.02.39.07.529900      	Intializing StrategyManager ... 
+	2023.07.11.02.39.07.530897      	Basic Train-Test is enabled w/ 20.0% test ratio
+	2023.07.11.02.39.07.530897      	Intializing SampleManager ... 
+	2023.07.11.02.39.07.530897      	Loading samples from file: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\inputFiles\every10Samples.csv
+	2023.07.11.02.39.07.551841      		Found 8700 samples in file
+	2023.07.11.02.39.09.202442      	Finished reading all input files. Sample Database has 8700 items
+	2023.07.11.02.39.09.202442      	Intializing DataManager ... 
+	2023.07.11.02.39.09.202442      		Data manager has 2 folds...
+	2023.07.11.02.39.09.202442      			Fold #0 has 6960 samples for training. (80.0% of dataset)
+	2023.07.11.02.39.09.202442      			Fold #1 has 1740 samples for testing. (20.0% of dataset)
+	2023.07.11.02.39.09.203449      	Intializing AugmentationManager ... 
+	2023.07.11.02.39.09.203449      	Intializing PreprocessManager ... 
+	2023.07.11.02.39.09.203449      	Intializing ClassificationManager ... 
+	2023.07.11.02.39.09.264239      	Intializing SegmentationManager ... 
+	2023.07.11.02.39.09.265228      	Running Train/Test Split
+	2023.07.11.02.39.09.265228      			Retreving batch #0 w/ 32 samples
+	2023.07.11.02.39.10.894069      			Retreving batch #1 w/ 32 samples
+	2023.07.11.02.39.10.935936      			Retreving batch #2 w/ 32 samples
+	2023.07.11.02.39.10.973836      			Retreving batch #3 w/ 32 samples
+	2023.07.11.02.39.11.011738      			Retreving batch #4 w/ 32 samples
+	2023.07.11.02.39.11.050636      			Retreving batch #5 w/ 32 samples
+	2023.07.11.02.39.11.088537      			Retreving batch #6 w/ 32 samples
+	2023.07.11.02.39.11.128430      			Retreving batch #7 w/ 32 samples
+	2023.07.11.02.39.11.173310      			Retreving batch #8 w/ 32 samples
+	2023.07.11.02.39.11.209217      			Retreving batch #9 w/ 32 samples
+	2023.07.11.02.39.11.248113      			Retreving batch #10 w/ 32 samples
+	2023.07.11.02.39.11.284018      			Retreving batch #11 w/ 32 samples
+	2023.07.11.02.39.11.320921      			Retreving batch #12 w/ 32 samples
+	2023.07.11.02.39.11.357854      			Retreving batch #13 w/ 32 samples
+	2023.07.11.02.39.11.395795      			Retreving batch #14 w/ 32 samples
+	2023.07.11.02.39.11.436748      			Retreving batch #15 w/ 32 samples
+	2023.07.11.02.39.11.469701      			Retreving batch #16 w/ 32 samples
+	2023.07.11.02.39.11.506644      			Retreving batch #17 w/ 32 samples
+	2023.07.11.02.39.11.543588      			Retreving batch #18 w/ 32 samples
+	2023.07.11.02.39.11.583552      			Retreving batch #19 w/ 32 samples
+	2023.07.11.02.39.11.625504      			Retreving batch #20 w/ 32 samples
+	2023.07.11.02.39.11.660453      			Retreving batch #21 w/ 32 samples
+	2023.07.11.02.39.11.696419      			Retreving batch #22 w/ 32 samples
+	2023.07.11.02.39.11.732371      			Retreving batch #23 w/ 32 samples
+	2023.07.11.02.39.11.768275      			Retreving batch #24 w/ 32 samples
+	2023.07.11.02.39.11.805177      			Retreving batch #25 w/ 32 samples
+	2023.07.11.02.39.11.843075      			Retreving batch #26 w/ 32 samples
+	2023.07.11.02.39.11.878979      			Retreving batch #27 w/ 32 samples
+	2023.07.11.02.39.11.912888      			Retreving batch #28 w/ 32 samples
+	2023.07.11.02.39.11.950791      			Retreving batch #29 w/ 32 samples
+	2023.07.11.02.39.11.985698      			Retreving batch #30 w/ 32 samples
+	2023.07.11.02.39.12.022599      			Retreving batch #31 w/ 32 samples
+	2023.07.11.02.39.12.057185      			Retreving batch #32 w/ 32 samples
+	2023.07.11.02.39.12.097078      			Retreving batch #33 w/ 32 samples
+	2023.07.11.02.39.12.134977      			Retreving batch #34 w/ 32 samples
+	2023.07.11.02.39.12.168886      			Retreving batch #35 w/ 32 samples
+	2023.07.11.02.39.12.203792      			Retreving batch #36 w/ 32 samples
+	2023.07.11.02.39.12.241691      			Retreving batch #37 w/ 32 samples
+	2023.07.11.02.39.12.276606      			Retreving batch #38 w/ 32 samples
+	2023.07.11.02.39.12.310527      			Retreving batch #39 w/ 32 samples
+	2023.07.11.02.39.12.346441      			Retreving batch #40 w/ 32 samples
+	2023.07.11.02.39.12.382346      			Retreving batch #41 w/ 32 samples
+	2023.07.11.02.39.12.420244      			Retreving batch #42 w/ 32 samples
+	2023.07.11.02.39.12.458143      			Retreving batch #43 w/ 32 samples
+	2023.07.11.02.39.12.494046      			Retreving batch #44 w/ 32 samples
+	2023.07.11.02.39.12.531946      			Retreving batch #45 w/ 32 samples
+	2023.07.11.02.39.12.567859      			Retreving batch #46 w/ 32 samples
+	2023.07.11.02.39.12.606263      			Retreving batch #47 w/ 32 samples
+	2023.07.11.02.39.12.640175      			Retreving batch #48 w/ 32 samples
+	2023.07.11.02.39.12.680068      			Retreving batch #49 w/ 32 samples
+	2023.07.11.02.39.12.716975      			Retreving batch #50 w/ 32 samples
+	2023.07.11.02.39.12.754874      			Retreving batch #51 w/ 32 samples
+	2023.07.11.02.39.12.789289      			Retreving batch #52 w/ 32 samples
+	2023.07.11.02.39.12.824202      			Retreving batch #53 w/ 32 samples
+	2023.07.11.02.39.12.861107      			Retreving batch #54 w/ 32 samples
+	2023.07.11.02.39.12.897191      			Retreving batch #55 w/ 32 samples
+	2023.07.11.02.39.12.933095      			Retreving batch #56 w/ 32 samples
+	2023.07.11.02.39.12.966010      			Retreving batch #57 w/ 32 samples
+	2023.07.11.02.39.13.003908      			Retreving batch #58 w/ 32 samples
+	2023.07.11.02.39.13.044308      			Retreving batch #59 w/ 32 samples
+	2023.07.11.02.39.13.080209      			Retreving batch #60 w/ 32 samples
+	2023.07.11.02.39.13.114121      			Retreving batch #61 w/ 32 samples
+	2023.07.11.02.39.13.154015      			Retreving batch #62 w/ 32 samples
+	2023.07.11.02.39.13.192911      			Retreving batch #63 w/ 32 samples
+	2023.07.11.02.39.13.227824      			Retreving batch #64 w/ 32 samples
+	2023.07.11.02.39.13.262241      			Retreving batch #65 w/ 32 samples
+	2023.07.11.02.39.13.297235      			Retreving batch #66 w/ 32 samples
+	2023.07.11.02.39.13.332141      			Retreving batch #67 w/ 32 samples
+	2023.07.11.02.39.13.368048      			Retreving batch #68 w/ 32 samples
+	2023.07.11.02.39.13.406945      			Retreving batch #69 w/ 32 samples
+	2023.07.11.02.39.13.446837      			Retreving batch #70 w/ 32 samples
+	2023.07.11.02.39.13.484247      			Retreving batch #71 w/ 32 samples
+	2023.07.11.02.39.13.521148      			Retreving batch #72 w/ 32 samples
+	2023.07.11.02.39.13.556055      			Retreving batch #73 w/ 32 samples
+	2023.07.11.02.39.13.591959      			Retreving batch #74 w/ 32 samples
+	2023.07.11.02.39.13.629859      			Retreving batch #75 w/ 32 samples
+	2023.07.11.02.39.13.664274      			Retreving batch #76 w/ 32 samples
+	2023.07.11.02.39.13.700178      			Retreving batch #77 w/ 32 samples
+	2023.07.11.02.39.13.735084      			Retreving batch #78 w/ 32 samples
+	2023.07.11.02.39.13.772983      			Retreving batch #79 w/ 32 samples
+	2023.07.11.02.39.13.809890      			Retreving batch #80 w/ 32 samples
+	2023.07.11.02.39.13.850291      			Retreving batch #81 w/ 32 samples
+	2023.07.11.02.39.13.890184      			Retreving batch #82 w/ 32 samples
+	2023.07.11.02.39.13.928087      			Retreving batch #83 w/ 32 samples
+	2023.07.11.02.39.13.963997      			Retreving batch #84 w/ 32 samples
+	2023.07.11.02.39.13.999908      			Retreving batch #85 w/ 32 samples
+	2023.07.11.02.39.14.038314      			Retreving batch #86 w/ 32 samples
+	2023.07.11.02.39.14.077224      			Retreving batch #87 w/ 32 samples
+	2023.07.11.02.39.14.116120      			Retreving batch #88 w/ 32 samples
+	2023.07.11.02.39.14.155019      			Retreving batch #89 w/ 32 samples
+	2023.07.11.02.39.14.189927      			Retreving batch #90 w/ 32 samples
+	2023.07.11.02.39.14.226337      			Retreving batch #91 w/ 32 samples
+	2023.07.11.02.39.14.262241      			Retreving batch #92 w/ 32 samples
+	2023.07.11.02.39.14.295156      			Retreving batch #93 w/ 32 samples

@@ -23,6 +23,7 @@ class ModelTrainHistoryInfo:
 
     def __init__(self):
         """ Constructor """
+        self._exportCounts = 0
         self._losses    = np.array([],dtype=np.float32)
         
     def __del__(self):
@@ -74,6 +75,7 @@ class ModelTestHistoryInfo:
 
     def __init__(self):
         """ Constructor """
+        self._exportCounts = 0
         self._truths    = np.array([],dtype=np.int16)
         self._outputs   = np.array([],dtype=np.int16)
         self._scores    = np.array([],dtype=np.float32)
@@ -86,9 +88,14 @@ class ModelTestHistoryInfo:
 
     # Public Interface
 
-    def appendLoss(self, batchLoss: np.float32) -> None:
-        """ Append a Loss Item to Array of Losses """
-        self._losses    = np.append(self._losses,batchLoss)
+    def updatedWithBatch(self,
+                         truth: np.int16,
+                         output: np.int16,
+                         score: np.float32) -> None:
+        """ Update Instance w/ a set of outputs """
+        self._truths    = np.append(self._truths,truth)
+        self._outputs   = np.append(self._outputs,output)
+        self._scores    = np.append(self._scores,score)
         return None
 
     def reset(self) -> None:

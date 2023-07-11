@@ -97,7 +97,7 @@ class StrategyManager(manager.Manager):
         for ii in range(self.getConfig().getNumEpochsPerFold()):
             self.__runTrainOnFold(indexTrainFold,False)
             self.__exportClassificiationTrainHistoryAndModel(indexTrainFold)
-        self.__resetClassificationAndLoadModel(indexTrainFold)    # load the model from the TRAIN index
+        self.__resetClassificationAndLoadModel(indexTrainFold)
         
         # Test the Model on the 1-th Fold
         indexTestFold = 1
@@ -176,18 +176,18 @@ class StrategyManager(manager.Manager):
                         resetBatchCounter=True):
         """ Run the App in Test-only mode """
         batchSize = self.getConfig().getBatchSize() 
-        fold = self._dataManager.getFold(foldIndex)
+        fold = self.getApp().getDataManager().getFold(foldIndex)
         loop = (fold is not None)
         
         while (loop == True):
 
             batchIndexes    = fold.getNextBatchIndexes(batchSize)
-            batchData       = self._sampleManager.getNextBatch(batchIndexes)
+            batchData       = self.getApp().getSampleManager().getNextBatch(batchIndexes)
 
             # TODO: call preprocess manager on batch
-            self._preprocessManager.processBatch(batchData)
+            self.getApp().getPreprocessManager().processBatch(batchData)
 
-            self._classificationManager.testOnBatch(batchData)
+            self.getApp().getClassificationManager().testOnBatch(batchData)
             # TODO: invoke segmentation Manager
             
             # Check if there is any samples left in this fold
