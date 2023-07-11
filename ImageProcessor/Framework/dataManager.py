@@ -43,7 +43,7 @@ class DataManager(manager.Manager):
         self._runInfo           = runInfo.RunInfo(app)
         self._callbackInitFolds = DataManager.callbackInitTrainTestFolds
 
-        if (self.getApp().crossValEnabled() == True):
+        if (self.getApp().getStrategyManager().crossValEnabled() == True):
             # Cross Validation is Enabled
             self._callbackInitFolds = DataManager.callbackInitCrossValFolds
 
@@ -104,6 +104,7 @@ class DataManager(manager.Manager):
 
         # Initialize the Folds for Train/Test
         self.__initSampleFolds()
+        self.__foldSizeReport()
 
         # Populate Sample Databse 
         self._setInitFinished(True)
@@ -183,6 +184,35 @@ class DataManager(manager.Manager):
         self._callbackInitFolds.__call__(sampleMgr,dataMgr)  
         return None
 
+    def __foldSizeReport(self) -> None:
+        """ Print out a report about the Fold Sizes """
+        msg = "\tData manager has {0} folds...".format(self.getNumFolds())
+        self.logMessage(msg)
+        totalNumSamples = self.getApp().getSampleManager().getSize()
+
+        if (self.getApp().getStrategyManager().crossValEnabled() == True):
+            # Cross Validation Mode
+            for ii in range(self.getNumFolds()):
+                numSamplesInFold = self._foldDatabase[ii].getSize()
+                foldPercentageSize = (numSamplesInFold/totalNumSamples) * 100.0
+                msg = "Fold #{0} has {1} samples. ({2}% of dataset)".format(
+                    ii,numSamplesInFold,foldPercentageSize)
+                self.logMessage(msg)            
+        else:
+            # Train-Test Mode
+            numSamplesInFold = self._foldDatabase[0].getSize()
+            foldPercentageSize = (numSamplesInFold/totalNumSamples) * 100.0
+            msg = "\t\tFold #{0} has {1} samples for training. ({2}% of dataset)".format(
+                0,numSamplesInFold,foldPercentageSize)
+            self.logMessage(msg)
+            numSamplesInFold = self._foldDatabase[1].getSize()
+            foldPercentageSize = (numSamplesInFold/totalNumSamples) * 100.0
+            msg = "\t\tFold #{0} has {1} samples for testing. ({2}% of dataset)".format(
+                1,numSamplesInFold,foldPercentageSize)
+            self.logMessage(msg)
+
+        return None
+
     def __getIndexesForNextBatch(self,foldIndex: int) -> np.ndarray:
         """ Get the sample Index's for the next Batch of """
         batchSize = self.getApp().getConfig().getBatchSize()
@@ -194,7 +224,6 @@ class DataManager(manager.Manager):
         msg = "WARNING: Plotting distrobution of class data is not yet implemented"
         self.logMessage(msg)
         return None
-
 
     def __exportRunInfo(self) -> None:
         """ Export the runInfo class to disk """
