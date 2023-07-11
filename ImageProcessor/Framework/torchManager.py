@@ -45,6 +45,8 @@ class TorchManager(manager.Manager):
 
         self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
         self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
+
+        self._evalMetrics       = []
         
     def __del__(self):
         """ Destructor """
@@ -116,25 +118,40 @@ class TorchManager(manager.Manager):
         self.__testOnBatchHelper(batchData)
         return None
 
-    def exportTrainingHistory(self,foldIndex: int) -> None:
-        """ Show + Export Training History """
-        outputFileName = "trainingHistoryFold{0}.csv".format(foldIndex)
+    def exportTrainingHistory(self,outputFileName: str) -> None:
+        """ Export the training history """
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
+        msg = "Exporting training history to: {0}".format(outputPath)
+        self.logMessage(msg)
         self._trainHistory.export(outputPath)
         return None
 
-    def exportModel(self,modelName: str) -> bool:
-        """ Export the current classifier Model to the outputs folder """
+    def exportModel(self,outputPathName: str) -> None:
+        """ Export the model to specified path """
         self.__verifyModelExists(True)
-        outPath = os.path.join( self.getApp().getConfig().getOutputPath(), modelName ) 
-        torch.save(self._model , outPath)
-
-        return False
+        outputPath = os.path.join(self.getOutputPath(),outputPathName)
+        msg = "Exporting model to: {0}".format(outputPath)
+        self.logMessage(msg)
+        torch.save(self._model.state_dict(),outputPath)
+        return None
 
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model     = self.__invokeGetModel()
         self._initOptimizer()
+        return None
+
+    def loadModel(self,importPathName: str) -> None:
+        """ Import the model from specified path """
+        self.__verifyModelExists(True)
+        importPath = os.path.joun(self.getOutputPath(),importPathName)
+        msg = "Importing model from: {0}".format(importPath)
+        self.logMessage(msg)
+        if os.path.exists(importPathName) == False):
+            msg = "Cannot load model from {0} because it does not exist".format(importPathName)
+            self.logMessage(msg)
+            raise RuntimeError(msg)
+        self._model.load_state_dict(torch.load(importPath))
         return None
 
     # Protected Interface
@@ -213,11 +230,19 @@ class TorchManager(manager.Manager):
 
     def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper function to test the model n the batch of provided data """
+        dev = self.getDevice()
+        batchData.toDevice(dev)
 
+        X = batchData.getX()
+        Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
+        with torch.no_grad():
+            pass
 
         return None
 
+
+    
     def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
         """ Execute a forward pass using the provided inputs """
         outputs = inputs
@@ -244,6 +269,10 @@ class ClassificationManager(TorchManager):
         pass
 
     # Accessors
+
+    def getModelName(self) -> str:
+        """ Override - Return name of model """
+        return "classificationManager"
 
     # Public Interface 
 

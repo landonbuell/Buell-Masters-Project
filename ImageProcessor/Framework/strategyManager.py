@@ -45,6 +45,10 @@ class StrategyManager(manager.Manager):
         """ Return T/F if Cross Validation Mode is enabled """
         return (self.getApp().getConfig().getNumCrossValFolds() > 1 )
 
+    def getCurrentFold(self) -> int:
+        """ Return the Current Fold In Use """
+        return self._currentFold
+
     # Public Interface
 
     def init(self) -> commonEnumerations.Status:
@@ -92,10 +96,12 @@ class StrategyManager(manager.Manager):
         self._currentFold = indexTrainFold
         for ii in range(self.getConfig().getNumEpochsPerFold()):
             self.__runTrainOnFold(indexTrainFold,False)
+            self.__exportClassificiationHistoryAndModel(indexTrainFold)
         
         # Test the Model on the 1-th Fold
         indexTestFold = 1
         self._currentFold = indexTestFold
+        self.__resetClassificationAndLoadModel(indexTrainFold)    # load the model from the TRAIN index
         self.__runTestOnFold(indexTestFold)
 
         return None
@@ -118,6 +124,8 @@ class StrategyManager(manager.Manager):
                 self.logMessage(msg)
 
                 self.__runTrainOnFold(x,False)
+            self.getApp().getClassificationManager().exportTrainingHistory(
+                "trainingHistoryFold{0}.csv".format(foldIndex))
            
 
             # Test in the remaining test fold
@@ -161,7 +169,6 @@ class StrategyManager(manager.Manager):
                 fold.shuffle()
 
         # Cleanup
-        self._classificationManager.exportTrainingHistory(foldIndex)
         if (resetBatchCounter == True):
             batch.SampleBatch.resetBatchCounter()          
         return None
@@ -195,6 +202,22 @@ class StrategyManager(manager.Manager):
         if (resetBatchCounter == True):
             batch.SampleBatch.resetBatchCounter()
         return None
+
+    def __exportClassificiationHistoryAndModel(self,foldIndex: int) -> None:
+        """ Export the Training History & Model using the fold index as the name """
+        self.getApp().getClassificationManager().exportTrainingHistory(
+                "trainingHistoryFold{0}.csv".format(foldIndex))
+        self.getApp().getClassificationManager().exportModel(
+                "modelFold{0}.pth".format(foldIndex))
+        return None
+
+    def __resetClassificationAndLoadModel(self,foldIndex: int) -> None:
+        """ Reset the state of the manager + reload the model """
+        self.getApp().getClassificationManager().resetState()
+        self.getApp().getClassificationManager().loadModel(
+                "modelFold{0}.pth".format(foldIndex))
+        return None
+
 
 """
     Author:         Landon Buell
