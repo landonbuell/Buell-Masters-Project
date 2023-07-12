@@ -117,7 +117,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","allSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun1"))
         config = AppConfig(inputPaths,outputPath)
         return config
 
@@ -127,7 +127,6 @@ class TorchConfig:
     def __init__(self):
         """ Constructor """
         self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
 
     def __del__(self):
         """ Destructor """
