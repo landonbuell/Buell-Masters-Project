@@ -11,8 +11,8 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
 import matplotlib.pyplot as plt
-import tensorflow as tf
 
 import torch
 import torchvision
@@ -42,14 +42,15 @@ class PreprocessManager(manager.Manager):
             mean = (0.5,0.5,0.5),
             std = (0.25,0.25,0.25))
 
-        self.__registerPreprocessStep( TensorflowPreprocessors.showSampleAtIndex )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.crop8PixelsFromEdges )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.castToSinglePrecision )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.rescaleTo32by32 )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.rescaleTo64by64 )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.divideBy255 )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.torchVisionNormalize )
-        #self.__registerPreprocessStep( TensorflowPreprocessors.showSampleAtIndex )
+        self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
+        self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
+        self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
+        #self.__registerPreprocessStep( Preprocessors.castToSinglePrecision )
+        #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
+        #self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
+        #self.__registerPreprocessStep( Preprocessors.divideBy255 )
+        #self.__registerPreprocessStep( Preprocessors.torchVisionNormalize )
+        #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
 
     def __del__(self):
         """ Destructor """
@@ -96,7 +97,7 @@ class PreprocessManager(manager.Manager):
         self._steps.append(step)
         return None
 
-class TensorflowPreprocessors:
+class Preprocessors:
     """ Static class of preprocessors for batches of images """
 
     @staticmethod
@@ -106,8 +107,8 @@ class TensorflowPreprocessors:
         sampleIndex = 0
         image,label = sampleBatch[sampleIndex]
         #X = image.permute(1,2,0)
-        if (image.dtype != tf.uint8):
-            image = image.cast(tf.uint8)
+        if (image.dtype != np.uint8):
+            image = image.cast(np.uint8)
         plt.imshow(image)
         plt.xticks([])
         plt.yticks([])
@@ -115,6 +116,16 @@ class TensorflowPreprocessors:
         plt.show()
         return sampleBatch
 
+    @staticmethod
+    def crop8PixelsFromEdges(   preprocessMgr: PreprocessManager,
+                                sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Crop 4 pixels from the edge of each image """
+        numVerticalPixelsToRemove = 8
+        numHorizontalPixelsToRemove = 8   
+        
+
+        # New Image size if (184 x 184 x 3)
+        return sampleBatch
 
 class TorchPreprocessors:
     """ Static Class of Preprocessors for batches of images """

@@ -25,10 +25,11 @@ class ImageIO:
 
     # Image Loaders
 
-    def loadImageAsTensor(imagePath: str) -> tf.Tensor:
+    def loadImageAsArray(imagePath: str) -> tf.Tensor:
         """ Load a JPG image as a tensorflow tensor """
-        tfImage = tf.keras.utils.load_img(imagePath)
-        return tfImage
+        pilImage = tf.keras.utils.load_img(imagePath)
+        npImage = tf.keras.utils.img_to_array(pilImage)
+        return npImage
 
 
 

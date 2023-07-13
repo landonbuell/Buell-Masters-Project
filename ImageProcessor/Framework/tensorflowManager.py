@@ -17,6 +17,7 @@ import commonEnumerations
 
 import modelHistoryInfo
 import callbackTools
+import tensorflowModels
 
 import manager
 import batch
@@ -35,6 +36,8 @@ class TensorflowManager(manager.Manager):
         """ Constructor """
         super().__init__(app,name)
         self._randomSeed        = tf.random.set_seed(self.getApp().getConfig().getShuffleSeed())
+        
+        self._inputShape        = (64,64,3)
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
@@ -183,7 +186,7 @@ class TensorflowManager(manager.Manager):
             msg = "No callback is defined to fetch a neural network model"
             self.logMessage(msg)
             raise RuntimeError(msg)
-        model = self._callbackGetModel.__call__(self._numClasses)
+        model = self._callbackGetModel.__call__(self._inputShape,self._numClasses)
         return model
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
@@ -194,6 +197,7 @@ class TensorflowManager(manager.Manager):
                         batch_size=batchData.getNumSamples(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
                         initial_epoch=self._epochCounter)
+        self._epochCounter += self.getConfig().getNumEpochsPerBatch()
         return None
        
 
@@ -216,7 +220,7 @@ class ClassificationManager(TensorflowManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( convolutionalNeuralNetworks.getMultiTierImageClassifer )
+        self.registerGetModelCallback( tensorflowModels.getAffineModel )
 
     def __del__(self):
         """ Destructor """
@@ -240,7 +244,7 @@ class SegmentationManager(TensorflowManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,SegmentationManager.__NAME,)
-        self.registerGetModelCallback( convolutionalNeuralNetworks.getAffineModel )
+        self.registerGetModelCallback( tensorflowModels.getAffineModel )
 
     def __del__(self):
         """ Destructor """
