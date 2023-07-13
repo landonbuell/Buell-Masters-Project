@@ -12,6 +12,7 @@
 
 import numpy as np
 import sklearn.metrics as metrics
+import tensorflow as tf
 
 DEVICE_CPU  = "cpu"
 
@@ -48,7 +49,13 @@ def multiclassRecallScore(  preds: np.ndarray,
     return result
 
 
+class TensorflowModelTrain(tf.keras.callbacks.Callback):
+    """ Callback to run when fitting a Tensorflow Model """
+    pass
 
+class TensorflowModelTest(tf.keras.callbacks.Callback):
+    """ Callback to run when predicting on a Tensorflow Model """
+    pass
 
 
 
