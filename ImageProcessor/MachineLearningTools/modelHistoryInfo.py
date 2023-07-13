@@ -18,15 +18,13 @@ import callbackTools
 
         #### CLASS DEFINITIONS ####
 
-class ModelHistoryInfo:
+class ModelTrainHistoryInfo:
     """ Stores Historical information from a model's train or test process """
 
     def __init__(self):
         """ Constructor """
-        self._losses    = np.array([],dtype=np.float32)
-        self._precision = np.array([],dtype=np.float32)
-        self._recalls   = np.array([],dtype=np.float32)
         self._exportCounts = 0
+        self._losses    = np.array([],dtype=np.float32)
         
     def __del__(self):
         """ Destructor """
@@ -38,33 +36,11 @@ class ModelHistoryInfo:
         """ Return the Loss History """
         return self._losses
 
-    def getPrecisionHistory(self) -> np.ndarray:
-        """ Return the precision history """
-        return self._precision
-
-    def getRecallHistory(self) -> np.ndarray:
-        """ Return the recall history """
-        return self._recalls
-
-    def getF1History(self) -> np.ndarray:
-        """ Return the F1-Score history """
-        return 2 * (self._precision * self._recalls) / (self._precision + self._recalls)
-
     # Public Interface
 
-    def updateWithTrainBatch(self,
-                             outputs: np.ndarray,
-                             truth: np.ndarray,
-                             cost:  np.float32,
-                             numClasses: int) -> None:
-        """ Update state w/ outputs + truth of a training batch """
-        precisionScore      = callbackTools.multiclassPrecisionScore(outputs,truth,numClasses)
-        recallScore         = callbackTools.multiclassRecallScore(outputs,truth,numClasses)
-
-        self._losses    = np.append(self._losses,       cost)
-        self._precision = np.append(self._precision,    np.mean(precisionScore))
-        self._recalls   = np.append(self._recalls,      np.mean(recallScore))
-
+    def appendLoss(self, batchLoss: np.float32) -> None:
+        """ Append a Loss Item to Array of Losses """
+        self._losses    = np.append(self._losses,batchLoss)
         return None
 
     def reset(self) -> None:
@@ -81,10 +57,64 @@ class ModelHistoryInfo:
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"Loss"      : self._losses,
-                "Precision" : self._precision,
-                "Recall"    : self._recalls,
-                "F1"        : self.getF1History()}
+        data = {"Loss"      : self._losses}
+        frame = pd.DataFrame(data=data,index=None)
+        return frame
+
+    def export(self,outputPath) -> bool:
+        """ Write history info to specified path. Return T/F if successful """
+        frame = self.toDataFrame()
+        frame.to_csv(outputPath,index=False,mode="w")
+        self._exportCounts += 1
+        return True
+
+    # Private Interface
+
+class ModelTestHistoryInfo:
+    """ Stores Historical information from a model's train or test process """
+
+    def __init__(self):
+        """ Constructor """
+        self._exportCounts = 0
+        self._truths    = np.array([],dtype=np.int16)
+        self._outputs   = np.array([],dtype=np.int16)
+        self._scores    = np.array([],dtype=np.float32)
+        
+    def __del__(self):
+        """ Destructor """
+        pass
+
+    # Accessors
+
+    # Public Interface
+
+    def updatedWithBatch(self,
+                         truth: np.int16,
+                         output: np.int16,
+                         score: np.float32) -> None:
+        """ Update Instance w/ a set of outputs """
+        self._truths    = np.append(self._truths,truth)
+        self._outputs   = np.append(self._outputs,output)
+        self._scores    = np.append(self._scores,score)
+        return None
+
+    def reset(self) -> None:
+        """ Reset the state of instance to construction """
+        self._truths    = np.array([],dtype=np.int16)
+        self._outputs   = np.array([],dtype=np.int16)       
+        self._scores    = np.array([],dtype=np.float32)
+        return None
+
+    def plotAll(self,show=True,save=None) -> None:
+        """ Generate and optionally show and save history of all scores """
+        # TODO: Implement this
+        return None
+
+    def toDataFrame(self) -> pd.DataFrame:
+        """ Return history data as a pandas dataframe """
+        data = {"truth"     : self._truths,
+                "outputs"   : self._outputs,
+                "scores"    : self._scores}
         frame = pd.DataFrame(data=data,index=None)
         return frame
 

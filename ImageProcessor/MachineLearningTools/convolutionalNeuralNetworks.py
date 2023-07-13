@@ -91,7 +91,7 @@ class MultiTierImageClassifer(torch.nn.Module):
         x   = torch.nn.functional.relu( self._affine1(x) )
         x   = torch.nn.functional.relu( self._affine2(x) )
         x   = torch.nn.functional.relu( self._affine3(x) )
-        x   = torch.nn.functional.softmax( self._affine4(x),dim=1 )
+        x   = self._affine4(x)
         #print(x.shape)
 
         return x

@@ -41,10 +41,12 @@ class TorchManager(manager.Manager):
         self._model             = None
 
         self._optimizer         = None
-        self._objective         = torch.nn.functional.cross_entropy
+        self._objective         = torch.nn.CrossEntropyLoss()
 
-        self._trainHistory      = modelHistoryInfo.ModelHistoryInfo()
-        self._evalHistory       = modelHistoryInfo.ModelHistoryInfo()
+        self._trainHistory      = modelHistoryInfo.ModelTrainHistoryInfo()
+        self._testHistory       = modelHistoryInfo.ModelTestHistoryInfo()
+
+        self._evalMetrics       = []
         
     def __del__(self):
         """ Destructor """
@@ -116,25 +118,50 @@ class TorchManager(manager.Manager):
         self.__testOnBatchHelper(batchData)
         return None
 
-    def exportTrainingHistory(self,foldIndex: int) -> None:
-        """ Show + Export Training History """
-        outputFileName = "trainingHistoryFold{0}.csv".format(foldIndex)
+    def exportTrainingHistory(self,outputFileName: str) -> None:
+        """ Export the training history """
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
+        msg = "Exporting training history to: {0}".format(outputPath)
+        self.logMessage(msg)
         self._trainHistory.export(outputPath)
         return None
 
-    def exportModel(self,modelName: str) -> bool:
-        """ Export the current classifier Model to the outputs folder """
-        self.__verifyModelExists(True)
-        outPath = os.path.join( self.getApp().getConfig().getOutputPath(), modelName ) 
-        torch.save(self._model , outPath)
+    def exportTestingHistory(self,outputFileName: str) -> None:
+        """ Export the training history """
+        outputPath = os.path.join(self.getOutputPath(),outputFileName)
+        msg = "Exporting testing history to: {0}".format(outputPath)
+        self.logMessage(msg)
+        self._testHistory.export(outputPath)
+        return None
 
-        return False
+    def exportModel(self,outputPathName: str) -> None:
+        """ Export the model to specified path """
+        self.__verifyModelExists(True)
+        outputPath = os.path.join(self.getOutputPath(),outputPathName)
+        msg = "Exporting model to: {0}".format(outputPath)
+        self.logMessage(msg)
+        torch.save(self._model.state_dict(),outputPath)
+        return None
 
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model     = self.__invokeGetModel()
         self._initOptimizer()
+        return None
+
+    def loadModel(self,importPathName: str) -> None:
+        """ Import the model from specified path """
+        self.__verifyModelExists(True)
+        importPath = os.path.join(self.getOutputPath(),importPathName)
+        msg = "Importing model from: {0}".format(importPath)
+        self.logMessage(msg)
+        if (os.path.exists(importPath) == False):
+            msg = "Cannot load model from {0} because it does not exist".format(importPath)
+            self.logMessage(msg)
+            raise RuntimeError(msg)
+        self._model.load_state_dict(torch.load(importPath))
+        toDevice = self.getApp().getConfig().getTorchConfig().getActiveDevice()
+        self._model.to(device=toDevice)
         return None
 
     # Protected Interface
@@ -182,13 +209,11 @@ class TorchManager(manager.Manager):
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-        dev = self.getDevice()        
-        batchData.toDevice(dev)
-        X = batchData.getX()
-        #Y = batchData.getY().type(dtype=torch.float32)
-        Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
+        device = self.getDevice()        
+        batchData.toDevice(device)
 
-        #preprocessManager.Preprocessors.showSampleAtIndex(None,batchData)
+        X = batchData.getX()
+        Y = batchData.getOneHotY(self._numClasses).type(torch.float32)
 
         for epoch in range(self.getEpochsPerBatch()):
             # Zero the Gradient
@@ -203,21 +228,31 @@ class TorchManager(manager.Manager):
             self._optimizer.step()
 
             # Log the Cost, Precision, Recall, Accuracy
-            self._trainHistory.updateWithTrainBatch(
-                outputs.detach().cpu(),
-                Y.detach().cpu(),
-                cost.item(),
-                self._numClasses)
+            self._trainHistory.appendLoss(cost.item())
 
         return None
 
     def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper function to test the model n the batch of provided data """
+        device = self.getDevice()
+        batchData.toDevice(device)
 
+        X = batchData.getX()
+        Y = batchData.getY().type(torch.int16)
 
+        with torch.no_grad():
+            # No gradients required for Predictions
+            outputs = self._model(X)
+            maxItem,maxIndx = torch.max(outputs.data,dim=1)
+
+            # Store the label, the prediction int, and the confidence in that int
+            self._testHistory.updatedWithBatch(
+                Y.cpu(),maxIndx.cpu(),maxItem.cpu())
 
         return None
 
+
+    
     def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
         """ Execute a forward pass using the provided inputs """
         outputs = inputs
@@ -244,6 +279,10 @@ class ClassificationManager(TorchManager):
         pass
 
     # Accessors
+
+    def getModelName(self) -> str:
+        """ Override - Return name of model """
+        return "classificationManager"
 
     # Public Interface 
 
