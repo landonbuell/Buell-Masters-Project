@@ -11,7 +11,6 @@
         #### IMPORTS ####
 
 import os
-import torch
 
         #### CLASS DEFINITIONS ####
 
@@ -28,7 +27,6 @@ class AppConfig:
         self._pathStartup   = os.getcwd()
         self._pathInputs    = set(inputPaths)
         self._pathOutput    = outputPath
-        self._torchConfig   = TorchConfig()
 
         self._logToConsole  = True
         self._logToFile     = True
@@ -58,10 +56,6 @@ class AppConfig:
     def getOutputPath(self) -> str:
         """ Return the output Path """
         return self._pathOutput
-
-    def getTorchConfig(self):
-        """ Return a the torch config structure """
-        return self._torchConfig
 
     def getLogToConsole(self) -> bool:
         """ Return T/F if messages should be logged to console """
@@ -120,28 +114,6 @@ class AppConfig:
         outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun1"))
         config = AppConfig(inputPaths,outputPath)
         return config
-
-class TorchConfig:
-    """ Configurations for Pytorch """
-
-    def __init__(self):
-        """ Constructor """
-        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    def __del__(self):
-        """ Destructor """
-        pass
-
-    # Accessors
-
-    def cudaAvailable(self) -> bool:
-        """ Return T/F if cuda is available """
-        return torch.cuda.is_available()
-
-    def getActiveDevice(self) -> str:
-        """ Return the """
-        return self._device
-
 
 """
     Author:         Landon Buell

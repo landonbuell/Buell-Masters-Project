@@ -18,7 +18,6 @@ import commonEnumerations
 import imageTools
 
 import manager
-import crossValidationFold
 import batch
 
         #### FUNCTION DEFINITIONS ####

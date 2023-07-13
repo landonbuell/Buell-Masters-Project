@@ -16,7 +16,6 @@ import numpy as np
 
 import commonEnumerations
 
-
 import appConfig
 import textLogger
 
@@ -25,7 +24,7 @@ import sampleManager
 import dataManager
 import augmentationManager
 import preprocessManager
-#import torchManager
+import tensorflowManager
 
         #### CLASS DEFINITIONS ####
 
@@ -60,8 +59,8 @@ class ImageProcessingApp:
         self._augmentationManager   = augmentationManager.AugmentationManager(self)
         self._preprocessManager     = preprocessManager.PreprocessManager(self)
 
-        self._classificationManager = torchManager.ClassificationManager(self)
-        self._segmentationManager   = torchManager.SegmentationManager(self)
+        self._classificationManager = tensorflowManager.ClassificationManager(self)
+        self._segmentationManager   = tensorflowManager.SegmentationManager(self)
 
     def __del__(self):
         """ Destructor """

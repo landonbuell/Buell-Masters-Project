@@ -12,6 +12,7 @@
 
 import os
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 import torch
 import torchvision
@@ -41,14 +42,14 @@ class PreprocessManager(manager.Manager):
             mean = (0.5,0.5,0.5),
             std = (0.25,0.25,0.25))
 
-        #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
-        self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
-        self.__registerPreprocessStep( Preprocessors.castToSinglePrecision )
-        #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
-        self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
-        self.__registerPreprocessStep( Preprocessors.divideBy255 )
-        self.__registerPreprocessStep( Preprocessors.torchVisionNormalize )
-        #self.__registerPreprocessStep( Preprocessors.showSampleAtIndex )
+        self.__registerPreprocessStep( TensorflowPreprocessors.showSampleAtIndex )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.crop8PixelsFromEdges )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.castToSinglePrecision )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.rescaleTo32by32 )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.rescaleTo64by64 )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.divideBy255 )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.torchVisionNormalize )
+        #self.__registerPreprocessStep( TensorflowPreprocessors.showSampleAtIndex )
 
     def __del__(self):
         """ Destructor """
@@ -95,7 +96,27 @@ class PreprocessManager(manager.Manager):
         self._steps.append(step)
         return None
 
-class Preprocessors:
+class TensorflowPreprocessors:
+    """ Static class of preprocessors for batches of images """
+
+    @staticmethod
+    def showSampleAtIndex(  preprocessMgr: PreprocessManager,
+                            sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Show the sample at the chosen index """
+        sampleIndex = 0
+        image,label = sampleBatch[sampleIndex]
+        #X = image.permute(1,2,0)
+        if (image.dtype != tf.uint8):
+            image = image.cast(tf.uint8)
+        plt.imshow(image)
+        plt.xticks([])
+        plt.yticks([])
+        plt.xlabel("Class Num: {0}".format(label))
+        plt.show()
+        return sampleBatch
+
+
+class TorchPreprocessors:
     """ Static Class of Preprocessors for batches of images """
 
     @staticmethod

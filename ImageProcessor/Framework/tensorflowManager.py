@@ -40,20 +40,19 @@ class TensorflowManager(manager.Manager):
         self._callbackGetModel  = None
         self._model             = None
 
-        self._optimizer         = tf.keras.optimiziers.Adam(learning_rate=0.01)
+        self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.01)
         self._objective         = tf.keras.losses.CategoricalCrossentropy()
 
         self._trainHistory      = modelHistoryInfo.ModelTrainHistoryInfo()
         self._testHistory       = modelHistoryInfo.ModelTestHistoryInfo()
 
-        self._trainCallbacks    = [callbackTools.TensorflowModelTrain(self),]
-        self._testCallbacks     = []
+        self._trainCallbacks    = [callbackTools.TensorflowModelTrain(),]
+        self._testCallbacks     = [callbackTools.TensorflowModelTest(),]
 
         self._epochCounter      = 0
         self._metrics           = [tf.keras.metrics.Accuracy(),
-                                   tf.keras.metrics.PreicsionScore(),
-                                   tf.keras.metrics.RecallScore(),
-                                   tf.keras.metrics.F1Score(),]
+                                   tf.keras.metrics.Precision(),
+                                   tf.keras.metrics.Recall(),]
         
     def __del__(self):
         """ Destructor """
@@ -133,7 +132,9 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputPathName)
         msg = "Exporting model to: {0}".format(outputPath)
         self.logMessage(msg)
-        # TODO: EXPORT TENSORFLOW MODEL
+        self._model.save(   outputPath,
+                            overWrite=True,
+                            save_format="h5")
         return None
 
     def resetState(self) -> None:
@@ -152,7 +153,7 @@ class TensorflowManager(manager.Manager):
             msg = "Cannot load model from {0} because it does not exist".format(importPath)
             self.logMessage(msg)
             raise RuntimeError(msg)
-        # TODO: LOAD TENSORFLOW MODEL
+        self._model = tf.keras.models.load_model(importPathName)
         return None
 
     # Protected Interface
@@ -163,11 +164,6 @@ class TensorflowManager(manager.Manager):
         self._model.compile(optimizer=self._optimizer,
                             loss=self._objective,
                             metrics=self._metrics)
-        return None
-
-    def _initOptimizer(self) -> None:
-        """ VIRTUAL: Initialize the Optimizer for this Model """     
-        self.__verifyModelExists()
         return None
 
     # Private Interface 
@@ -209,16 +205,6 @@ class TensorflowManager(manager.Manager):
                             batch_size=batchData.getNumSamples())
         return None
 
-
-    
-    def __predictOnBatch(self, inputs: torch.Tensor) -> torch.Tensor:
-        """ Execute a forward pass using the provided inputs """
-        outputs = inputs
-        return outputs
-
-    # Static Interface
-
-
 class ClassificationManager(TensorflowManager):
     """
         ClassificationManager handles all image-classification related tasks
@@ -238,23 +224,10 @@ class ClassificationManager(TensorflowManager):
 
     # Accessors
 
-    def getModelName(self) -> str:
-        """ Override - Return name of model """
-        return "classificationManager"
-
     # Public Interface 
 
     # Protected Interface
 
-    def _initOptimizer(self) -> None:
-        """ VIRTUAL: Initialize the Optimizer for this Model """     
-        super()._initOptimizer()
-        self._optimizer = torch.optim.Adam(
-                            params=self._model.parameters(),
-                            lr=0.01,
-                            betas=(0.9,0.999),
-                            eps=1e-6)
-        return None
 
 class SegmentationManager(TensorflowManager):
     """
