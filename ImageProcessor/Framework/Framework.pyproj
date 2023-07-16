@@ -31,6 +31,7 @@
     <Compile Include="preprocessManager.py" />
     <Compile Include="sampleManager.py" />
     <Compile Include="strategyManager.py" />
+    <Compile Include="tensorflowManager.py" />
     <Compile Include="textLogger.py" />
     <Compile Include="torchManager.py" />
     <Compile Include="__init__.py" />

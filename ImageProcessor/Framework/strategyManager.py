@@ -10,9 +10,6 @@
 
         #### IMPORTS ####
 
-import torch
-import torchvision
-
 import numpy as np
 
 import commonEnumerations
@@ -153,7 +150,6 @@ class StrategyManager(manager.Manager):
             batchIndexes    = fold.getNextBatchIndexes(batchSize)
             batchData       = self.getApp().getSampleManager().getNextBatch(batchIndexes)
 
-            # TODO: call preprocess manager on batch
             self.getApp().getPreprocessManager().processBatch(batchData)
             # TODO: call augmentation manager on batch 
 
@@ -206,7 +202,7 @@ class StrategyManager(manager.Manager):
         self.getApp().getClassificationManager().exportTrainingHistory(
                 "trainingHistoryFold{0}.csv".format(foldIndex))
         self.getApp().getClassificationManager().exportModel(
-                "modelFold{0}.pth".format(foldIndex))
+                "modelFold{0}.hdf5".format(foldIndex))
         return None
 
     def __exportClassificiationTestHistory(self,foldIndex: int) -> None:
@@ -219,7 +215,7 @@ class StrategyManager(manager.Manager):
         """ Reset the state of the manager + reload the model """
         self.getApp().getClassificationManager().resetState()
         self.getApp().getClassificationManager().loadModel(
-                "modelFold{0}.pth".format(foldIndex))
+                "modelFold{0}.hdf5".format(foldIndex))
         return None
 
 

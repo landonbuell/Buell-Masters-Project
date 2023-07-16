@@ -10,8 +10,7 @@
 
         #### IMPORTS ####
 
-import torch
-import imageProcessingApp
+import numpy as np
 
         #### CONSTANTS ####
 
@@ -20,17 +19,13 @@ SHAPE_CHANNELS_LAST     = (200,200,3)
 
         #### FUNCTION DEFINITONS ####
 
-def _getDevice() -> torch.device:
-    """ Return the Torch Device that is in use """
-    return imageProcessingApp.ImageProcessingApp.getInstance().getConfig().getTorchConfig().getActiveDevice()
-
-def oneHotEncode(labels: torch.Tensor,
+def oneHotEncode(labels: np.ndarray,
                  numClasses: int):
     """ One-Hot encode a vector of labels """
     if (labels.ndim > 1):
         msg = "Cannot encode labels w/ ndim={0}. Expected ndim=1".format(labels.ndim)
         raise RuntimeError(msg)
-    oneHot = torch.zeros(size=(tuple(labels.shape)[0],numClasses),dtype=labels.dtype,device=_getDevice())
+    oneHot = np.zeros(shape=(labels.shape[0],numClasses),dtype=np.int32)
     for ii,tgt in enumerate(labels):
         oneHot[ii,tgt] = 1
     return oneHot
@@ -45,14 +40,14 @@ class SampleBatch:
     def __init__(self,
                  numSamples: int,
                  sampleShape: tuple,
-                 dataTypeX=torch.uint8,
-                 dataTypeY=torch.int16):
+                 dataTypeX=np.uint8,
+                 dataTypeY=np.int16):
         """ Constructor """
         shapeX = (numSamples,) + sampleShape
         shapeY = (numSamples,)
 
-        self._X = torch.zeros(size=shapeX,dtype=dataTypeX)
-        self._y = torch.zeros(size=shapeY,dtype=dataTypeY)
+        self._X = np.zeros(shape=shapeX,dtype=dataTypeX)
+        self._y = np.zeros(shape=shapeY,dtype=dataTypeY)
 
         self._batchIndex    = SampleBatch.__batchCounter
         SampleBatch.__batchCounter += 1
@@ -64,33 +59,33 @@ class SampleBatch:
 
     # Accessors
 
-    def getDataTypeX(self) -> torch.dtype:
+    def getDataTypeX(self) -> np.dtype:
         """ Return the data type for features """
         return self._X.dtype
 
-    def getDataTypeY(self) -> torch.dtype:
+    def getDataTypeY(self)-> np.dtype:
         """ Return the data type for labels """
         return self._y.dtype
 
-    def setDataTypeX(self,torchType: torch.dtype):
+    def setDataTypeX(self,dataType: np.dtype):
         """ Set the data type for the features """
-        self._X = self._X.type(dtype=torchType)
+        self._X = self._X.astype(dataType)
         return self
 
-    def setDataTypeY(self,torchType: torch.dtype):
+    def setDataTypeY(self,dataType: np.dtype):
         """ Set the data dtype for labels """
-        self._y = self._y.type(dtype=torchType)
+        self._y = self._y.astype(dataType)
         return self
 
-    def getX(self) -> torch.Tensor:
+    def getX(self) -> np.ndarray:
         """ Return Features """
         return self._X
 
-    def getY(self) -> torch.Tensor:
+    def getY(self) -> np.ndarray:
         """ Return Y """
         return self._y
 
-    def setX(self, newX: torch.Tensor) -> None:
+    def setX(self, newX: np.ndarray) -> None:
         """ Set the Tensor for the features """
         if (newX.shape[0] != self._X.shape[0]):
             msg = "Expected new features to have {0} samples but got {1}".format(
@@ -113,15 +108,9 @@ class SampleBatch:
 
     # Public Interface
 
-    def getOneHotY(self,numClasses: int) -> torch.Tensor:
+    def getOneHotY(self,numClasses: int) -> np.ndarray:
         """ One-hot-encode this batch's labels """
         return oneHotEncode(self._y,numClasses)
-
-    def toDevice(self,deviceName: torch.device) -> None:
-        """ Cast the X & y members to the chosen device """
-        self._X = self._X.to(device=deviceName)
-        self._y = self._y.to(device=deviceName)
-        return None
 
     # Magic Methods
 
@@ -131,8 +120,8 @@ class SampleBatch:
 
     def __setitem__(self,key: int, val: tuple):
         """ Set the (X,y) pair at specified index """
-        x = val[0].type(self.getDataTypeX())
-        y = torch.tensor(val[1],dtype=self.getDataTypeY())
+        x = val[0].astype(self._X.dtype)
+        y = val[1]
         self._X[key] = x
         self._y[key] = y
         return self

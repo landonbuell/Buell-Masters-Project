@@ -11,10 +11,7 @@
         #### IMPORTS ####
 
 import os
-
-import torch
-import torchvision
-
+import tensorflow as tf
 
         #### CLASS DEFINITIONS ####
 
@@ -28,10 +25,11 @@ class ImageIO:
 
     # Image Loaders
 
-    def loadImageAsTorchTensor(imagePath: str) -> torch.Tensor:
-        """ Load a JPG image as a torch tensor """
-        torchImage = torchvision.io.read_image(imagePath)
-        return torchImage
+    def loadImageAsArray(imagePath: str) -> tf.Tensor:
+        """ Load a JPG image as a tensorflow tensor """
+        pilImage = tf.keras.utils.load_img(imagePath)
+        npImage = tf.keras.utils.img_to_array(pilImage)
+        return npImage
 
 
 

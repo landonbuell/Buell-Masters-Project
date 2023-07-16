@@ -18,7 +18,6 @@ import commonEnumerations
 import imageTools
 
 import manager
-import crossValidationFold
 import batch
 
         #### FUNCTION DEFINITIONS ####
@@ -95,10 +94,10 @@ class SampleManager(manager.Manager):
         self.logMessage(msg)
 
         # Create + Populate Sample Batch Structure
-        batchData = batch.SampleBatch(numSamplesInBatch,batch.SHAPE_CHANNELS_FIRST)
+        batchData = batch.SampleBatch(numSamplesInBatch,batch.SHAPE_CHANNELS_LAST)
         for ii,idx in enumerate(listOfIndexes):
             labeledSample = self[idx]
-            X = imageTools.ImageIO.loadImageAsTorchTensor(labeledSample.filePath)
+            X = imageTools.ImageIO.loadImageAsArray(labeledSample.filePath)
             y = labeledSample.classInt   
             batchData[ii] = (X,y)
 

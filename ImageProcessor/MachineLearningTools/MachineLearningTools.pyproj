@@ -25,6 +25,7 @@
     <Compile Include="callbackTools.py" />
     <Compile Include="convolutionalNeuralNetworks.py" />
     <Compile Include="modelHistoryInfo.py" />
+    <Compile Include="tensorflowModels.py" />
     <Compile Include="__init__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

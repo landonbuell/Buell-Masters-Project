@@ -12,8 +12,6 @@
 
 import numpy as np
 
-import appConfig
-
         #### CLASS DEFINITIONS ####
 
 class CrossValidationFold:
