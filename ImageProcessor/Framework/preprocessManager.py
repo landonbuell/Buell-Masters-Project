@@ -121,8 +121,14 @@ class Preprocessors:
                                 sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
         """ Crop 4 pixels from the edge of each image """
         numVerticalPixelsToRemove = 8
-        numHorizontalPixelsToRemove = 8   
-        
+        numHorizontalPixelsToRemove = 8 
+        initWidth   = sampleBatch.getX().shape[1]
+        initHeight  = sampleBatch.getX().shape[2]
+        finalpixelWidth  = initWidth - (2 * numHorizontalPixelsToRemove) + numHorizontalPixelsToRemove
+        finalpixelHeight = initWidth - (2 * numVerticalPixelsToRemove) + numVerticalPixelsToRemove
+        # Crop + Save
+        newX = sampleBatch.getX()[:,numHorizontalPixelsToRemove:finalpixelWidth,numVerticalPixelsToRemove:finalpixelHeight,:]
+        sampleBatch.setX(newX)
 
         # New Image size if (184 x 184 x 3)
         return sampleBatch
