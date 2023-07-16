@@ -12,7 +12,7 @@
 
 import pandas as pd
 import numpy as np
-import torch
+import matplotlib.pyplot as plt
 
 import callbackTools
 
@@ -24,7 +24,11 @@ class ModelTrainHistoryInfo:
     def __init__(self):
         """ Constructor """
         self._exportCounts = 0
-        self._losses    = np.array([],dtype=np.float32)
+        self._epochs        = np.array([],dtype=np.float32)
+        self._losses        = np.array([],dtype=np.float32)
+        self._accuracies    = np.array([],dtype=np.float32)
+        self._precisions    = np.array([],dtype=np.float32)
+        self._recalls       = np.array([],dtype=np.float32)
         
     def __del__(self):
         """ Destructor """
@@ -38,26 +42,47 @@ class ModelTrainHistoryInfo:
 
     # Public Interface
 
-    def appendLoss(self, batchLoss: np.float32) -> None:
-        """ Append a Loss Item to Array of Losses """
-        self._losses    = np.append(self._losses,batchLoss)
+    def updateFromBatchLog(self,batchLog: dict):
+        """ Update Instance w/ data from a batch Log """
+        self._losses        = np.append(self._losses,batchLog["loss"])
+        self._accuracies    = np.append(self._accuracies,batchLog["accuracy"])
+        self._precisions    = np.append(self._precisions,batchLog["precision"])
+        self._recalls       = np.append(self._recalls,batchLog["recall"])
         return None
 
     def reset(self) -> None:
         """ Reset the state of instance to construction """
-        self._losses    = np.array([],dtype=np.float32)
-        self._precision = np.array([],dtype=np.float32)
-        self._recalls   = np.array([],dtype=np.float32)
+        self._epochs        = np.array([],dtype=np.float32)
+        self._losses        = np.array([],dtype=np.float32)
+        self._accuracies    = np.array([],dtype=np.float32)
+        self._precisions    = np.array([],dtype=np.float32)
+        self._recalls       = np.array([],dtype=np.float32)
         return None
 
     def plotAll(self,show=True,save=None) -> None:
         """ Generate and optionally show and save history of all scores """
-        # TODO: Implement this
+        plt.figure(figsize=(16,12))
+        plt.title("Training History",size=32,weight='bold')
+        plt.xlabel("Epoch Index",size=24,weight='bold')
+        plt.ylabel("Metric Score",size=24,weight='bold')
+
+        plt.plot(self._losses,label="Loss")
+        plt.plot(self._precisions,label="Precision")
+        plt.plot(self._recalls,label="Recall")
+
+        plt.grid()
+        plt.legend()
+        if (show == True):
+            plt.show()
+        plt.close()
         return None
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"Loss"      : self._losses}
+        data = {"loss"      : self._losses,
+                "accuracy"  : self._accuracies,
+                "preicsion" : self._precisions,
+                "recalls"   : self._recalls}
         frame = pd.DataFrame(data=data,index=None)
         return frame
 

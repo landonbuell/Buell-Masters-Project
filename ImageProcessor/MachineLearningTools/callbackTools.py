@@ -14,44 +14,28 @@ import numpy as np
 import sklearn.metrics as metrics
 import tensorflow as tf
 
-DEVICE_CPU  = "cpu"
+import modelHistoryInfo
+
 
         #### FUNCTION DEFINITIONS ####
 
-def multiclassPrecisionScore(preds: np.ndarray,
-                             truth: np.ndarray,
-                             numClasses: int):
-    """ Compute & Return the precision score for each class """
-    result  = np.empty(shape=(numClasses,),dtype=np.float32)
-    preds   = np.argmax(preds,axis=-1)
-    truth   = np.argmax(truth,axis=-1)
-
-    # Iterate through the classes
-    for ii in range(numClasses):
-        classPreds = (preds == ii)
-        classTruth = (truth == ii)
-        result[ii] = metrics.precision_score(classTruth,classPreds,zero_division=0)
-    return result
-
-def multiclassRecallScore(  preds: np.ndarray,
-                            truth: np.ndarray,
-                            numClasses: int):
-    """ Compute & Return the recall score for each class """
-    result  = np.empty(shape=(numClasses,),dtype=np.float32)
-    preds   = np.argmax(preds,axis=-1)
-    truth   = np.argmax(truth,axis=-1)
-
-    # Iterate through the classes
-    for ii in range(numClasses):
-        classPreds = (preds == ii)
-        classTruth = (truth == ii)
-        result[ii] = metrics.recall_score(classTruth,classPreds,zero_division=0)
-    return result
-
-
 class TensorflowModelTrain(tf.keras.callbacks.Callback):
     """ Callback to run when fitting a Tensorflow Model """
-    pass
+    
+    def __init__(self):
+        """ Constructor """
+        super().__init__()
+        self._trainHistory = modelHistoryInfo.ModelTrainHistoryInfo()
+
+    def getTrainHistory(self):
+        """ Return the trainign history instance """
+        return self._trainHistory
+
+    def on_train_batch_end(self,batch: int,logs: dict):
+        """ When a batch is finished training """
+        self._trainHistory.updateFromBatchLog(logs)
+        return None
+
 
 class TensorflowModelTest(tf.keras.callbacks.Callback):
     """ Callback to run when predicting on a Tensorflow Model """

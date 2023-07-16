@@ -47,11 +47,8 @@ class TensorflowManager(manager.Manager):
         self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.01)
         self._objective         = tf.keras.losses.CategoricalCrossentropy()
 
-        self._trainHistory      = modelHistoryInfo.ModelTrainHistoryInfo()
-        self._testHistory       = modelHistoryInfo.ModelTestHistoryInfo()
-
-        self._trainCallbacks    = [callbackTools.TensorflowModelTrain(),]
-        self._testCallbacks     = [callbackTools.TensorflowModelTest(),]
+        self._trainCallbacks    = callbackTools.TensorflowModelTrain()
+        self._testCallbacks     = callbackTools.TensorflowModelTest()
 
         self._epochCounter      = 0
         self._metrics           = [tf.keras.metrics.Accuracy(),
@@ -119,15 +116,15 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
         msg = "Exporting training history to: {0}".format(outputPath)
         self.logMessage(msg)
-        self._trainHistory.export(outputPath)
+        self._trainCallbacks.getTrainHistory().plotAll()
+        self._trainCallbacks.getTrainHistory().export(outputPath)
         return None
 
     def exportTestingHistory(self,outputFileName: str) -> None:
         """ Export the training history """
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
         msg = "Exporting testing history to: {0}".format(outputPath)
-        self.logMessage(msg)
-        self._testHistory.export(outputPath)
+        self.logMessage(msg)     
         return None
 
     def exportModel(self,outputPathName: str) -> None:
@@ -136,9 +133,6 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputPathName)
         msg = "Exporting model to: {0}".format(outputPath)
         self.logMessage(msg)
-        self._model.save(   outputPath,
-                            overWrite=True,
-                            save_format="h5")
         return None
 
     def resetState(self) -> None:
@@ -167,7 +161,8 @@ class TensorflowManager(manager.Manager):
         self._model = self.__invokeGetModel()
         self._model.compile(optimizer=self._optimizer,
                             loss=self._objective,
-                            metrics=self._metrics)
+                            metrics=self._metrics,
+                            steps_per_execution=1)
         #self._model.summary(line_length=72,print_fn=self.logMessage)
         return None
 
@@ -193,12 +188,14 @@ class TensorflowManager(manager.Manager):
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-        X = batchData.getX()
+        X = tf.convert_to_tensor( batchData.getX() )
         Y = batchData.getOneHotY(self._numClasses).astype(np.float32)
-        trainHistory = self._model.fit(x=X,y=Y,
+        batchLog = self._model.fit(x=X,y=Y,
                         batch_size=batchData.getNumSamples(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
-                        initial_epoch=self._epochCounter)
+                        initial_epoch=0,
+                        callbacks=self._trainCallbacks)
+        preds = self._model.call(X)
         self._epochCounter += self.getConfig().getNumEpochsPerBatch()
         return None
        
