@@ -11,6 +11,7 @@
         #### IMPORTS ####
 
 import os
+import numpy as np
 import tensorflow as tf
 
 import commonEnumerations
@@ -192,7 +193,7 @@ class TensorflowManager(manager.Manager):
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
         X = batchData.getX()
-        Y = batchData.getOneHotY(self._numClasses).type(tf.float32)
+        Y = batchData.getOneHotY(self._numClasses).astype(np.float32)
         self._model.fit(x=X,y=Y,
                         batch_size=batchData.getNumSamples(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
@@ -204,7 +205,7 @@ class TensorflowManager(manager.Manager):
     def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper function to test the model n the batch of provided data """
         X = batchData.getX()
-        Y = batchData.getY().type(tf.int16)
+        Y = batchData.getY().astype(np.float32)
         self._model.predict(x=X,
                             batch_size=batchData.getNumSamples())
         return None
