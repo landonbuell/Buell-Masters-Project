@@ -1,0 +1,230 @@
+	                                	
+----------------------------------------------------------------
+
+	                                	ImageProcessingApp
+	                                	2023.07.16.17.33.45.191426
+	                                	
+----------------------------------------------------------------
+
+	2023.07.16.17.33.45.902207      	Intializing StrategyManager ... 
+	2023.07.16.17.33.45.902207      	Basic Train-Test is enabled w/ 20.0% test ratio
+	2023.07.16.17.33.45.902207      	Intializing SampleManager ... 
+	2023.07.16.17.33.45.902207      	Loading samples from file: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\inputFiles\allSamples.csv
+	2023.07.16.17.33.46.023882      		Found 87000 samples in file
+	2023.07.16.17.34.02.345319      	Finished reading all input files. Sample Database has 87000 items
+	2023.07.16.17.34.02.345319      	Intializing DataManager ... 
+	2023.07.16.17.34.02.347314      		Data manager has 2 folds...
+	2023.07.16.17.34.02.347314      			Fold #0 has 69600 samples for training. (80.0% of dataset)
+	2023.07.16.17.34.02.347314      			Fold #1 has 17400 samples for testing. (20.0% of dataset)
+	2023.07.16.17.34.02.348311      	Intializing AugmentationManager ... 
+	2023.07.16.17.34.02.348311      	Intializing PreprocessManager ... 
+	2023.07.16.17.34.02.348311      	Intializing ClassificationManager ... 
+	2023.07.16.17.34.02.512449      	Intializing SegmentationManager ... 
+	2023.07.16.17.34.02.518427      	Running Train/Test Split
+	2023.07.16.17.34.02.518427      			Retreving batch #0 w/ 32 samples
+	2023.07.16.17.34.06.626207      			Retreving batch #1 w/ 32 samples
+	2023.07.16.17.34.06.710708      			Retreving batch #2 w/ 32 samples
+	2023.07.16.17.34.06.794615      			Retreving batch #3 w/ 32 samples
+	2023.07.16.17.34.06.880525      			Retreving batch #4 w/ 32 samples
+	2023.07.16.17.34.06.963921      			Retreving batch #5 w/ 32 samples
+	2023.07.16.17.34.07.048302      			Retreving batch #6 w/ 32 samples
+	2023.07.16.17.34.07.132600      			Retreving batch #7 w/ 32 samples
+	2023.07.16.17.34.07.224052      			Retreving batch #8 w/ 32 samples
+	2023.07.16.17.34.07.307835      			Retreving batch #9 w/ 32 samples
+	2023.07.16.17.34.07.392841      			Retreving batch #10 w/ 32 samples
+	2023.07.16.17.34.07.476085      			Retreving batch #11 w/ 32 samples
+	2023.07.16.17.34.07.563226      			Retreving batch #12 w/ 32 samples
+	2023.07.16.17.34.07.646090      			Retreving batch #13 w/ 32 samples
+	2023.07.16.17.34.07.728329      			Retreving batch #14 w/ 32 samples
+	2023.07.16.17.34.07.810761      			Retreving batch #15 w/ 32 samples
+	2023.07.16.17.34.07.893397      			Retreving batch #16 w/ 32 samples
+	2023.07.16.17.34.07.976155      			Retreving batch #17 w/ 32 samples
+	2023.07.16.17.34.08.058333      			Retreving batch #18 w/ 32 samples
+	2023.07.16.17.34.08.140193      			Retreving batch #19 w/ 32 samples
+	2023.07.16.17.34.08.222027      			Retreving batch #20 w/ 32 samples
+	2023.07.16.17.34.08.307426      			Retreving batch #21 w/ 32 samples
+	2023.07.16.17.34.08.389221      			Retreving batch #22 w/ 32 samples
+	2023.07.16.17.34.08.470545      			Retreving batch #23 w/ 32 samples
+	2023.07.16.17.34.08.552673      			Retreving batch #24 w/ 32 samples
+	2023.07.16.17.34.08.633625      			Retreving batch #25 w/ 32 samples
+	2023.07.16.17.34.08.716550      			Retreving batch #26 w/ 32 samples
+	2023.07.16.17.34.08.799020      			Retreving batch #27 w/ 32 samples
+	2023.07.16.17.34.08.881313      			Retreving batch #28 w/ 32 samples
+	2023.07.16.17.34.08.962771      			Retreving batch #29 w/ 32 samples
+	2023.07.16.17.34.09.044550      			Retreving batch #30 w/ 32 samples
+	2023.07.16.17.34.09.130301      			Retreving batch #31 w/ 32 samples
+	2023.07.16.17.34.09.212002      			Retreving batch #32 w/ 32 samples
+	2023.07.16.17.34.09.293839      			Retreving batch #33 w/ 32 samples
+	2023.07.16.17.34.09.375389      			Retreving batch #34 w/ 32 samples
+	2023.07.16.17.34.09.458425      			Retreving batch #35 w/ 32 samples
+	2023.07.16.17.34.09.540741      			Retreving batch #36 w/ 32 samples
+	2023.07.16.17.34.09.623520      			Retreving batch #37 w/ 32 samples
+	2023.07.16.17.34.09.704498      			Retreving batch #38 w/ 32 samples
+	2023.07.16.17.34.09.788221      			Retreving batch #39 w/ 32 samples
+	2023.07.16.17.34.09.874074      			Retreving batch #40 w/ 32 samples
+	2023.07.16.17.34.09.954331      			Retreving batch #41 w/ 32 samples
+	2023.07.16.17.34.10.036414      			Retreving batch #42 w/ 32 samples
+	2023.07.16.17.34.10.118041      			Retreving batch #43 w/ 32 samples
+	2023.07.16.17.34.10.199426      			Retreving batch #44 w/ 32 samples
+	2023.07.16.17.34.10.281231      			Retreving batch #45 w/ 32 samples
+	2023.07.16.17.34.10.361990      			Retreving batch #46 w/ 32 samples
+	2023.07.16.17.34.10.444589      			Retreving batch #47 w/ 32 samples
+	2023.07.16.17.34.10.525883      			Retreving batch #48 w/ 32 samples
+	2023.07.16.17.34.10.607705      			Retreving batch #49 w/ 32 samples
+	2023.07.16.17.34.10.691408      			Retreving batch #50 w/ 32 samples
+	2023.07.16.17.34.10.773812      			Retreving batch #51 w/ 32 samples
+	2023.07.16.17.34.10.855119      			Retreving batch #52 w/ 32 samples
+	2023.07.16.17.34.10.936386      			Retreving batch #53 w/ 32 samples
+	2023.07.16.17.34.11.017969      			Retreving batch #54 w/ 32 samples
+	2023.07.16.17.34.11.099748      			Retreving batch #55 w/ 32 samples
+	2023.07.16.17.34.11.182695      			Retreving batch #56 w/ 32 samples
+	2023.07.16.17.34.11.264431      			Retreving batch #57 w/ 32 samples
+	2023.07.16.17.34.11.347276      			Retreving batch #58 w/ 32 samples
+	2023.07.16.17.34.11.429352      			Retreving batch #59 w/ 32 samples
+	2023.07.16.17.34.11.515468      			Retreving batch #60 w/ 32 samples
+	2023.07.16.17.34.11.598778      			Retreving batch #61 w/ 32 samples
+	2023.07.16.17.34.11.680411      			Retreving batch #62 w/ 32 samples
+	2023.07.16.17.34.11.761722      			Retreving batch #63 w/ 32 samples
+	2023.07.16.17.34.11.842659      			Retreving batch #64 w/ 32 samples
+	2023.07.16.17.34.11.924115      			Retreving batch #65 w/ 32 samples
+	2023.07.16.17.34.12.006140      			Retreving batch #66 w/ 32 samples
+	2023.07.16.17.34.12.089101      			Retreving batch #67 w/ 32 samples
+	2023.07.16.17.34.12.170029      			Retreving batch #68 w/ 32 samples
+	2023.07.16.17.34.12.251188      			Retreving batch #69 w/ 32 samples
+	2023.07.16.17.34.12.335187      			Retreving batch #70 w/ 32 samples
+	2023.07.16.17.34.12.416804      			Retreving batch #71 w/ 32 samples
+	2023.07.16.17.34.12.498231      			Retreving batch #72 w/ 32 samples
+	2023.07.16.17.34.12.580235      			Retreving batch #73 w/ 32 samples
+	2023.07.16.17.34.12.661385      			Retreving batch #74 w/ 32 samples
+	2023.07.16.17.34.12.743359      			Retreving batch #75 w/ 32 samples
+	2023.07.16.17.34.12.823668      			Retreving batch #76 w/ 32 samples
+	2023.07.16.17.34.12.905047      			Retreving batch #77 w/ 32 samples
+	2023.07.16.17.34.12.986392      			Retreving batch #78 w/ 32 samples
+	2023.07.16.17.34.13.067377      			Retreving batch #79 w/ 32 samples
+	2023.07.16.17.34.13.151300      			Retreving batch #80 w/ 32 samples
+	2023.07.16.17.34.13.231863      			Retreving batch #81 w/ 32 samples
+	2023.07.16.17.34.13.313113      			Retreving batch #82 w/ 32 samples
+	2023.07.16.17.34.13.399977      			Retreving batch #83 w/ 32 samples
+	2023.07.16.17.34.13.483099      			Retreving batch #84 w/ 32 samples
+	2023.07.16.17.34.13.580052      			Retreving batch #85 w/ 32 samples
+	2023.07.16.17.34.13.664436      			Retreving batch #86 w/ 32 samples
+	2023.07.16.17.34.13.745684      			Retreving batch #87 w/ 32 samples
+	2023.07.16.17.34.13.826579      			Retreving batch #88 w/ 32 samples
+	2023.07.16.17.34.13.910136      			Retreving batch #89 w/ 32 samples
+	2023.07.16.17.34.13.993192      			Retreving batch #90 w/ 32 samples
+	2023.07.16.17.34.14.075579      			Retreving batch #91 w/ 32 samples
+	2023.07.16.17.34.14.157526      			Retreving batch #92 w/ 32 samples
+	2023.07.16.17.34.14.237899      			Retreving batch #93 w/ 32 samples
+	2023.07.16.17.34.14.318887      			Retreving batch #94 w/ 32 samples
+	2023.07.16.17.34.14.401234      			Retreving batch #95 w/ 32 samples
+	2023.07.16.17.34.14.483242      			Retreving batch #96 w/ 32 samples
+	2023.07.16.17.34.14.564328      			Retreving batch #97 w/ 32 samples
+	2023.07.16.17.34.14.644117      			Retreving batch #98 w/ 32 samples
+	2023.07.16.17.34.14.729782      			Retreving batch #99 w/ 32 samples
+	2023.07.16.17.34.14.811234      			Retreving batch #100 w/ 32 samples
+	2023.07.16.17.34.14.890801      			Retreving batch #101 w/ 32 samples
+	2023.07.16.17.34.14.970257      			Retreving batch #102 w/ 32 samples
+	2023.07.16.17.34.15.051076      			Retreving batch #103 w/ 32 samples
+	2023.07.16.17.34.15.131868      			Retreving batch #104 w/ 32 samples
+	2023.07.16.17.34.15.212837      			Retreving batch #105 w/ 32 samples
+	2023.07.16.17.34.15.293462      			Retreving batch #106 w/ 32 samples
+	2023.07.16.17.34.15.373515      			Retreving batch #107 w/ 32 samples
+	2023.07.16.17.34.15.454824      			Retreving batch #108 w/ 32 samples
+	2023.07.16.17.34.15.538534      			Retreving batch #109 w/ 32 samples
+	2023.07.16.17.34.15.619568      			Retreving batch #110 w/ 32 samples
+	2023.07.16.17.34.15.699585      			Retreving batch #111 w/ 32 samples
+	2023.07.16.17.34.15.780040      			Retreving batch #112 w/ 32 samples
+	2023.07.16.17.34.15.859213      			Retreving batch #113 w/ 32 samples
+	2023.07.16.17.34.15.941046      			Retreving batch #114 w/ 32 samples
+	2023.07.16.17.34.16.022057      			Retreving batch #115 w/ 32 samples
+	2023.07.16.17.34.16.101893      			Retreving batch #116 w/ 32 samples
+	2023.07.16.17.34.16.181462      			Retreving batch #117 w/ 32 samples
+	2023.07.16.17.34.16.262132      			Retreving batch #118 w/ 32 samples
+	2023.07.16.17.34.16.345619      			Retreving batch #119 w/ 32 samples
+	2023.07.16.17.34.16.424982      			Retreving batch #120 w/ 32 samples
+	2023.07.16.17.34.16.506189      			Retreving batch #121 w/ 32 samples
+	2023.07.16.17.34.16.585622      			Retreving batch #122 w/ 32 samples
+	2023.07.16.17.34.16.665312      			Retreving batch #123 w/ 32 samples
+	2023.07.16.17.34.16.745404      			Retreving batch #124 w/ 32 samples
+	2023.07.16.17.34.16.825326      			Retreving batch #125 w/ 32 samples
+	2023.07.16.17.34.16.905353      			Retreving batch #126 w/ 32 samples
+	2023.07.16.17.34.16.986132      			Retreving batch #127 w/ 32 samples
+	2023.07.16.17.34.17.066179      			Retreving batch #128 w/ 32 samples
+	2023.07.16.17.34.17.149767      			Retreving batch #129 w/ 32 samples
+	2023.07.16.17.34.17.231281      			Retreving batch #130 w/ 32 samples
+	2023.07.16.17.34.17.309462      			Retreving batch #131 w/ 32 samples
+	2023.07.16.17.34.17.389434      			Retreving batch #132 w/ 32 samples
+	2023.07.16.17.34.17.468632      			Retreving batch #133 w/ 32 samples
+	2023.07.16.17.34.17.548635      			Retreving batch #134 w/ 32 samples
+	2023.07.16.17.34.17.630614      			Retreving batch #135 w/ 32 samples
+	2023.07.16.17.34.17.712795      			Retreving batch #136 w/ 32 samples
+	2023.07.16.17.34.17.793576      			Retreving batch #137 w/ 32 samples
+	2023.07.16.17.34.17.874269      			Retreving batch #138 w/ 32 samples
+	2023.07.16.17.34.17.958404      			Retreving batch #139 w/ 32 samples
+	2023.07.16.17.34.18.040561      			Retreving batch #140 w/ 32 samples
+	2023.07.16.17.34.18.120397      			Retreving batch #141 w/ 32 samples
+	2023.07.16.17.34.18.201208      			Retreving batch #142 w/ 32 samples
+	2023.07.16.17.34.18.282092      			Retreving batch #143 w/ 32 samples
+	2023.07.16.17.34.19.434534      			Retreving batch #144 w/ 32 samples
+	2023.07.16.17.34.19.516459      			Retreving batch #145 w/ 32 samples
+	2023.07.16.17.34.19.596831      			Retreving batch #146 w/ 32 samples
+	2023.07.16.17.34.19.677102      			Retreving batch #147 w/ 32 samples
+	2023.07.16.17.34.19.762132      			Retreving batch #148 w/ 32 samples
+	2023.07.16.17.34.19.842245      			Retreving batch #149 w/ 32 samples
+	2023.07.16.17.34.19.923093      			Retreving batch #150 w/ 32 samples
+	2023.07.16.17.34.20.004551      			Retreving batch #151 w/ 32 samples
+	2023.07.16.17.34.20.085687      			Retreving batch #152 w/ 32 samples
+	2023.07.16.17.34.20.167358      			Retreving batch #153 w/ 32 samples
+	2023.07.16.17.34.20.247814      			Retreving batch #154 w/ 32 samples
+	2023.07.16.17.34.20.328932      			Retreving batch #155 w/ 32 samples
+	2023.07.16.17.34.20.410660      			Retreving batch #156 w/ 32 samples
+	2023.07.16.17.34.20.493551      			Retreving batch #157 w/ 32 samples
+	2023.07.16.17.34.20.578810      			Retreving batch #158 w/ 32 samples
+	2023.07.16.17.34.20.663428      			Retreving batch #159 w/ 32 samples
+	2023.07.16.17.34.20.745985      			Retreving batch #160 w/ 32 samples
+	2023.07.16.17.34.20.828395      			Retreving batch #161 w/ 32 samples
+	2023.07.16.17.34.20.909055      			Retreving batch #162 w/ 32 samples
+	2023.07.16.17.34.20.989922      			Retreving batch #163 w/ 32 samples
+	2023.07.16.17.34.21.071238      			Retreving batch #164 w/ 32 samples
+	2023.07.16.17.34.21.156946      			Retreving batch #165 w/ 32 samples
+	2023.07.16.17.34.21.238134      			Retreving batch #166 w/ 32 samples
+	2023.07.16.17.34.21.318980      			Retreving batch #167 w/ 32 samples
+	2023.07.16.17.34.21.403691      			Retreving batch #168 w/ 32 samples
+	2023.07.16.17.34.21.484364      			Retreving batch #169 w/ 32 samples
+	2023.07.16.17.34.21.566031      			Retreving batch #170 w/ 32 samples
+	2023.07.16.17.34.21.646224      			Retreving batch #171 w/ 32 samples
+	2023.07.16.17.34.21.727217      			Retreving batch #172 w/ 32 samples
+	2023.07.16.17.34.21.808364      			Retreving batch #173 w/ 32 samples
+	2023.07.16.17.34.21.888552      			Retreving batch #174 w/ 32 samples
+	2023.07.16.17.34.21.969153      			Retreving batch #175 w/ 32 samples
+	2023.07.16.17.34.22.050622      			Retreving batch #176 w/ 32 samples
+	2023.07.16.17.34.22.131621      			Retreving batch #177 w/ 32 samples
+	2023.07.16.17.34.22.214732      			Retreving batch #178 w/ 32 samples
+	2023.07.16.17.34.22.294911      			Retreving batch #179 w/ 32 samples
+	2023.07.16.17.34.22.375867      			Retreving batch #180 w/ 32 samples
+	2023.07.16.17.34.22.455731      			Retreving batch #181 w/ 32 samples
+	2023.07.16.17.34.22.536483      			Retreving batch #182 w/ 32 samples
+	2023.07.16.17.34.22.627561      			Retreving batch #183 w/ 32 samples
+	2023.07.16.17.34.22.709653      			Retreving batch #184 w/ 32 samples
+	2023.07.16.17.34.22.791041      			Retreving batch #185 w/ 32 samples
+	2023.07.16.17.34.22.873109      			Retreving batch #186 w/ 32 samples
+	2023.07.16.17.34.22.953406      			Retreving batch #187 w/ 32 samples
+	2023.07.16.17.34.23.036588      			Retreving batch #188 w/ 32 samples
+	2023.07.16.17.34.23.116232      			Retreving batch #189 w/ 32 samples
+	2023.07.16.17.34.23.196094      			Retreving batch #190 w/ 32 samples
+	2023.07.16.17.34.23.276245      			Retreving batch #191 w/ 32 samples
+	2023.07.16.17.34.23.356523      			Retreving batch #192 w/ 32 samples
+	2023.07.16.17.34.23.436639      			Retreving batch #193 w/ 32 samples
+	2023.07.16.17.34.23.517445      			Retreving batch #194 w/ 32 samples
+	2023.07.16.17.34.23.596970      			Retreving batch #195 w/ 32 samples
+	2023.07.16.17.34.23.677114      			Retreving batch #196 w/ 32 samples
+	2023.07.16.17.34.23.757218      			Retreving batch #197 w/ 32 samples
+	2023.07.16.17.34.23.840765      			Retreving batch #198 w/ 32 samples
+	2023.07.16.17.34.23.920824      			Retreving batch #199 w/ 32 samples
+	2023.07.16.17.34.24.001154      			Retreving batch #200 w/ 32 samples
+	2023.07.16.17.34.24.081842      			Retreving batch #201 w/ 32 samples
+	2023.07.16.17.34.24.162178      			Retreving batch #202 w/ 32 samples
+	2023.07.16.17.34.24.245173      			Retreving batch #203 w/ 32 samples
+	2023.07.16.17.34.24.325641      			Retreving batch #204 w/ 32 samples
+	2023.07.16.17.34.24.406826      			Retreving batch #205 w/ 32 samples
+	2023.07.16.17.34.24.488072      			Retreving batch #206 w/ 32 samples

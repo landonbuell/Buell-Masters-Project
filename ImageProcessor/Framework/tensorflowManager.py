@@ -38,7 +38,7 @@ class TensorflowManager(manager.Manager):
         super().__init__(app,name)
         self._randomSeed        = tf.random.set_seed(self.getApp().getConfig().getShuffleSeed())
         
-        self._inputShape        = (64,64,3)
+        self._inputShape        = (32,32,3)
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
@@ -168,6 +168,7 @@ class TensorflowManager(manager.Manager):
         self._model.compile(optimizer=self._optimizer,
                             loss=self._objective,
                             metrics=self._metrics)
+        #self._model.summary(line_length=72,print_fn=self.logMessage)
         return None
 
     # Private Interface 
@@ -194,7 +195,7 @@ class TensorflowManager(manager.Manager):
         """ Helper Function to Train the model on the batch of data provided """
         X = batchData.getX()
         Y = batchData.getOneHotY(self._numClasses).astype(np.float32)
-        self._model.fit(x=X,y=Y,
+        trainHistory = self._model.fit(x=X,y=Y,
                         batch_size=batchData.getNumSamples(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
                         initial_epoch=self._epochCounter)
@@ -221,7 +222,7 @@ class ClassificationManager(TensorflowManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( tensorflowModels.getAffineModel )
+        self.registerGetModelCallback( tensorflowModels.getMultiTieredConvolutional2DModel )
 
     def __del__(self):
         """ Destructor """
