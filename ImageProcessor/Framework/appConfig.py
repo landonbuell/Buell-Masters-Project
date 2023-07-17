@@ -31,7 +31,7 @@ class AppConfig:
         self._logToConsole  = True
         self._logToFile     = True
 
-        self._batchSize     = 64
+        self._batchSize     = 128
         self._shuffleSeed   = 123456789
 
         self._sampleDatabaseCapacity = int(2**18) # temp limit for development
@@ -40,7 +40,7 @@ class AppConfig:
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
-        self._epochsPerBatch        = 1     # Number of consecutive times we see a bach
+        self._epochsPerBatch        = 4     # Number of consecutive times we see a bach
         self._epochsPerFold         = 8     # Number of time we train on a fold
 
     # Accessors

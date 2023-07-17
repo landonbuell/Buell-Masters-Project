@@ -44,7 +44,7 @@ class TensorflowManager(manager.Manager):
         self._callbackGetModel  = None
         self._model             = None
 
-        self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.01)
+        self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.001)
         self._objective         = tf.keras.losses.CategoricalCrossentropy()
 
         self._trainCallbacks    = callbackTools.TensorflowModelTrain()
@@ -138,7 +138,6 @@ class TensorflowManager(manager.Manager):
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._model     = self.__invokeGetModel()
-        self._initOptimizer()
         return None
 
     def loadModel(self,importPathName: str) -> None:
@@ -188,18 +187,17 @@ class TensorflowManager(manager.Manager):
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-        X = tf.convert_to_tensor( batchData.getX() )
+        X = batchData.getX() 
         Y = batchData.getOneHotY(self._numClasses).astype(np.float32)
+        y = self._model(X).numpy()
         batchLog = self._model.fit(x=X,y=Y,
                         batch_size=batchData.getNumSamples(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
                         initial_epoch=0,
                         callbacks=self._trainCallbacks)
-        preds = self._model.call(X)
         self._epochCounter += self.getConfig().getNumEpochsPerBatch()
         return None
        
-
     def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper function to test the model n the batch of provided data """
         X = batchData.getX()
