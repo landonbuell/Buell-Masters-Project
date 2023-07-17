@@ -234,7 +234,7 @@ class ClassificationManager(TensorflowManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( tensorflowModels.getMultiTieredConvolutional2DModel )
+        self.registerGetModelCallback( tensorflowModels.getSingleTierImageClassifier )
 
     def __del__(self):
         """ Destructor """
