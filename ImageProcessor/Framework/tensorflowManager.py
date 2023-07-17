@@ -36,22 +36,20 @@ class TensorflowManager(manager.Manager):
                  name: str):
         """ Constructor """
         super().__init__(app,name)
-        self._randomSeed        = tf.random.set_seed(self.getApp().getConfig().getShuffleSeed())
-        
         self._inputShape        = (32,32,3)
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
         self._model             = None
-
-        self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.01)
+         
+        self._optimizer         = tf.keras.optimizers.Adam(learning_rate=0.0001)
         self._objective         = tf.keras.losses.CategoricalCrossentropy()
 
         self._trainHistory      = modelHistoryInfo.ModelTrainHistoryInfo()
-        self._testHistory       = modelHistoryInfo.ModelTestHistoryInfo()
+        self._evalHistory       = modelHistoryInfo.ModelTestHistoryInfo(self._numClasses)
 
-        self._trainCallbacks    = [callbackTools.TensorflowModelTrain(),]
-        self._testCallbacks     = [callbackTools.TensorflowModelTest(),]
+        self._trainCallbacks    = callbackTools.TensorflowModelTrain(self)
+        self._testCallbacks     = callbackTools.TensorflowModelTest(self)
 
         self._epochCounter      = 0
         self._metrics           = [tf.keras.metrics.Accuracy(),
@@ -79,6 +77,14 @@ class TensorflowManager(manager.Manager):
     def getEpochsPerBatch(self) -> int:
         """ Return the Number of epochs to use per batch """
         return self.getApp().getConfig().getNumEpochsPerBatch()
+
+    def getTrainingHistory(self):
+        """ Return the Training History Instance """
+        return self._trainHistory
+
+    def getEvaluationHistory(self):
+        """ Return the Evaluation History Instance """
+        return self._evalHistory
 
     # Public Interface
 
@@ -119,7 +125,8 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
         msg = "Exporting training history to: {0}".format(outputPath)
         self.logMessage(msg)
-        self._trainHistory.export(outputPath)
+        #self._trainCallbacks.getTrainHistory().plotAll()
+        self.getTrainingHistory().export(outputPath)
         return None
 
     def exportTestingHistory(self,outputFileName: str) -> None:
@@ -127,7 +134,7 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputFileName)
         msg = "Exporting testing history to: {0}".format(outputPath)
         self.logMessage(msg)
-        self._testHistory.export(outputPath)
+        self.getEvaluationHistory().export(outputPath)
         return None
 
     def exportModel(self,outputPathName: str) -> None:
@@ -136,15 +143,7 @@ class TensorflowManager(manager.Manager):
         outputPath = os.path.join(self.getOutputPath(),outputPathName)
         msg = "Exporting model to: {0}".format(outputPath)
         self.logMessage(msg)
-        self._model.save(   outputPath,
-                            overWrite=True,
-                            save_format="h5")
-        return None
-
-    def resetState(self) -> None:
-        """ Reset the Classifier Manager """
-        self._model     = self.__invokeGetModel()
-        self._initOptimizer()
+        self._model.save(outputPath,overwrite=True,save_format="h5")
         return None
 
     def loadModel(self,importPathName: str) -> None:
@@ -157,8 +156,18 @@ class TensorflowManager(manager.Manager):
             msg = "Cannot load model from {0} because it does not exist".format(importPath)
             self.logMessage(msg)
             raise RuntimeError(msg)
-        self._model = tf.keras.models.load_model(importPathName)
+        self._model = tf.keras.models.load_model(importPath)
+        self._model.compile(optimizer=self._optimizer,
+                            loss=self._objective,
+                            metrics=self._metrics,
+                            steps_per_execution=1)
         return None
+
+    def resetState(self) -> None:
+        """ Reset the Classifier Manager """
+        self._initModel()
+        return None
+
 
     # Protected Interface
 
@@ -167,7 +176,8 @@ class TensorflowManager(manager.Manager):
         self._model = self.__invokeGetModel()
         self._model.compile(optimizer=self._optimizer,
                             loss=self._objective,
-                            metrics=self._metrics)
+                            metrics=self._metrics,
+                            steps_per_execution=1)
         #self._model.summary(line_length=72,print_fn=self.logMessage)
         return None
 
@@ -193,22 +203,24 @@ class TensorflowManager(manager.Manager):
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
-        X = batchData.getX()
-        Y = batchData.getOneHotY(self._numClasses).astype(np.float32)
-        trainHistory = self._model.fit(x=X,y=Y,
-                        batch_size=batchData.getNumSamples(),
+        features = batchData.getX() 
+        labels = batchData.getOneHotY(self._numClasses).astype(np.float32)
+        batchLog    = self._model.fit(x=features,y=labels,
+                        batch_size=self.getConfig().getBatchSize(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
-                        initial_epoch=self._epochCounter)
+                        initial_epoch=0,
+                        callbacks=self._trainCallbacks)
         self._epochCounter += self.getConfig().getNumEpochsPerBatch()
         return None
        
-
     def __testOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper function to test the model n the batch of provided data """
-        X = batchData.getX()
-        Y = batchData.getY().astype(np.float32)
-        self._model.predict(x=X,
-                            batch_size=batchData.getNumSamples())
+        features = batchData.getX()
+        labels = batchData.getY()
+        predictions = self._model.predict(x=features,
+                        batch_size=self.getConfig().getBatchSize())
+        # Store the Predictions & Truths
+        self._evalHistory.updateFromPredictions(labels,predictions)
         return None
 
 class ClassificationManager(TensorflowManager):

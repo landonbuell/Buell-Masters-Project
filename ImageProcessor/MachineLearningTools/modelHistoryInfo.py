@@ -12,9 +12,7 @@
 
 import pandas as pd
 import numpy as np
-import torch
-
-import callbackTools
+import matplotlib.pyplot as plt
 
         #### CLASS DEFINITIONS ####
 
@@ -24,7 +22,11 @@ class ModelTrainHistoryInfo:
     def __init__(self):
         """ Constructor """
         self._exportCounts = 0
-        self._losses    = np.array([],dtype=np.float32)
+        self._epochs        = np.array([],dtype=np.float32)
+        self._losses        = np.array([],dtype=np.float32)
+        self._accuracies    = np.array([],dtype=np.float32)
+        self._precisions    = np.array([],dtype=np.float32)
+        self._recalls       = np.array([],dtype=np.float32)
         
     def __del__(self):
         """ Destructor """
@@ -38,26 +40,47 @@ class ModelTrainHistoryInfo:
 
     # Public Interface
 
-    def appendLoss(self, batchLoss: np.float32) -> None:
-        """ Append a Loss Item to Array of Losses """
-        self._losses    = np.append(self._losses,batchLoss)
+    def updateFromBatchLog(self,batchLog: dict):
+        """ Update Instance w/ data from a batch Log """
+        self._losses        = np.append(self._losses,batchLog["loss"])
+        self._accuracies    = np.append(self._accuracies,batchLog["accuracy"])
+        self._precisions    = np.append(self._precisions,batchLog["precision"])
+        self._recalls       = np.append(self._recalls,batchLog["recall"])
         return None
 
     def reset(self) -> None:
         """ Reset the state of instance to construction """
-        self._losses    = np.array([],dtype=np.float32)
-        self._precision = np.array([],dtype=np.float32)
-        self._recalls   = np.array([],dtype=np.float32)
+        self._epochs        = np.array([],dtype=np.float32)
+        self._losses        = np.array([],dtype=np.float32)
+        self._accuracies    = np.array([],dtype=np.float32)
+        self._precisions    = np.array([],dtype=np.float32)
+        self._recalls       = np.array([],dtype=np.float32)
         return None
 
     def plotAll(self,show=True,save=None) -> None:
         """ Generate and optionally show and save history of all scores """
-        # TODO: Implement this
+        plt.figure(figsize=(16,12))
+        plt.title("Training History",size=32,weight='bold')
+        plt.xlabel("Epoch Index",size=24,weight='bold')
+        plt.ylabel("Metric Score",size=24,weight='bold')
+
+        plt.plot(self._losses,label="Loss")
+        plt.plot(self._precisions,label="Precision")
+        plt.plot(self._recalls,label="Recall")
+
+        plt.grid()
+        plt.legend()
+        if (show == True):
+            plt.show()
+        plt.close()
         return None
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"Loss"      : self._losses}
+        data = {"loss"      : self._losses,
+                "accuracy"  : self._accuracies,
+                "preicsion" : self._precisions,
+                "recalls"   : self._recalls}
         frame = pd.DataFrame(data=data,index=None)
         return frame
 
@@ -73,13 +96,14 @@ class ModelTrainHistoryInfo:
 class ModelTestHistoryInfo:
     """ Stores Historical information from a model's train or test process """
 
-    def __init__(self):
+    def __init__(self,numClasses:int):
         """ Constructor """
-        self._exportCounts = 0
-        self._truths    = np.array([],dtype=np.int16)
-        self._outputs   = np.array([],dtype=np.int16)
-        self._scores    = np.array([],dtype=np.float32)
-        
+        self._numClasses    = numClasses
+        self._exportCounts  = 0       
+        self._groundTruths  = np.array([],dtype=np.float32)
+        self._predictions   = np.array([],dtype=np.float32)
+        self._classProbabilities = np.array([],dtype=np.float32)
+   
     def __del__(self):
         """ Destructor """
         pass
@@ -88,21 +112,30 @@ class ModelTestHistoryInfo:
 
     # Public Interface
 
-    def updatedWithBatch(self,
-                         truth: np.int16,
-                         output: np.int16,
-                         score: np.float32) -> None:
+    def updateFromPredictions(self,truths,predictions) -> None:
         """ Update Instance w/ a set of outputs """
-        self._truths    = np.append(self._truths,truth)
-        self._outputs   = np.append(self._outputs,output)
-        self._scores    = np.append(self._scores,score)
+        numSamples = truths.shape[0]
+        if (predictions.shape[0] != truths.shape[0]):
+            msg = "Got truth labels w/ {0} samples and predictions with {1} samples".format(
+                predictions.shape[0],truths.shape[0])
+            raise RuntimeError(msg)
+        if (numSamples == 0):
+            msg = "Got {0} samples to store".format(msg)
+            raise RuntimeError(msg)
+        # Update as needed
+        self._groundTruths      = np.append(self._groundTruths,truths)
+        self._predictions       = np.append(self._predictions,np.argmax(predictions,axis=1))
+        self._classProbabilities = np.append(self._classProbabilities,predictions)
+        newNumSamples           = self._groundTruths.size
+        self._classProbabilities = np.reshape(self._classProbabilities,newshape=(newNumSamples,self._numClasses))
         return None
 
     def reset(self) -> None:
         """ Reset the state of instance to construction """
-        self._truths    = np.array([],dtype=np.int16)
-        self._outputs   = np.array([],dtype=np.int16)       
-        self._scores    = np.array([],dtype=np.float32)
+        self._exportCounts  = 0     
+        self._groundTruths  = np.array([],dtype=np.float32)
+        self._predictions   = np.array([],dtype=np.float32)
+        self._classProbabilities = np.array([],dtype=np.float32)
         return None
 
     def plotAll(self,show=True,save=None) -> None:
@@ -112,9 +145,12 @@ class ModelTestHistoryInfo:
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"truth"     : self._truths,
-                "outputs"   : self._outputs,
-                "scores"    : self._scores}
+        data = {"truth"     : self._groundTruths,
+                "predict"   : self._predictions}
+        for ii in range(self._numClasses):
+            newKey = "class{0}".format(ii)
+            newVal = self._classProbabilities[:,ii]
+            data[newKey] = newVal
         frame = pd.DataFrame(data=data,index=None)
         return frame
 
@@ -126,6 +162,8 @@ class ModelTestHistoryInfo:
         return True
 
     # Private Interface
+
+
 
 """
     Author:         Landon Buell

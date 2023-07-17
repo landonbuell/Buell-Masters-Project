@@ -150,7 +150,7 @@ class StrategyManager(manager.Manager):
             batchIndexes    = fold.getNextBatchIndexes(batchSize)
             batchData       = self.getApp().getSampleManager().getNextBatch(batchIndexes)
 
-            self.getApp().getPreprocessManager().processBatch(batchData)
+            batchData = self.getApp().getPreprocessManager().processBatch(batchData)
             # TODO: call augmentation manager on batch 
 
             self.getApp().getClassificationManager().trainOnBatch(batchData)
