@@ -111,7 +111,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","allSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun0"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV0"))
         config = AppConfig(inputPaths,outputPath)
         return config
 

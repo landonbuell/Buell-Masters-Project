@@ -20,7 +20,7 @@ def getAffineModel(inputShape:tuple,numClasses: int):
     model = tf.keras.Sequential()
     return model
 
-def getMultiTieredConvolutional2DModel(inputShape:tuple,numClasses:int):
+def getSingleTierImageClassifier(inputShape:tuple,numClasses:int):
     """ Return a Multi-Tiered Convolutional Nueral Network """
     model = tf.keras.Sequential()
     model.add( tf.keras.Input(shape=inputShape,dtype=tf.float32) )

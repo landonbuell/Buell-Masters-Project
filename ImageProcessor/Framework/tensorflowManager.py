@@ -178,7 +178,7 @@ class TensorflowManager(manager.Manager):
                             loss=self._objective,
                             metrics=self._metrics,
                             steps_per_execution=1)
-        #self._model.summary(line_length=72,print_fn=self.logMessage)
+        self._model.summary(line_length=72,print_fn=self.logMessage)
         return None
 
     # Private Interface 
