@@ -47,13 +47,13 @@ def getMultiTierImageClassifier(inputShape:tuple,numClasses:int):
     model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
     model.add( tf.keras.layers.MaxPool2D( pool_size=(2,2),strides=(2,2)) )
     # 2nd Layer Group
-    model.add( tf.keras.layers.Conv2D(filters=8,kernel_size=(3,3),strides=(1,1),activation='relu') )
-    model.add( tf.keras.layers.Conv2D(filters=8,kernel_size=(3,3),strides=(1,1),activation='relu') )
+    model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
+    model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
     model.add( tf.keras.layers.MaxPool2D( pool_size=(2,2),strides=(2,2)) )
     # 3rd Layer Group
-    #model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
-    #model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
-    #model.add( tf.keras.layers.MaxPool2D( pool_size=(2,2),strides=(1,1)) )
+    model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
+    model.add( tf.keras.layers.Conv2D(filters=16,kernel_size=(3,3),strides=(1,1),activation='relu') )
+    model.add( tf.keras.layers.MaxPool2D( pool_size=(2,2),strides=(2,2)) )
     # Flatten + Perceptron
     model.add( tf.keras.layers.Flatten() )
     model.add( tf.keras.layers.Dense(units=256,activation='relu') )

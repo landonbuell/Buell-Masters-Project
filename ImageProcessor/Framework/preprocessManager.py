@@ -40,13 +40,14 @@ class PreprocessManager(manager.Manager):
         self._displayAfterEachStep  = False
 
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
-        self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
+        #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
+        self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
         self.__registerPreprocessStep( Preprocessors.divideBy255 )
         self.__registerPreprocessStep( Preprocessors.tensorflowNormalize )
 
     def __del__(self):
         """ Destructor """
-        pass
+        self._steps.clear()
 
     # Accessors
 
@@ -132,6 +133,20 @@ class Preprocessors:
         Xresized = tf.image.resize(
             sampleBatch.getX(),
             size=(32,32),
+            method=tf.image.ResizeMethod.BILINEAR,
+            preserve_aspect_ratio=False,
+            antialias=False)
+        Xresized = Xresized.numpy()
+        sampleBatch.setX( Xresized ) 
+        return sampleBatch
+
+    @staticmethod
+    def rescaleTo64by64(preprocessMgr: PreprocessManager,
+                        sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Resize each input image to 64 x 64 """
+        Xresized = tf.image.resize(
+            sampleBatch.getX(),
+            size=(64,64),
             method=tf.image.ResizeMethod.BILINEAR,
             preserve_aspect_ratio=False,
             antialias=False)
