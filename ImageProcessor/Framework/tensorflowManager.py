@@ -36,7 +36,7 @@ class TensorflowManager(manager.Manager):
                  name: str):
         """ Constructor """
         super().__init__(app,name)
-        self._inputShape        = (32,32,3)
+        self._inputShape        = (64,64,3)
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
@@ -234,7 +234,7 @@ class ClassificationManager(TensorflowManager):
                  app):  # imageProcessingApp.ImageProcessingApp
         """ Constructor """
         super().__init__(app,ClassificationManager.__NAME)
-        self.registerGetModelCallback( tensorflowModels.getMultiTieredConvolutional2DModel )
+        self.registerGetModelCallback( tensorflowModels.getMultiTierImageClassifier )
 
     def __del__(self):
         """ Destructor """
