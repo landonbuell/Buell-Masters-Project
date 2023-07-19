@@ -143,7 +143,7 @@ class ModelTestHistoryInfo:
                 predictions.shape[0],truths.shape[0])
             raise RuntimeError(msg)
         if (numSamples == 0):
-            msg = "Got {0} samples to store".format(msg)
+            msg = "Got {0} samples to store".format(numSamples)
             raise RuntimeError(msg)
         # Update as needed
         self._groundTruths  = np.append(self._groundTruths,truths)
@@ -198,10 +198,6 @@ class ModelTestHistoryInfo:
         return modelTestHistoryInfo
 
     # Private Interface
-
-
-
-
 
 """
     Author:         Landon Buell
