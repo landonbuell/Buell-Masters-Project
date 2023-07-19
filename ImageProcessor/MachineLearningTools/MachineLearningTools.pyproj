@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="callbackTools.py" />
+    <Compile Include="confusionMatrix.py" />
     <Compile Include="convolutionalNeuralNetworks.py" />
     <Compile Include="modelHistoryInfo.py" />
     <Compile Include="tensorflowModels.py" />

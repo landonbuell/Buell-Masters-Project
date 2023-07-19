@@ -244,6 +244,9 @@ class ClassificationManager(TensorflowManager):
 
     # Public Interface 
 
+    def exportClassificationReport(self,evaluationManager):
+        """ Export a classification report based on  """
+
     # Protected Interface
 
 
