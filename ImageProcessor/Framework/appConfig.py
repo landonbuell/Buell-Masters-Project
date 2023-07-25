@@ -40,8 +40,8 @@ class AppConfig:
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
-        self._epochsPerBatch        = 4     # Number of consecutive times we see a bach
-        self._epochsPerFold         = 16    # Number of time we train on a fold
+        self._epochsPerBatch        = 2     # Number of consecutive times we see a bach
+        self._epochsPerFold         = 8     # Number of time we train on a fold
 
     # Accessors
 
@@ -111,7 +111,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","allSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV1"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV2"))
         config = AppConfig(inputPaths,outputPath)
         return config
 

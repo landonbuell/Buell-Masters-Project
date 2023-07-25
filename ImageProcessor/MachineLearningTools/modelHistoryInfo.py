@@ -127,7 +127,7 @@ class ModelTestHistoryInfo:
 
     def getClassPredictions(self) -> np.ndarray:
         """ Return an array of class predictions """
-        return np.argmax(self._predictions,axis=1,dtype=np.int16)
+        return np.argmax(self._predictions,axis=1).astype(np.int16)
 
     def getConfidences(self) -> np.ndarray:
         """ Return an array of predictions confidences """
@@ -167,10 +167,10 @@ class ModelTestHistoryInfo:
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
         data = {"truth"     : self.getGroundTruths(),
-                "predict"   : self.getPredictions()}
+                "predict"   : self.getClassPredictions()}
         for ii in range(self._numClasses):
             newKey = "class{0}".format(ii)
-            newVal = self._classProbabilities[:,ii]
+            newVal = self._predictions[:,ii]
             data[newKey] = newVal
         frame = pd.DataFrame(data=data,index=None)
         return frame
