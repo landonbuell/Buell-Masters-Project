@@ -100,7 +100,7 @@ class ModelTestHistoryInfo:
         """ Constructor """
         self._numClasses    = numClasses
         self._exportCounts  = 0       
-        self._groundTruths  = np.array([],dtype=np.float32)
+        self._groundTruths  = np.array([],dtype=np.uint16)
         self._predictions   = np.array([],dtype=np.float32)
    
     def __del__(self):
@@ -127,7 +127,7 @@ class ModelTestHistoryInfo:
 
     def getClassPredictions(self) -> np.ndarray:
         """ Return an array of class predictions """
-        return np.argmax(self._predictions,axis=1,dtype=np.int16)
+        return np.argmax(self._predictions,axis=1,dtype=np.uint16)
 
     def getConfidences(self) -> np.ndarray:
         """ Return an array of predictions confidences """
@@ -146,7 +146,7 @@ class ModelTestHistoryInfo:
             msg = "Got {0} samples to store".format(numSamples)
             raise RuntimeError(msg)
         # Update as needed
-        self._groundTruths  = np.append(self._groundTruths,truths)
+        self._groundTruths  = np.append(self._groundTruths,truths,dtype=np.uint16)
         self._predictions   = np.append(self._predictions,predictions)
         totalNumSamples     = self._groundTruths.size
         self._predictions   = np.reshape(self._predictions,newshape=(totalNumSamples,self._numClasses))

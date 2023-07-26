@@ -27,6 +27,8 @@ class ClassificationReport:
         """ Constructor """
         self._numClasses        = numClasses
         self._confusionMatrix   = ConfusionMatrix(numClasses)
+        self._groundTruths      = np.array([],dtype=np.uint16)
+        self._predictions       = np.array([],dtype=np.uint16)
 
     def __del__(self):
         """ Destructor """
@@ -42,6 +44,42 @@ class ClassificationReport:
         """ Return the underlying Confusion Matrix """
         return self._confusionMatrix
 
+    def getPrecisionScores(self) -> np.ndarray:
+        """ Return an array of precisions by class """
+        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
+        for ii in range(self._numClasses):
+            maskTruths  = (self._groundTruths == ii)
+            maskPreds   = (self._predictions == ii)
+            result[ii] = tf.keras.metrics.Precision(maskTruths,maskPreds)
+        return result
+
+    def getRecallScores(self) -> np.ndarray:
+        """ Return an array of precisions by class """
+        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
+        for ii in range(self._numClasses):
+            maskTruths  = (self._groundTruths == ii)
+            maskPreds   = (self._predictions == ii)
+            result[ii] = tf.keras.metrics.Recall(maskTruths,maskPreds)
+        return result
+
+    def getF1Scores(self) -> np.ndarray:
+        """ Return an array of precisions by class """
+        precisions  = self.getPrecisionScores()
+        recalls     = self.getRecallScores()
+        result  = 2 * (precisions + recalls) / (precisions * recalls)
+        return result
+
+    def getAccuraryScores(self) -> np.ndarray:
+        """ Return an array of precisions by class """
+        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
+        for ii in range(self._numClasses):
+            maskTruths  = (self._groundTruths == ii)
+            maskPreds   = (self._predictions == ii)
+            result[ii] = tf.keras.metrics.Accuracy(maskTruths,maskPreds)
+        return result
+
+
+
     # Public Interface
 
     def update(self,evaluationHistory: modelHistoryInfo.ModelTestHistoryInfo) -> None:
@@ -51,10 +89,23 @@ class ClassificationReport:
         # Store the results
         self._confusionMatrix.updateFromPredictions(truths,predictions)
 
+        # Store the class predictions too
+        classPredictions = evaluationHistory.getClassPredictions()
+        self._groundTruths  = np.append(self._groundTruths,truths)
+        self._predictions   = np.append(self._predictions,classPredictions)
+        return None
+
     def export(self,
                outputFolder: str,
                currentFoldIndex: int):
         """ Write all classification Report Data to Disk """
+        frameDict = {"precision"    : self.getPrecisionScores(),
+                     "recall"       : self.getRecallScores(),
+                     "f1-score"     : self.getF1Scores(),
+                     "accuracy"     : self.getAccuraryScores()}
+        frame = pd.DataFrame(data=frameDict)
+        reportPath = os.path.join(outputFolder,"classificationReport{0}.csv".format(currentFoldIndex))
+        frame.to_csv(reportPath,index=True,mode="w")
 
         # Export the Standard Confusion Matrix
         standardConfusionMatrixCsvPath = os.path.join(outputFolder,"confusionMatrixStandard{0}.csv".format(currentFoldIndex))
@@ -107,6 +158,8 @@ class ConfusionMatrix:
     def getWeightedMatrix(self) -> np.ndarray:
         """ Return the current weighted confusion matrix """
         return self._matrixWeighted
+
+
 
     # Getters and Setters 
 
