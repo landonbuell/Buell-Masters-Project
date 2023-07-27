@@ -127,11 +127,11 @@ class ModelTestHistoryInfo:
 
     def getClassPredictions(self) -> np.ndarray:
         """ Return an array of class predictions """
-        return np.argmax(self._predictions,axis=1).astype(np.int16)
+        return np.argmax(self._predictions,axis=1)
 
     def getConfidences(self) -> np.ndarray:
         """ Return an array of predictions confidences """
-        return np.max(self._predictions,axis=1,dtype=np.float32)
+        return np.max(self._predictions,axis=1)
 
     # Public Interface
 
@@ -146,7 +146,7 @@ class ModelTestHistoryInfo:
             msg = "Got {0} samples to store".format(numSamples)
             raise RuntimeError(msg)
         # Update as needed
-        self._groundTruths  = np.append(self._groundTruths,truths,dtype=np.uint16)
+        self._groundTruths  = np.append(self._groundTruths,truths)
         self._predictions   = np.append(self._predictions,predictions)
         totalNumSamples     = self._groundTruths.size
         self._predictions   = np.reshape(self._predictions,newshape=(totalNumSamples,self._numClasses))

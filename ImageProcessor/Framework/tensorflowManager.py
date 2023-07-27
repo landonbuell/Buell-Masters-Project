@@ -17,6 +17,7 @@ import tensorflow as tf
 import commonEnumerations
 
 import modelHistoryInfo
+import classificationReport
 import callbackTools
 import tensorflowModels
 
@@ -244,8 +245,12 @@ class ClassificationManager(TensorflowManager):
 
     # Public Interface 
 
-    def exportClassificationReport(self,evaluationManager):
-        """ Export a classification report based on  """
+    def exportClassificationReport(self,outputPath: str, foldIndex: int) -> None:
+        """ Export a classification report based on evaluation history """
+        report = classificationReport.ClassificationReport(self._numClasses)
+        report.update( self._evalHistory )
+        report.export(outputPath,foldIndex)
+        return None
 
     # Protected Interface
 

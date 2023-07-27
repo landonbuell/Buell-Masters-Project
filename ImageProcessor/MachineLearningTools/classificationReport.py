@@ -46,20 +46,26 @@ class ClassificationReport:
 
     def getPrecisionScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
+        precisionMetric = tf.keras.metrics.Precision()
         result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
         for ii in range(self._numClasses):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
-            result[ii] = tf.keras.metrics.Precision(maskTruths,maskPreds)
+            precisionMetric.update_state(maskTruths,maskPreds)
+            result[ii]  = precisionMetric.result()
+            precisionMetric.reset_state()
         return result
 
     def getRecallScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
+        recallMetric = tf.keras.metrics.Recall()
         result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
         for ii in range(self._numClasses):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
-            result[ii] = tf.keras.metrics.Recall(maskTruths,maskPreds)
+            recallMetric.update_state(maskTruths,maskPreds)
+            result[ii]  = recallMetric.result()
+            recallMetric.reset_state()
         return result
 
     def getF1Scores(self) -> np.ndarray:
@@ -71,19 +77,25 @@ class ClassificationReport:
 
     def getAccuraryScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
+        accuracyMetric = tf.keras.metrics.Accuracy()
         result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
         for ii in range(self._numClasses):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
-            result[ii] = tf.keras.metrics.Accuracy(maskTruths,maskPreds)
+            accuracyMetric.update_state(maskTruths,maskPreds)
+            result[ii]  = accuracyMetric.result()
+            accuracyMetric.reset_state()
         return result
-
-
 
     # Public Interface
 
     def update(self,evaluationHistory: modelHistoryInfo.ModelTestHistoryInfo) -> None:
         """ Update the state of this report from ModelTestHistoryInfo instance """
+        if (evaluationHistory.getNumClasses() != self._numClasses):
+            msg = "Got an evaluation history w/ {0} classes, but expected {1}".format(
+                evaluationHistory.getNumClasses(),self._numClasses)
+            raise RuntimeError(msg)
+
         truths      = evaluationHistory.getGroundTruths()   # 1D array
         predictions = evaluationHistory.getPredictions()    # 2D array
         # Store the results
@@ -183,12 +195,12 @@ class ConfusionMatrix:
             predClass = classPredicitons[ii]
             self._numTruthSamples[trueClass] += 1   # Increment the truth counter
             self._matrixStandard[trueClass,predClass] += 1                      # Prediction
-            self._matrixStandard[trueClass,predClass] += predictionConfidences  # confidence
+            self._matrixStandard[trueClass,predClass] += predictionConfidences[ii]  # confidence
         return None
 
     def exportStandardMatrixAsCsv(self,fullOutputPath: str) -> None:
         """ Export the Confusion matrix as a CSV file """
-        frame = pd.DataFrame(data=self._matrix,columns=None,index=None)
+        frame = pd.DataFrame(data=self._matrixStandard,columns=None,index=None)
         frame.to_csv(fullOutputPath,columns=None,index=False,mode="w")
         return None
 
@@ -199,7 +211,7 @@ class ConfusionMatrix:
 
     def exportWeightedMatrixAsCsv(self,fullOutputPath: str) -> None:
         """ Export the Confusion matrix as a CSV file """
-        frame = pd.DataFrame(data=self._matrix,columns=None,index=None)
+        frame = pd.DataFrame(data=self._matrixWeighted,columns=None,index=None)
         frame.to_csv(fullOutputPath,columns=None,index=False,mode="w")
         return None
 
@@ -213,9 +225,11 @@ class ConfusionMatrix:
     def __plotStandardConfusionMatrix(self,show=True,savePath=None):
         """ Plot the Standard Confusion Matrix """
         plt.figure(figsize=(16,12))
-        plt.xlabel("Predicted Label",size=24,weight='bold')
-        plt.ylabel("Actual Label",size=24,weight='bold')
-        plt.imshow(self._matrixStandard,cmap=plt.cm.viridis)
+        plt.xlabel("Predicted Label",size=32,weight='bold')
+        plt.ylabel("Actual Label",size=32,weight='bold')
+        plt.xticks(ticks=range(self._numClasses),size=16)
+        plt.yticks(ticks=range(self._numClasses),size=16)
+        plt.imshow(self._matrixStandard,cmap=plt.cm.gray)
         if (savePath is not None):
             plt.savefig(savePath)
         if (show == True):
@@ -226,9 +240,11 @@ class ConfusionMatrix:
     def __plotWeightedConfusionMatrix(self,show=True,savePath=None):
         """ Plot the Weighted Confusion Matrix """
         plt.figure(figsize=(16,12))
-        plt.xlabel("Predicted Label",size=24,weight='bold')
-        plt.ylabel("Actual Label",size=24,weight='bold')
-        plt.imshow(self._matrixWeighted,cmap=plt.cm.viridis)
+        plt.xlabel("Predicted Label",size=32,weight='bold')
+        plt.ylabel("Actual Label",size=32,weight='bold')
+        plt.xticks(ticks=range(self._numClasses),size=16)
+        plt.yticks(ticks=range(self._numClasses),size=16)
+        plt.imshow(self._matrixWeighted,cmap=plt.cm.gray)
         if (savePath is not None):
             plt.savefig(savePath)
         if (show == True):
