@@ -22,26 +22,30 @@ import modelHistoryInfo
 class TensorflowModelTrain(tf.keras.callbacks.Callback):
     """ Callback to run when fitting a Tensorflow Model """
     
-    def __init__(self):
+    def __init__(self,tensorflowManager):
         """ Constructor """
         super().__init__()
-        self._trainHistory = modelHistoryInfo.ModelTrainHistoryInfo()
-
-    def getTrainHistory(self):
-        """ Return the trainign history instance """
-        return self._trainHistory
+        self._tfMgr = tensorflowManager
 
     def on_train_batch_end(self,batch: int,logs: dict):
         """ When a batch is finished training """
-        self._trainHistory.updateFromBatchLog(logs)
+        self._tfMgr.getTrainingHistory().updateFromBatchLog(logs)
         return None
 
-
 class TensorflowModelTest(tf.keras.callbacks.Callback):
-    """ Callback to run when predicting on a Tensorflow Model """
-    pass
+    """ Callback to run when fitting a Tensorflow Model """
+    
+    def __init__(self,tensorflowManager):
+        """ Constructor """
+        super().__init__()
+        self._tfMgr = tensorflowManager
 
+    def on_predict_batch_end(self,batch:int,logs: dict):
+        """ When a batch is finished predictions """
+        self._tfMgr.getEvaluationHistory().updateFromBatchLog(logs)
+        return None
 
+    
 
 
 """

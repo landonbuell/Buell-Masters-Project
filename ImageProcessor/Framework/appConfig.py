@@ -31,7 +31,7 @@ class AppConfig:
         self._logToConsole  = True
         self._logToFile     = True
 
-        self._batchSize     = 64
+        self._batchSize     = 128
         self._shuffleSeed   = 123456789
 
         self._sampleDatabaseCapacity = int(2**18) # temp limit for development
@@ -41,7 +41,7 @@ class AppConfig:
         self._testSplitRatio        = 0.2
 
         self._epochsPerBatch        = 1     # Number of consecutive times we see a bach
-        self._epochsPerFold         = 8     # Number of time we train on a fold
+        self._epochsPerFold         = 1     # Number of time we train on a fold
 
     # Accessors
 
@@ -111,7 +111,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","every10Samples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","devRun1"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV0"))
         config = AppConfig(inputPaths,outputPath)
         return config
 

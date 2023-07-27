@@ -18,9 +18,9 @@ def getAffineModel(numClasses: int):
     """ Callback does Nothing """
     return AffineModel(numClasses)
 
-def getMultiTierImageClassifer(numClasses: int):
+def getSingleTierImageClassifier(numClasses: int):
     """ Return an instance of a basic CNN """
-    return MultiTierImageClassifer(numClasses)
+    return SingleTierImageClassifier(numClasses)
 
     
         #### CLASS DEFINTIONS ####
@@ -41,7 +41,7 @@ class AffineModel(torch.nn.Module):
             outputs = item(outputs)
         return outputs
 
-class MultiTierImageClassifer(torch.nn.Module):
+class SingleTierImageClassifier(torch.nn.Module):
     """ Multiple-Tiered Convolutional Nueral Network classifier """
 
     def __init__(self,numClasses: int):
