@@ -150,7 +150,7 @@ class StrategyManager(manager.Manager):
             batchIndexes    = fold.getNextBatchIndexes(batchSize)
             batchData       = self.getApp().getSampleManager().getNextBatch(batchIndexes)
 
-            batchData = self.getApp().getPreprocessManager().processBatch(batchData)
+            self.getApp().getPreprocessManager().processBatch(batchData)
             # TODO: call augmentation manager on batch 
 
             self.getApp().getClassificationManager().trainOnBatch(batchData)
@@ -209,6 +209,8 @@ class StrategyManager(manager.Manager):
         """ Export the Testing History & Model using the fold index as the name """
         self.getApp().getClassificationManager().exportTestingHistory(
                 "testingHistoryFold{0}.csv".format(foldIndex))
+        self.getApp().getClassificationManager().exportClassificationReport(
+            self.getConfig().getOutputPath(),foldIndex)
         return None
 
     def __resetClassificationAndLoadModel(self,foldIndex: int) -> None:

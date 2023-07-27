@@ -100,15 +100,38 @@ class ModelTestHistoryInfo:
         """ Constructor """
         self._numClasses    = numClasses
         self._exportCounts  = 0       
-        self._groundTruths  = np.array([],dtype=np.float32)
+        self._groundTruths  = np.array([],dtype=np.uint16)
         self._predictions   = np.array([],dtype=np.float32)
-        self._classProbabilities = np.array([],dtype=np.float32)
    
     def __del__(self):
         """ Destructor """
         pass
 
     # Accessors
+
+    def getNumClasses(self) -> int:
+        """ Return the number of classes """
+        return self._numClasses
+
+    def getNumSamples(self) -> int:
+        """ Return the number of samples """
+        return self._groundTruths.size
+
+    def getGroundTruths(self) -> np.ndarray:
+        """ Return an array of truths """
+        return self._groundTruths
+
+    def getPredictions(self) -> np.ndarray:
+        """ Return a 2D array of all predictions by class """
+        return self._predictions
+
+    def getClassPredictions(self) -> np.ndarray:
+        """ Return an array of class predictions """
+        return np.argmax(self._predictions,axis=1)
+
+    def getConfidences(self) -> np.ndarray:
+        """ Return an array of predictions confidences """
+        return np.max(self._predictions,axis=1)
 
     # Public Interface
 
@@ -120,14 +143,13 @@ class ModelTestHistoryInfo:
                 predictions.shape[0],truths.shape[0])
             raise RuntimeError(msg)
         if (numSamples == 0):
-            msg = "Got {0} samples to store".format(msg)
+            msg = "Got {0} samples to store".format(numSamples)
             raise RuntimeError(msg)
         # Update as needed
-        self._groundTruths      = np.append(self._groundTruths,truths)
-        self._predictions       = np.append(self._predictions,np.argmax(predictions,axis=1))
-        self._classProbabilities = np.append(self._classProbabilities,predictions)
-        newNumSamples           = self._groundTruths.size
-        self._classProbabilities = np.reshape(self._classProbabilities,newshape=(newNumSamples,self._numClasses))
+        self._groundTruths  = np.append(self._groundTruths,truths)
+        self._predictions   = np.append(self._predictions,predictions)
+        totalNumSamples     = self._groundTruths.size
+        self._predictions   = np.reshape(self._predictions,newshape=(totalNumSamples,self._numClasses))
         return None
 
     def reset(self) -> None:
@@ -135,7 +157,6 @@ class ModelTestHistoryInfo:
         self._exportCounts  = 0     
         self._groundTruths  = np.array([],dtype=np.float32)
         self._predictions   = np.array([],dtype=np.float32)
-        self._classProbabilities = np.array([],dtype=np.float32)
         return None
 
     def plotAll(self,show=True,save=None) -> None:
@@ -145,25 +166,38 @@ class ModelTestHistoryInfo:
 
     def toDataFrame(self) -> pd.DataFrame:
         """ Return history data as a pandas dataframe """
-        data = {"truth"     : self._groundTruths,
-                "predict"   : self._predictions}
+        data = {"truth"     : self.getGroundTruths(),
+                "predict"   : self.getClassPredictions()}
         for ii in range(self._numClasses):
             newKey = "class{0}".format(ii)
-            newVal = self._classProbabilities[:,ii]
+            newVal = self._predictions[:,ii]
             data[newKey] = newVal
         frame = pd.DataFrame(data=data,index=None)
         return frame
 
-    def export(self,outputPath) -> bool:
+    def export(self,outputPath: str) -> bool:
         """ Write history info to specified path. Return T/F if successful """
         frame = self.toDataFrame()
         frame.to_csv(outputPath,index=False,mode="w")
         self._exportCounts += 1
         return True
 
+    @staticmethod
+    def importFromFile(importPath: str):
+        """ Read history info from specified path """
+        frame = pd.read_csv(importPath,header=0,index_col=None)
+        numSamples = frame.shape[0]
+        numClasses = frame.shape[1] - 2 # account for 'truth' & 'prediction' columns
+        truths = frame["truth"] 
+        predictions = np.empty(shape=(numSamples,numClasses),dtype=np.float32)
+        for ii in range(numClasses):
+            key = "class{0}".format(ii)
+            predictions[:,ii] = frame[key]
+        modelTestHistoryInfo = ModelTestHistoryInfo(numClasses)
+        modelTestHistoryInfo.updateFromPredictions(truths,predictions)
+        return modelTestHistoryInfo
+
     # Private Interface
-
-
 
 """
     Author:         Landon Buell
