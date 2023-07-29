@@ -1,0 +1,13 @@
+_pathStartup                    C:\Users\lando\Documents\GitHub\Buell-Masters-Project\ImageProcessor\Source
+_pathInputs                     {'C:\\Users\\lando\\Documents\\GitHub\\Buell-Masters-Project\\inputFiles\\allSamples.csv'}
+_pathOutput                     C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\multiTierClassifierV1
+_logToConsole                   True
+_logToFile                      True
+_batchSize                      128
+_shuffleSeed                    123456789
+_sampleDatabaseCapacity         262144
+_numClasses                     29
+_crossValidationFolds           1
+_testSplitRatio                 0.2
+_epochsPerBatch                 4
+_epochsPerFold                  18
