@@ -195,13 +195,13 @@ class ConfusionMatrix:
             predClass = classPredicitons[ii]
             self._numTruthSamples[trueClass] += 1   # Increment the truth counter
             self._matrixStandard[trueClass,predClass] += 1                      # Prediction
-            self._matrixStandard[trueClass,predClass] += predictionConfidences[ii]  # confidence
+            self._matrixStandard[trueClass,predClass] += predictionConfidences[trueClass]  # confidence
         return None
 
     def exportStandardMatrixAsCsv(self,fullOutputPath: str) -> None:
         """ Export the Confusion matrix as a CSV file """
         frame = pd.DataFrame(data=self._matrixStandard,columns=None,index=None)
-        frame.to_csv(fullOutputPath,columns=None,index=False,mode="w")
+        frame.to_csv(fullOutputPath,columns=None,index=False,header=False,mode="w")
         return None
 
     def exportStandardMatrixAsPng(self,fullOutputPath: str,show=False) -> None:
@@ -212,7 +212,7 @@ class ConfusionMatrix:
     def exportWeightedMatrixAsCsv(self,fullOutputPath: str) -> None:
         """ Export the Confusion matrix as a CSV file """
         frame = pd.DataFrame(data=self._matrixWeighted,columns=None,index=None)
-        frame.to_csv(fullOutputPath,columns=None,index=False,mode="w")
+        frame.to_csv(fullOutputPath,columns=None,index=False,header=False,mode="w")
         return None
 
     def exportWeightedMatrixAsPng(self,fullOutputPath: str,show=False) -> None:
