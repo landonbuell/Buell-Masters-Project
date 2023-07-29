@@ -155,6 +155,7 @@ class ImageProcessingApp:
         self._classificationManager.cleanup()
         self._segmentationManager.cleanup()
 
+        self._config.export()
         return self._exitStatus
 
     # Private Interface

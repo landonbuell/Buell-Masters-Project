@@ -40,8 +40,8 @@ class AppConfig:
         self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
-        self._epochsPerBatch        = 2     # Number of consecutive times we see a bach
-        self._epochsPerFold         = 4     # Number of time we train on a fold
+        self._epochsPerBatch        = 4     # Number of consecutive times we see a bach
+        self._epochsPerFold         = 18     # Number of time we train on a fold
 
     # Accessors
 
@@ -103,6 +103,16 @@ class AppConfig:
 
     # Public Interface
 
+    def export(self):
+        """ Export this instance to a text file """
+        outputPath = os.path.join(self._pathOutput,"appConfig.txt")
+        printFormat = lambda x,y : "{0:<32}{1}\n".format(x,y)
+        outputStream = open(outputPath,"w")
+        for key,val in self.__dict__.items():
+            outputStream.write(printFormat(key,val))
+        outputStream.close()
+        return None
+
     # Private Interface
 
     # Static Interface
@@ -111,7 +121,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","allSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV0"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV1"))
         config = AppConfig(inputPaths,outputPath)
         return config
 
