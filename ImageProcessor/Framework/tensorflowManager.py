@@ -247,7 +247,8 @@ class ClassificationManager(TensorflowManager):
 
     def exportClassificationReport(self,outputPath: str, foldIndex: int) -> None:
         """ Export a classification report based on evaluation history """
-        report = classificationReport.ClassificationReport(self._numClasses)
+        classNames = self.getApp().getDataManager().getClassNames()
+        report = classificationReport.ClassificationReport(classNames)
         report.update( self._evalHistory )
         report.export(outputPath,foldIndex)
         return None
