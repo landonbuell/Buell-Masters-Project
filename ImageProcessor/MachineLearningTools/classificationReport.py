@@ -23,10 +23,10 @@ import modelHistoryInfo
 class ClassificationReport:
     """ Generate + Export a report of classification scores """
 
-    def __init__(self,numClasses: int):
+    def __init__(self,classNames: list):
         """ Constructor """
-        self._numClasses        = numClasses
-        self._confusionMatrix   = ConfusionMatrix(numClasses)
+        self._classNames        = classNames
+        self._confusionMatrix   = ConfusionMatrix(len(self._classNames))
         self._groundTruths      = np.array([],dtype=np.uint16)
         self._predictions       = np.array([],dtype=np.uint16)
 
@@ -36,9 +36,13 @@ class ClassificationReport:
 
     # Accessors
 
+    def getClassNames(self) -> list:
+        """ Return the list of class Names """
+        return self._classNames
+
     def getNumClasses(self) -> int:
         """ Return the number of classes """
-        return self._numClasses
+        return len(self._classNames)
 
     def getConfusionMatrix(self):
         """ Return the underlying Confusion Matrix """
@@ -47,8 +51,8 @@ class ClassificationReport:
     def getPrecisionScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
         precisionMetric = tf.keras.metrics.Precision()
-        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
-        for ii in range(self._numClasses):
+        result = np.zeros(shape=(self.getNumClasses(),),dtype=np.float32)
+        for ii in range(self.getNumClasses()):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
             precisionMetric.update_state(maskTruths,maskPreds)
@@ -59,8 +63,8 @@ class ClassificationReport:
     def getRecallScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
         recallMetric = tf.keras.metrics.Recall()
-        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
-        for ii in range(self._numClasses):
+        result = np.zeros(shape=(self.getNumClasses(),),dtype=np.float32)
+        for ii in range(self.getNumClasses()):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
             recallMetric.update_state(maskTruths,maskPreds)
@@ -72,14 +76,14 @@ class ClassificationReport:
         """ Return an array of precisions by class """
         precisions  = self.getPrecisionScores()
         recalls     = self.getRecallScores()
-        result  = 2 * (precisions + recalls) / (precisions * recalls)
+        result  = 2 * (precisions * recalls) / (precisions + recalls)
         return result
 
     def getAccuraryScores(self) -> np.ndarray:
         """ Return an array of precisions by class """
         accuracyMetric = tf.keras.metrics.Accuracy()
-        result = np.zeros(shape=(self._numClasses,),dtype=np.float32)
-        for ii in range(self._numClasses):
+        result = np.zeros(shape=(self.getNumClasses(),),dtype=np.float32)
+        for ii in range(self.getNumClasses()):
             maskTruths  = (self._groundTruths == ii)
             maskPreds   = (self._predictions == ii)
             accuracyMetric.update_state(maskTruths,maskPreds)
@@ -91,9 +95,9 @@ class ClassificationReport:
 
     def update(self,evaluationHistory: modelHistoryInfo.ModelTestHistoryInfo) -> None:
         """ Update the state of this report from ModelTestHistoryInfo instance """
-        if (evaluationHistory.getNumClasses() != self._numClasses):
+        if (evaluationHistory.getNumClasses() != self.getNumClasses()):
             msg = "Got an evaluation history w/ {0} classes, but expected {1}".format(
-                evaluationHistory.getNumClasses(),self._numClasses)
+                evaluationHistory.getNumClasses(),self.getNumClasses())
             raise RuntimeError(msg)
 
         truths      = evaluationHistory.getGroundTruths()   # 1D array
@@ -111,10 +115,11 @@ class ClassificationReport:
                outputFolder: str,
                currentFoldIndex: int):
         """ Write all classification Report Data to Disk """
-        frameDict = {"precision"    : self.getPrecisionScores(),
-                     "recall"       : self.getRecallScores(),
-                     "f1-score"     : self.getF1Scores(),
-                     "accuracy"     : self.getAccuraryScores()}
+        frameDict = {   "class"        : self._classNames,
+                        "precision"    : self.getPrecisionScores(),
+                        "recall"       : self.getRecallScores(),
+                        "f1-score"     : self.getF1Scores(),
+                        "accuracy"     : self.getAccuraryScores()}
         frame = pd.DataFrame(data=frameDict)
         reportPath = os.path.join(outputFolder,"classificationReport{0}.csv".format(currentFoldIndex))
         frame.to_csv(reportPath,index=True,mode="w")

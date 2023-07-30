@@ -60,7 +60,7 @@ class DataManager(manager.Manager):
     def getClassName(self, classInt: int) -> str:
         """ Return the Name of the class based on the integer index """
         return self._classDatabase[classInt].className
-
+    
     def getClassInt(self, className: str) -> int:
         """ Return the integer index of the class based on the name """
         for ii,item in enumerate(self._classDatabase):
@@ -77,6 +77,15 @@ class DataManager(manager.Manager):
             # No classes yet!
             return 0
         return max(self._classSet)
+
+    def getClassNames(self) -> list:
+        """ Return a List of Class Names """
+        classNames = []
+        for data in self._classDatabase:
+            if (data is None):
+                continue
+            classNames.append( data.className )
+        return classNames
 
     def getClassesInUse(self) -> list:
         """ Return a list of the class ints in use """
@@ -145,7 +154,7 @@ class DataManager(manager.Manager):
         self._classSet.add(classInt)
         if (self._classDatabase[classInt] is None):
             self._classDatabase[classInt] = DataManager.ClassDataStruct(
-                classInt,className)
+                className,classInt)
             self._classDatabase[classInt].expectedCount = 1
         else:
             self._classDatabase[classInt].expectedCount += 1
@@ -218,12 +227,6 @@ class DataManager(manager.Manager):
         batchSize = self.getApp().getConfig().getBatchSize()
         batchIndexes = self._folds[foldIndex].getNextBatch(batchSize)
         return batchIndexes
-
-    def __plotClassDistrobution(self) -> None:
-        """ Plot the Distrobution of classes in the data set """
-        msg = "WARNING: Plotting distrobution of class data is not yet implemented"
-        self.logMessage(msg)
-        return None
 
     def __exportRunInfo(self) -> None:
         """ Export the runInfo class to disk """
