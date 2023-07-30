@@ -119,12 +119,13 @@ class StrategyManager(manager.Manager):
             for x in trainFolds:
                 msg = "\tTraining on Fold #{0}".format(x)
                 self.logMessage(msg)
+           
+                for ii in range(self.getConfig().getNumEpochsPerFold()):
+                    self.__runTrainOnFold(x,False)
+                self.__exportClassificiationTrainHistoryAndModel(foldIndex)
 
-                self.__runTrainOnFold(x,False)
-            self.__exportClassificiationTrainHistoryAndModel(foldIndex)
-            self.__resetClassificationAndLoadModel(foldIndex)
-          
             # Test in the remaining test fold
+            self.__resetClassificationAndLoadModel(foldIndex)
             msg = "\tTesting on Fold #{0}".format(testFold)
             self.logMessage(msg)
             
