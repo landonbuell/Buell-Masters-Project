@@ -1,0 +1,340 @@
+	                                	
+----------------------------------------------------------------
+
+	                                	ImageProcessingApp
+	                                	2023.08.03.01.11.02.854423
+	                                	
+----------------------------------------------------------------
+
+	2023.08.03.01.11.02.947239      	Intializing StrategyManager ... 
+	2023.08.03.01.11.02.947239      	Cross Validation is enabled w/ 4 folds
+	2023.08.03.01.11.02.947239      	Intializing SampleManager ... 
+	2023.08.03.01.11.02.947239      	Loading samples from file: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\inputFiles\every10Samples.csv
+	2023.08.03.01.11.02.967187      		Found 8700 samples in file
+	2023.08.03.01.11.04.612844      	Finished reading all input files. Sample Database has 8700 items
+	2023.08.03.01.11.04.612844      	Intializing DataManager ... 
+	2023.08.03.01.11.04.613841      		Data manager has 4 folds...
+	2023.08.03.01.11.04.613841      	Fold #0 has 2175 samples. (25.0% of dataset)
+	2023.08.03.01.11.04.613841      	Fold #1 has 2175 samples. (25.0% of dataset)
+	2023.08.03.01.11.04.613841      	Fold #2 has 2175 samples. (25.0% of dataset)
+	2023.08.03.01.11.04.613841      	Fold #3 has 2175 samples. (25.0% of dataset)
+	2023.08.03.01.11.04.613841      	Intializing AugmentationManager ... 
+	2023.08.03.01.11.04.613841      	Intializing PreprocessManager ... 
+	2023.08.03.01.11.04.613841      	Intializing ClassificationManager ... 
+	2023.08.03.01.11.04.786811      	Intializing SegmentationManager ... 
+	2023.08.03.01.11.04.792788      	Running Cross Validation
+	2023.08.03.01.11.04.792788      	Performing Cross Validation on Fold #0
+	2023.08.03.01.11.04.792788      		Training on Fold #1
+	2023.08.03.01.11.04.792788      			Retreving batch #0 w/ 128 samples
+	2023.08.03.01.11.06.409297      			Retreving batch #1 w/ 128 samples
+	2023.08.03.01.11.06.715600      			Retreving batch #2 w/ 128 samples
+	2023.08.03.01.11.07.017975      			Retreving batch #3 w/ 128 samples
+	2023.08.03.01.11.07.324772      			Retreving batch #4 w/ 128 samples
+	2023.08.03.01.11.07.641808      			Retreving batch #5 w/ 128 samples
+	2023.08.03.01.11.07.946993      			Retreving batch #6 w/ 128 samples
+	2023.08.03.01.11.08.256166      			Retreving batch #7 w/ 128 samples
+	2023.08.03.01.11.08.585057      			Retreving batch #8 w/ 128 samples
+	2023.08.03.01.11.08.905201      			Retreving batch #9 w/ 128 samples
+	2023.08.03.01.11.09.211920      			Retreving batch #10 w/ 128 samples
+	2023.08.03.01.11.09.526711      			Retreving batch #11 w/ 128 samples
+	2023.08.03.01.11.09.847852      			Retreving batch #12 w/ 128 samples
+	2023.08.03.01.11.10.155036      			Retreving batch #13 w/ 128 samples
+	2023.08.03.01.11.10.494491      			Retreving batch #14 w/ 128 samples
+	2023.08.03.01.11.10.836576      			Retreving batch #15 w/ 128 samples
+	2023.08.03.01.11.11.144290      			Retreving batch #16 w/ 127 samples
+	2023.08.03.01.11.12.089414      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold0\trainingHistory.csv
+	2023.08.03.01.11.12.093403      		Training on Fold #2
+	2023.08.03.01.11.12.094401      			Retreving batch #17 w/ 128 samples
+	2023.08.03.01.11.12.401764      			Retreving batch #18 w/ 128 samples
+	2023.08.03.01.11.12.710179      			Retreving batch #19 w/ 128 samples
+	2023.08.03.01.11.13.014827      			Retreving batch #20 w/ 128 samples
+	2023.08.03.01.11.13.321853      			Retreving batch #21 w/ 128 samples
+	2023.08.03.01.11.13.655856      			Retreving batch #22 w/ 128 samples
+	2023.08.03.01.11.13.964461      			Retreving batch #23 w/ 128 samples
+	2023.08.03.01.11.14.277203      			Retreving batch #24 w/ 128 samples
+	2023.08.03.01.11.14.603330      			Retreving batch #25 w/ 128 samples
+	2023.08.03.01.11.14.912045      			Retreving batch #26 w/ 128 samples
+	2023.08.03.01.11.15.220776      			Retreving batch #27 w/ 128 samples
+	2023.08.03.01.11.15.566497      			Retreving batch #28 w/ 128 samples
+	2023.08.03.01.11.15.874000      			Retreving batch #29 w/ 128 samples
+	2023.08.03.01.11.16.182446      			Retreving batch #30 w/ 128 samples
+	2023.08.03.01.11.16.507549      			Retreving batch #31 w/ 128 samples
+	2023.08.03.01.11.16.823333      			Retreving batch #32 w/ 128 samples
+	2023.08.03.01.11.17.129378      			Retreving batch #33 w/ 127 samples
+	2023.08.03.01.11.17.460443      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold0\trainingHistory.csv
+	2023.08.03.01.11.17.464432      		Training on Fold #3
+	2023.08.03.01.11.17.464432      			Retreving batch #34 w/ 128 samples
+	2023.08.03.01.11.17.779066      			Retreving batch #35 w/ 128 samples
+	2023.08.03.01.11.18.087509      			Retreving batch #36 w/ 128 samples
+	2023.08.03.01.11.18.397669      			Retreving batch #37 w/ 128 samples
+	2023.08.03.01.11.18.714296      			Retreving batch #38 w/ 128 samples
+	2023.08.03.01.11.19.020769      			Retreving batch #39 w/ 128 samples
+	2023.08.03.01.11.19.325801      			Retreving batch #40 w/ 128 samples
+	2023.08.03.01.11.19.658623      			Retreving batch #41 w/ 128 samples
+	2023.08.03.01.11.19.967229      			Retreving batch #42 w/ 128 samples
+	2023.08.03.01.11.20.273793      			Retreving batch #43 w/ 128 samples
+	2023.08.03.01.11.20.601916      			Retreving batch #44 w/ 128 samples
+	2023.08.03.01.11.20.909272      			Retreving batch #45 w/ 128 samples
+	2023.08.03.01.11.21.213350      			Retreving batch #46 w/ 128 samples
+	2023.08.03.01.11.21.544105      			Retreving batch #47 w/ 128 samples
+	2023.08.03.01.11.21.859262      			Retreving batch #48 w/ 128 samples
+	2023.08.03.01.11.22.166273      			Retreving batch #49 w/ 128 samples
+	2023.08.03.01.11.22.486164      			Retreving batch #50 w/ 127 samples
+	2023.08.03.01.11.22.803139      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold0\trainingHistory.csv
+	2023.08.03.01.11.22.805133      		Testing on Fold #0
+	2023.08.03.01.11.22.805133      			Retreving batch #51 w/ 128 samples
+	2023.08.03.01.11.23.128259      			Retreving batch #52 w/ 128 samples
+	2023.08.03.01.11.23.292643      			Retreving batch #53 w/ 128 samples
+	2023.08.03.01.11.23.470923      			Retreving batch #54 w/ 128 samples
+	2023.08.03.01.11.23.635819      			Retreving batch #55 w/ 128 samples
+	2023.08.03.01.11.23.798815      			Retreving batch #56 w/ 128 samples
+	2023.08.03.01.11.23.961933      			Retreving batch #57 w/ 128 samples
+	2023.08.03.01.11.24.125163      			Retreving batch #58 w/ 128 samples
+	2023.08.03.01.11.24.288571      			Retreving batch #59 w/ 128 samples
+	2023.08.03.01.11.24.465100      			Retreving batch #60 w/ 128 samples
+	2023.08.03.01.11.24.634234      			Retreving batch #61 w/ 128 samples
+	2023.08.03.01.11.24.797059      			Retreving batch #62 w/ 128 samples
+	2023.08.03.01.11.24.960741      			Retreving batch #63 w/ 128 samples
+	2023.08.03.01.11.25.124316      			Retreving batch #64 w/ 128 samples
+	2023.08.03.01.11.25.288745      			Retreving batch #65 w/ 128 samples
+	2023.08.03.01.11.25.467175      			Retreving batch #66 w/ 128 samples
+	2023.08.03.01.11.25.630981      			Retreving batch #67 w/ 127 samples
+	2023.08.03.01.11.25.900472      	Exporting testing history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold0\testingHistory.csv
+	2023.08.03.01.11.27.307978      	Performing Cross Validation on Fold #1
+	2023.08.03.01.11.27.307978      		Training on Fold #0
+	2023.08.03.01.11.27.307978      			Retreving batch #0 w/ 128 samples
+	2023.08.03.01.11.27.612962      			Retreving batch #1 w/ 128 samples
+	2023.08.03.01.11.27.918712      			Retreving batch #2 w/ 128 samples
+	2023.08.03.01.11.28.222374      			Retreving batch #3 w/ 128 samples
+	2023.08.03.01.11.28.549463      			Retreving batch #4 w/ 128 samples
+	2023.08.03.01.11.28.862129      			Retreving batch #5 w/ 128 samples
+	2023.08.03.01.11.29.169062      			Retreving batch #6 w/ 128 samples
+	2023.08.03.01.11.29.491223      			Retreving batch #7 w/ 128 samples
+	2023.08.03.01.11.29.808270      			Retreving batch #8 w/ 128 samples
+	2023.08.03.01.11.30.117491      			Retreving batch #9 w/ 128 samples
+	2023.08.03.01.11.30.441409      			Retreving batch #10 w/ 128 samples
+	2023.08.03.01.11.30.763765      			Retreving batch #11 w/ 128 samples
+	2023.08.03.01.11.31.067825      			Retreving batch #12 w/ 128 samples
+	2023.08.03.01.11.31.376579      			Retreving batch #13 w/ 128 samples
+	2023.08.03.01.11.31.695145      			Retreving batch #14 w/ 128 samples
+	2023.08.03.01.11.32.006313      			Retreving batch #15 w/ 128 samples
+	2023.08.03.01.11.32.314097      			Retreving batch #16 w/ 127 samples
+	2023.08.03.01.11.32.646209      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold1\trainingHistory.csv
+	2023.08.03.01.11.32.648204      		Training on Fold #2
+	2023.08.03.01.11.32.649201      			Retreving batch #17 w/ 128 samples
+	2023.08.03.01.11.32.953688      			Retreving batch #18 w/ 128 samples
+	2023.08.03.01.11.33.258869      			Retreving batch #19 w/ 128 samples
+	2023.08.03.01.11.33.610897      			Retreving batch #20 w/ 128 samples
+	2023.08.03.01.11.33.926053      			Retreving batch #21 w/ 128 samples
+	2023.08.03.01.11.34.256171      			Retreving batch #22 w/ 128 samples
+	2023.08.03.01.11.34.636156      			Retreving batch #23 w/ 128 samples
+	2023.08.03.01.11.34.959807      			Retreving batch #24 w/ 128 samples
+	2023.08.03.01.11.35.269255      			Retreving batch #25 w/ 128 samples
+	2023.08.03.01.11.35.605356      			Retreving batch #26 w/ 128 samples
+	2023.08.03.01.11.35.913517      			Retreving batch #27 w/ 128 samples
+	2023.08.03.01.11.36.219736      			Retreving batch #28 w/ 128 samples
+	2023.08.03.01.11.36.546788      			Retreving batch #29 w/ 128 samples
+	2023.08.03.01.11.36.855941      			Retreving batch #30 w/ 128 samples
+	2023.08.03.01.11.37.170999      			Retreving batch #31 w/ 128 samples
+	2023.08.03.01.11.37.494434      			Retreving batch #32 w/ 128 samples
+	2023.08.03.01.11.37.812894      			Retreving batch #33 w/ 127 samples
+	2023.08.03.01.11.38.120842      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold1\trainingHistory.csv
+	2023.08.03.01.11.38.122837      		Training on Fold #3
+	2023.08.03.01.11.38.122837      			Retreving batch #34 w/ 128 samples
+	2023.08.03.01.11.38.428946      			Retreving batch #35 w/ 128 samples
+	2023.08.03.01.11.38.746696      			Retreving batch #36 w/ 128 samples
+	2023.08.03.01.11.39.052820      			Retreving batch #37 w/ 128 samples
+	2023.08.03.01.11.39.357340      			Retreving batch #38 w/ 128 samples
+	2023.08.03.01.11.39.696434      			Retreving batch #39 w/ 128 samples
+	2023.08.03.01.11.39.996706      			Retreving batch #40 w/ 128 samples
+	2023.08.03.01.11.40.301967      			Retreving batch #41 w/ 128 samples
+	2023.08.03.01.11.40.619593      			Retreving batch #42 w/ 128 samples
+	2023.08.03.01.11.40.929890      			Retreving batch #43 w/ 128 samples
+	2023.08.03.01.11.41.237073      			Retreving batch #44 w/ 128 samples
+	2023.08.03.01.11.41.542726      			Retreving batch #45 w/ 128 samples
+	2023.08.03.01.11.41.849594      			Retreving batch #46 w/ 128 samples
+	2023.08.03.01.11.42.156828      			Retreving batch #47 w/ 128 samples
+	2023.08.03.01.11.42.468221      			Retreving batch #48 w/ 128 samples
+	2023.08.03.01.11.42.808872      			Retreving batch #49 w/ 128 samples
+	2023.08.03.01.11.43.116370      			Retreving batch #50 w/ 127 samples
+	2023.08.03.01.11.43.434585      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold1\trainingHistory.csv
+	2023.08.03.01.11.43.436580      		Testing on Fold #1
+	2023.08.03.01.11.43.436580      			Retreving batch #51 w/ 128 samples
+	2023.08.03.01.11.43.616026      			Retreving batch #52 w/ 128 samples
+	2023.08.03.01.11.43.779615      			Retreving batch #53 w/ 128 samples
+	2023.08.03.01.11.43.943124      			Retreving batch #54 w/ 128 samples
+	2023.08.03.01.11.44.105608      			Retreving batch #55 w/ 128 samples
+	2023.08.03.01.11.44.268111      			Retreving batch #56 w/ 128 samples
+	2023.08.03.01.11.44.432672      			Retreving batch #57 w/ 128 samples
+	2023.08.03.01.11.44.601221      			Retreving batch #58 w/ 128 samples
+	2023.08.03.01.11.44.772616      			Retreving batch #59 w/ 128 samples
+	2023.08.03.01.11.44.935670      			Retreving batch #60 w/ 128 samples
+	2023.08.03.01.11.45.097540      			Retreving batch #61 w/ 128 samples
+	2023.08.03.01.11.45.260565      			Retreving batch #62 w/ 128 samples
+	2023.08.03.01.11.45.421725      			Retreving batch #63 w/ 128 samples
+	2023.08.03.01.11.45.592386      			Retreving batch #64 w/ 128 samples
+	2023.08.03.01.11.45.755442      			Retreving batch #65 w/ 128 samples
+	2023.08.03.01.11.45.918008      			Retreving batch #66 w/ 128 samples
+	2023.08.03.01.11.46.080986      			Retreving batch #67 w/ 127 samples
+	2023.08.03.01.11.46.248292      	Exporting testing history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold1\testingHistory.csv
+	2023.08.03.01.11.47.712011      	Performing Cross Validation on Fold #2
+	2023.08.03.01.11.47.712011      		Training on Fold #0
+	2023.08.03.01.11.47.712984      			Retreving batch #0 w/ 128 samples
+	2023.08.03.01.11.48.021159      			Retreving batch #1 w/ 128 samples
+	2023.08.03.01.11.48.329326      			Retreving batch #2 w/ 128 samples
+	2023.08.03.01.11.48.663090      			Retreving batch #3 w/ 128 samples
+	2023.08.03.01.11.48.969824      			Retreving batch #4 w/ 128 samples
+	2023.08.03.01.11.49.278997      			Retreving batch #5 w/ 128 samples
+	2023.08.03.01.11.49.587969      			Retreving batch #6 w/ 128 samples
+	2023.08.03.01.11.49.897950      			Retreving batch #7 w/ 128 samples
+	2023.08.03.01.11.50.225075      			Retreving batch #8 w/ 128 samples
+	2023.08.03.01.11.50.580125      			Retreving batch #9 w/ 128 samples
+	2023.08.03.01.11.50.933208      			Retreving batch #10 w/ 128 samples
+	2023.08.03.01.11.51.238395      			Retreving batch #11 w/ 128 samples
+	2023.08.03.01.11.51.562131      			Retreving batch #12 w/ 128 samples
+	2023.08.03.01.11.51.875294      			Retreving batch #13 w/ 128 samples
+	2023.08.03.01.11.52.181922      			Retreving batch #14 w/ 128 samples
+	2023.08.03.01.11.52.488152      			Retreving batch #15 w/ 128 samples
+	2023.08.03.01.11.52.803133      			Retreving batch #16 w/ 127 samples
+	2023.08.03.01.11.53.113459      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold2\trainingHistory.csv
+	2023.08.03.01.11.53.115454      		Training on Fold #1
+	2023.08.03.01.11.53.115454      			Retreving batch #17 w/ 128 samples
+	2023.08.03.01.11.53.423645      			Retreving batch #18 w/ 128 samples
+	2023.08.03.01.11.53.753928      			Retreving batch #19 w/ 128 samples
+	2023.08.03.01.11.54.074073      			Retreving batch #20 w/ 128 samples
+	2023.08.03.01.11.54.386238      			Retreving batch #21 w/ 128 samples
+	2023.08.03.01.11.54.715358      			Retreving batch #22 w/ 128 samples
+	2023.08.03.01.11.55.020600      			Retreving batch #23 w/ 128 samples
+	2023.08.03.01.11.55.327190      			Retreving batch #24 w/ 128 samples
+	2023.08.03.01.11.55.662332      			Retreving batch #25 w/ 128 samples
+	2023.08.03.01.11.55.974656      			Retreving batch #26 w/ 128 samples
+	2023.08.03.01.11.56.283829      			Retreving batch #27 w/ 128 samples
+	2023.08.03.01.11.56.618935      			Retreving batch #28 w/ 128 samples
+	2023.08.03.01.11.56.945062      			Retreving batch #29 w/ 128 samples
+	2023.08.03.01.11.57.254235      			Retreving batch #30 w/ 128 samples
+	2023.08.03.01.11.57.582358      			Retreving batch #31 w/ 128 samples
+	2023.08.03.01.11.57.900507      			Retreving batch #32 w/ 128 samples
+	2023.08.03.01.11.58.208683      			Retreving batch #33 w/ 127 samples
+	2023.08.03.01.11.58.529826      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold2\trainingHistory.csv
+	2023.08.03.01.11.58.533815      		Training on Fold #3
+	2023.08.03.01.11.58.534812      			Retreving batch #34 w/ 128 samples
+	2023.08.03.01.11.58.849969      			Retreving batch #35 w/ 128 samples
+	2023.08.03.01.11.59.183079      			Retreving batch #36 w/ 128 samples
+	2023.08.03.01.11.59.515190      			Retreving batch #37 w/ 128 samples
+	2023.08.03.01.11.59.877222      			Retreving batch #38 w/ 128 samples
+	2023.08.03.01.12.00.214018      			Retreving batch #39 w/ 128 samples
+	2023.08.03.01.12.00.539917      			Retreving batch #40 w/ 128 samples
+	2023.08.03.01.12.00.869035      			Retreving batch #41 w/ 128 samples
+	2023.08.03.01.12.01.188111      			Retreving batch #42 w/ 128 samples
+	2023.08.03.01.12.01.517232      			Retreving batch #43 w/ 128 samples
+	2023.08.03.01.12.01.835381      			Retreving batch #44 w/ 128 samples
+	2023.08.03.01.12.02.147547      			Retreving batch #45 w/ 128 samples
+	2023.08.03.01.12.02.454791      			Retreving batch #46 w/ 128 samples
+	2023.08.03.01.12.02.769691      			Retreving batch #47 w/ 128 samples
+	2023.08.03.01.12.03.080860      			Retreving batch #48 w/ 128 samples
+	2023.08.03.01.12.03.389202      			Retreving batch #49 w/ 128 samples
+	2023.08.03.01.12.03.714333      			Retreving batch #50 w/ 127 samples
+	2023.08.03.01.12.04.023308      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold2\trainingHistory.csv
+	2023.08.03.01.12.04.025303      		Testing on Fold #2
+	2023.08.03.01.12.04.026300      			Retreving batch #51 w/ 128 samples
+	2023.08.03.01.12.04.188479      			Retreving batch #52 w/ 128 samples
+	2023.08.03.01.12.04.351072      			Retreving batch #53 w/ 128 samples
+	2023.08.03.01.12.04.524971      			Retreving batch #54 w/ 128 samples
+	2023.08.03.01.12.04.693056      			Retreving batch #55 w/ 128 samples
+	2023.08.03.01.12.04.855620      			Retreving batch #56 w/ 128 samples
+	2023.08.03.01.12.05.018655      			Retreving batch #57 w/ 128 samples
+	2023.08.03.01.12.05.187971      			Retreving batch #58 w/ 128 samples
+	2023.08.03.01.12.05.350435      			Retreving batch #59 w/ 128 samples
+	2023.08.03.01.12.05.520979      			Retreving batch #60 w/ 128 samples
+	2023.08.03.01.12.05.687519      			Retreving batch #61 w/ 128 samples
+	2023.08.03.01.12.05.850559      			Retreving batch #62 w/ 128 samples
+	2023.08.03.01.12.06.014515      			Retreving batch #63 w/ 128 samples
+	2023.08.03.01.12.06.177015      			Retreving batch #64 w/ 128 samples
+	2023.08.03.01.12.06.341621      			Retreving batch #65 w/ 128 samples
+	2023.08.03.01.12.06.504204      			Retreving batch #66 w/ 128 samples
+	2023.08.03.01.12.06.672594      			Retreving batch #67 w/ 127 samples
+	2023.08.03.01.12.06.844898      	Exporting testing history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold2\testingHistory.csv
+	2023.08.03.01.12.08.289850      	Performing Cross Validation on Fold #3
+	2023.08.03.01.12.08.290850      		Training on Fold #0
+	2023.08.03.01.12.08.290850      			Retreving batch #0 w/ 128 samples
+	2023.08.03.01.12.08.609483      			Retreving batch #1 w/ 128 samples
+	2023.08.03.01.12.08.911750      			Retreving batch #2 w/ 128 samples
+	2023.08.03.01.12.09.220007      			Retreving batch #3 w/ 128 samples
+	2023.08.03.01.12.09.531391      			Retreving batch #4 w/ 128 samples
+	2023.08.03.01.12.09.848755      			Retreving batch #5 w/ 128 samples
+	2023.08.03.01.12.10.152206      			Retreving batch #6 w/ 128 samples
+	2023.08.03.01.12.10.455395      			Retreving batch #7 w/ 128 samples
+	2023.08.03.01.12.10.778531      			Retreving batch #8 w/ 128 samples
+	2023.08.03.01.12.11.092284      			Retreving batch #9 w/ 128 samples
+	2023.08.03.01.12.11.407441      			Retreving batch #10 w/ 128 samples
+	2023.08.03.01.12.11.746535      			Retreving batch #11 w/ 128 samples
+	2023.08.03.01.12.12.053992      			Retreving batch #12 w/ 128 samples
+	2023.08.03.01.12.12.365160      			Retreving batch #13 w/ 128 samples
+	2023.08.03.01.12.12.710237      			Retreving batch #14 w/ 128 samples
+	2023.08.03.01.12.13.015353      			Retreving batch #15 w/ 128 samples
+	2023.08.03.01.12.13.325106      			Retreving batch #16 w/ 127 samples
+	2023.08.03.01.12.13.674610      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold3\trainingHistory.csv
+	2023.08.03.01.12.13.676605      		Training on Fold #1
+	2023.08.03.01.12.13.676605      			Retreving batch #17 w/ 128 samples
+	2023.08.03.01.12.13.986450      			Retreving batch #18 w/ 128 samples
+	2023.08.03.01.12.14.293993      			Retreving batch #19 w/ 128 samples
+	2023.08.03.01.12.14.624956      			Retreving batch #20 w/ 128 samples
+	2023.08.03.01.12.14.937116      			Retreving batch #21 w/ 128 samples
+	2023.08.03.01.12.15.239383      			Retreving batch #22 w/ 128 samples
+	2023.08.03.01.12.15.549279      			Retreving batch #23 w/ 128 samples
+	2023.08.03.01.12.15.864831      			Retreving batch #24 w/ 128 samples
+	2023.08.03.01.12.16.169158      			Retreving batch #25 w/ 128 samples
+	2023.08.03.01.12.16.476337      			Retreving batch #26 w/ 128 samples
+	2023.08.03.01.12.16.807616      			Retreving batch #27 w/ 128 samples
+	2023.08.03.01.12.17.114785      			Retreving batch #28 w/ 128 samples
+	2023.08.03.01.12.17.421166      			Retreving batch #29 w/ 128 samples
+	2023.08.03.01.12.17.749288      			Retreving batch #30 w/ 128 samples
+	2023.08.03.01.12.18.053007      			Retreving batch #31 w/ 128 samples
+	2023.08.03.01.12.18.358237      			Retreving batch #32 w/ 128 samples
+	2023.08.03.01.12.18.681944      			Retreving batch #33 w/ 127 samples
+	2023.08.03.01.12.19.001528      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold3\trainingHistory.csv
+	2023.08.03.01.12.19.003523      		Training on Fold #2
+	2023.08.03.01.12.19.003523      			Retreving batch #34 w/ 128 samples
+	2023.08.03.01.12.19.309974      			Retreving batch #35 w/ 128 samples
+	2023.08.03.01.12.19.626259      			Retreving batch #36 w/ 128 samples
+	2023.08.03.01.12.19.937852      			Retreving batch #37 w/ 128 samples
+	2023.08.03.01.12.20.248422      			Retreving batch #38 w/ 128 samples
+	2023.08.03.01.12.20.556560      			Retreving batch #39 w/ 128 samples
+	2023.08.03.01.12.20.875515      			Retreving batch #40 w/ 128 samples
+	2023.08.03.01.12.21.186513      			Retreving batch #41 w/ 128 samples
+	2023.08.03.01.12.21.505660      			Retreving batch #42 w/ 128 samples
+	2023.08.03.01.12.21.852504      			Retreving batch #43 w/ 128 samples
+	2023.08.03.01.12.22.160680      			Retreving batch #44 w/ 128 samples
+	2023.08.03.01.12.22.470352      			Retreving batch #45 w/ 128 samples
+	2023.08.03.01.12.22.808448      			Retreving batch #46 w/ 128 samples
+	2023.08.03.01.12.23.126428      			Retreving batch #47 w/ 128 samples
+	2023.08.03.01.12.23.440627      			Retreving batch #48 w/ 128 samples
+	2023.08.03.01.12.23.771810      			Retreving batch #49 w/ 128 samples
+	2023.08.03.01.12.24.088397      			Retreving batch #50 w/ 127 samples
+	2023.08.03.01.12.24.400410      	Exporting training history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold3\trainingHistory.csv
+	2023.08.03.01.12.24.403402      		Testing on Fold #3
+	2023.08.03.01.12.24.403402      			Retreving batch #51 w/ 128 samples
+	2023.08.03.01.12.24.569282      			Retreving batch #52 w/ 128 samples
+	2023.08.03.01.12.24.735837      			Retreving batch #53 w/ 128 samples
+	2023.08.03.01.12.24.902294      			Retreving batch #54 w/ 128 samples
+	2023.08.03.01.12.25.066730      			Retreving batch #55 w/ 128 samples
+	2023.08.03.01.12.25.231571      			Retreving batch #56 w/ 128 samples
+	2023.08.03.01.12.25.396139      			Retreving batch #57 w/ 128 samples
+	2023.08.03.01.12.25.560405      			Retreving batch #58 w/ 128 samples
+	2023.08.03.01.12.25.758054      			Retreving batch #59 w/ 128 samples
+	2023.08.03.01.12.25.921187      			Retreving batch #60 w/ 128 samples
+	2023.08.03.01.12.26.084749      			Retreving batch #61 w/ 128 samples
+	2023.08.03.01.12.26.248777      			Retreving batch #62 w/ 128 samples
+	2023.08.03.01.12.26.414475      			Retreving batch #63 w/ 128 samples
+	2023.08.03.01.12.26.578328      			Retreving batch #64 w/ 128 samples
+	2023.08.03.01.12.26.749355      			Retreving batch #65 w/ 128 samples
+	2023.08.03.01.12.26.912522      			Retreving batch #66 w/ 128 samples
+	2023.08.03.01.12.27.076437      			Retreving batch #67 w/ 127 samples
+	2023.08.03.01.12.27.244934      	Exporting testing history to: C:\Users\lando\Documents\GitHub\Buell-Masters-Project\outputs\crossValTestV0\fold3\testingHistory.csv
+	2023.08.03.01.12.28.760249      	Cleaning SampleManager ... 
+	2023.08.03.01.12.28.761248      	Cleaning DataManager ... 
+	2023.08.03.01.12.28.761248      	WARNING: Exporting RunInfo instance to dosl os not yet implemented
+	2023.08.03.01.12.28.761248      	Cleaning AugmentationManager ... 
+	2023.08.03.01.12.28.761248      	Cleaning PreprocessManager ... 
+	2023.08.03.01.12.28.761248      	Cleaning ClassificationManager ... 
+	2023.08.03.01.12.28.761248      	Cleaning SegmentationManager ... 

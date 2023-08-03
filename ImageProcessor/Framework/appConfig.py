@@ -37,11 +37,11 @@ class AppConfig:
         self._sampleDatabaseCapacity = int(2**18) # temp limit for development
         self._numClasses            = 29 # temp hard-code for development
         
-        self._crossValidationFolds  = 1
+        self._crossValidationFolds  = 4
         self._testSplitRatio        = 0.2
 
         self._epochsPerBatch        = 1     # Number of consecutive times we see a bach
-        self._epochsPerFold         = 2     # Number of time we train on a fold
+        self._epochsPerFold         = 1     # Number of time we train on a fold
 
     # Accessors
 
@@ -121,7 +121,7 @@ class AppConfig:
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
         inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","every10Samples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV2"))
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","crossValTestV0"))
         config = AppConfig(inputPaths,outputPath)
         return config
 

@@ -95,7 +95,7 @@ class StrategyManager(manager.Manager):
         for ii in range(self.getConfig().getNumEpochsPerFold()):
             self.__runTrainOnFold(indexTrainFold,False)
             self.__exportClassificiationTrainHistoryAndModel(indexTrainFold)
-        self.__resetClassificationAndLoadModel(indexTrainFold)
+        #self.__resetClassificationAndLoadModel(indexTrainFold)
         
         # Test the Model on the 1-th Fold
         indexTestFold = 1
@@ -126,7 +126,7 @@ class StrategyManager(manager.Manager):
                 self.__exportClassificiationTrainHistoryAndModel(foldIndex)
 
             # Test in the remaining test fold
-            self.__resetClassificationAndLoadModel(foldIndex)
+            #self.__resetClassificationAndLoadModel(foldIndex)
             msg = "\tTesting on Fold #{0}".format(testFold)
             self.logMessage(msg)
             
@@ -211,7 +211,7 @@ class StrategyManager(manager.Manager):
         trainingHistoryOutputPath       = os.path.join(outputPath,"trainingHistory.csv")
         classificationModelOutputPath   = os.path.join(outputPath,"classifier.h5")                                                      
         self.getApp().getClassificationManager().exportTrainingHistory(trainingHistoryOutputPath)
-        self.getApp().getClassificationManager().exportModelToHdf5(classificationModelOutputPath)
+        #self.getApp().getClassificationManager().exportModelToHdf5(classificationModelOutputPath)
         return None
 
     def __exportClassificiationTestHistory(self,foldIndex: int) -> None:
