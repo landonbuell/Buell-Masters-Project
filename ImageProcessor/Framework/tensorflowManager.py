@@ -162,6 +162,8 @@ class TensorflowManager(manager.Manager):
     def resetState(self) -> None:
         """ Reset the Classifier Manager """
         self._initModel()
+        self._trainHistory      = modelHistoryInfo.ModelTrainHistoryInfo()
+        self._evalHistory       = modelHistoryInfo.ModelTestHistoryInfo(self._numClasses)
         return None
 
     def getModelNameForFold(self,foldIndex: int) -> str:

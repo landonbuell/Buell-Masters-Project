@@ -132,6 +132,7 @@ class StrategyManager(manager.Manager):
             
             self.__runTestOnFold(testFold)
             self.__exportClassificiationTestHistory(testFold)
+            self.getApp().getClassificationManager().resetState()
             # Cleanup After Each Fold 
             batch.SampleBatch.resetBatchCounter()
         
