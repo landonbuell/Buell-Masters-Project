@@ -121,43 +121,38 @@ class TensorflowManager(manager.Manager):
         self.__testOnBatchHelper(batchData)
         return None
 
-    def exportTrainingHistory(self,outputFileName: str) -> None:
+    def exportTrainingHistory(self,fullOutputPath: str) -> None:
         """ Export the training history """
-        outputPath = os.path.join(self.getOutputPath(),outputFileName)
-        msg = "Exporting training history to: {0}".format(outputPath)
+        msg = "Exporting training history to: {0}".format(fullOutputPath)
         self.logMessage(msg)
-        #self._trainCallbacks.getTrainHistory().plotAll()
-        self.getTrainingHistory().export(outputPath)
+        self.getTrainingHistory().export(fullOutputPath)
         return None
 
-    def exportTestingHistory(self,outputFileName: str) -> None:
+    def exportTestingHistory(self,fullOutputPath: str) -> None:
         """ Export the training history """
-        outputPath = os.path.join(self.getOutputPath(),outputFileName)
-        msg = "Exporting testing history to: {0}".format(outputPath)
+        msg = "Exporting testing history to: {0}".format(fullOutputPath)
         self.logMessage(msg)
-        self.getEvaluationHistory().export(outputPath)
+        self.getEvaluationHistory().export(fullOutputPath)
         return None
 
-    def exportModel(self,outputPathName: str) -> None:
+    def exportModelToHdf5(self,fullOutputPath: str) -> None:
         """ Export the model to specified path """
         self.__verifyModelExists(True)
-        outputPath = os.path.join(self.getOutputPath(),outputPathName)
-        msg = "Exporting model to: {0}".format(outputPath)
+        msg = "Exporting model to: {0}".format(fullOutputPath)
         self.logMessage(msg)
-        self._model.save(outputPath,overwrite=True,save_format="h5")
+        self._model.save(fullOutputPath,overwrite=True,save_format="h5")
         return None
 
-    def loadModel(self,importPathName: str) -> None:
+    def loadModel(self,fullInputPath: str) -> None:
         """ Import the model from specified path """
         self.__verifyModelExists(True)
-        importPath = os.path.join(self.getOutputPath(),importPathName)
-        msg = "Importing model from: {0}".format(importPath)
+        msg = "Importing model from: {0}".format(fullInputPath)
         self.logMessage(msg)
-        if (os.path.exists(importPath) == False):
-            msg = "Cannot load model from {0} because it does not exist".format(importPath)
+        if (os.path.exists(fullInputPath) == False):
+            msg = "Cannot load model from {0} because it does not exist".format(fullInputPath)
             self.logMessage(msg)
             raise RuntimeError(msg)
-        self._model = tf.keras.models.load_model(importPath)
+        self._model = tf.keras.models.load_model(fullInputPath)
         self._model.compile(optimizer=self._optimizer,
                             loss=self._objective,
                             metrics=self._metrics,
@@ -168,6 +163,10 @@ class TensorflowManager(manager.Manager):
         """ Reset the Classifier Manager """
         self._initModel()
         return None
+
+    def getModelNameForFold(self,foldIndex: int) -> str:
+        """ get the Model name given the current foldIndex """
+        return "{0}Fold{1}".format(self._name,foldIndex)
 
 
     # Protected Interface
@@ -199,14 +198,16 @@ class TensorflowManager(manager.Manager):
             msg = "No callback is defined to fetch a neural network model"
             self.logMessage(msg)
             raise RuntimeError(msg)
-        model = self._callbackGetModel.__call__(self._inputShape,self._numClasses)
+        currentFold = self.getApp().getStrategyManager().getCurrentFold()
+        modelName = self.getModelNameForFold(currentFold)
+        model = self._callbackGetModel.__call__(self._inputShape,self._numClasses,modelName)
         return model
 
     def __trainOnBatchHelper(self,batchData: batch.SampleBatch) -> None:
         """ Helper Function to Train the model on the batch of data provided """
         features = batchData.getX() 
         labels = batchData.getOneHotY(self._numClasses).astype(np.float32)
-        batchLog    = self._model.fit(x=features,y=labels,
+        batchLog = self._model.fit(x=features,y=labels,
                         batch_size=self.getConfig().getBatchSize(),
                         epochs=self.getConfig().getNumEpochsPerBatch(),
                         initial_epoch=0,
@@ -245,12 +246,12 @@ class ClassificationManager(TensorflowManager):
 
     # Public Interface 
 
-    def exportClassificationReport(self,outputPath: str, foldIndex: int) -> None:
+    def exportClassificationReport(self,outputPath: str) -> None:
         """ Export a classification report based on evaluation history """
         classNames = self.getApp().getDataManager().getClassNames()
         report = classificationReport.ClassificationReport(classNames)
         report.update( self._evalHistory )
-        report.export(outputPath,foldIndex)
+        report.export(outputPath)
         return None
 
     # Protected Interface

@@ -10,6 +10,7 @@
 
         #### IMPORTS ####
 
+import os
 import numpy as np
 
 import commonEnumerations
@@ -200,28 +201,45 @@ class StrategyManager(manager.Manager):
 
     def __exportClassificiationTrainHistoryAndModel(self,foldIndex: int) -> None:
         """ Export the Training History & Model using the fold index as the name """
-        self.getApp().getClassificationManager().exportTrainingHistory(
-                "trainingHistoryFold{0}.csv".format(foldIndex))
-        self.getApp().getClassificationManager().exportModel(
-                "modelFold{0}.hdf5".format(foldIndex))
+        outputPath = self.getApp().getConfig().getOutputPath()
+        if (self.crossValEnabled() == True):
+            outputPath = os.path.join(outputPath,"fold{0}".format(foldIndex))
+        # Make the output Path if it does not exist
+        if (os.path.isdir(outputPath) == False):
+            os.mkdir(outputPath)
+        # Specify the output paths + Export
+        trainingHistoryOutputPath       = os.path.join(outputPath,"trainingHistory.csv")
+        classificationModelOutputPath   = os.path.join(outputPath,"classifier.h5")                                                      
+        self.getApp().getClassificationManager().exportTrainingHistory(trainingHistoryOutputPath)
+        self.getApp().getClassificationManager().exportModelToHdf5(classificationModelOutputPath)
         return None
 
     def __exportClassificiationTestHistory(self,foldIndex: int) -> None:
         """ Export the Testing History & Model using the fold index as the name """
-        self.getApp().getClassificationManager().exportTestingHistory(
-                "testingHistoryFold{0}.csv".format(foldIndex))
-        self.getApp().getClassificationManager().exportClassificationReport(
-            self.getConfig().getOutputPath(),foldIndex)
+        outputPath = self.getApp().getConfig().getOutputPath()
+        if (self.crossValEnabled() == True):
+            outputPath = os.path.join(outputPath,"fold{0}".format(foldIndex))
+        # Make the output Path if it does not exist
+        if (os.path.isdir(outputPath) == False):
+            os.mkdir(outputPath)
+        # Specify the output paths + Export
+        testingHistoryOutputPath       = os.path.join(outputPath,"testingHistory.csv")
+        self.getApp().getClassificationManager().exportTestingHistory(testingHistoryOutputPath)
+        self.getApp().getClassificationManager().exportClassificationReport(outputPath)
         return None
 
-    def __resetClassificationAndLoadModel(self,foldIndex: int) -> None:
+    def __resetClassificationAndLoadModel(self,foldIndex) -> None:
         """ Reset the state of the manager + reload the model """
         self.getApp().getClassificationManager().resetState()
-        self.getApp().getClassificationManager().loadModel(
-                "modelFold{0}.hdf5".format(foldIndex))
+        inputPath = self.getApp().getConfig().getOutputPath()
+        if (self.crossValEnabled() == True):
+            inputPath = os.path.join(inputPath,"fold{0}".format(foldIndex))
+        # Specify the input paths + load
+        classificationModelInputPath =  os.path.join(inputPath,"classifier.h5")      
+        self.getApp().getClassificationManager().loadModel(classificationModelInputPath)
         return None
 
-
+   
 """
     Author:         Landon Buell
     Date:           May 2023

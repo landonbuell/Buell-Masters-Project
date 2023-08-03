@@ -37,7 +37,7 @@ class AppConfig:
         self._sampleDatabaseCapacity = int(2**18) # temp limit for development
         self._numClasses            = 29 # temp hard-code for development
         
-        self._crossValidationFolds  = 4
+        self._crossValidationFolds  = 1
         self._testSplitRatio        = 0.2
 
         self._epochsPerBatch        = 1     # Number of consecutive times we see a bach
@@ -120,8 +120,8 @@ class AppConfig:
     @staticmethod
     def getDevelopmentConfig():
         """ Return Instace Designed for App Development """
-        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","allSamples.csv")),]
-        outputPath = os.path.abspath(os.path.join("..","..","outputs","crossValTestV0"))
+        inputPaths = [os.path.abspath(os.path.join("..","..","inputFiles","every10Samples.csv")),]
+        outputPath = os.path.abspath(os.path.join("..","..","outputs","multiTierClassifierV2"))
         config = AppConfig(inputPaths,outputPath)
         return config
 
