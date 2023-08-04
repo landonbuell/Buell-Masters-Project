@@ -41,7 +41,7 @@ class PreprocessManager(manager.Manager):
 
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
         #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
-        self.__registerPreprocessStep( Preprocessors.rescaleTo64by64 )
+        self.__registerPreprocessStep( Preprocessors.rescaleTo128by128 )
         self.__registerPreprocessStep( Preprocessors.divideBy255 )
         self.__registerPreprocessStep( Preprocessors.tensorflowNormalize )
 

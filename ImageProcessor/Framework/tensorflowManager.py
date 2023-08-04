@@ -37,7 +37,7 @@ class TensorflowManager(manager.Manager):
                  name: str):
         """ Constructor """
         super().__init__(app,name)
-        self._inputShape        = (64,64,3)
+        self._inputShape        = (128,128,3)
         self._numClasses        = self.getApp().getConfig().getNumClasses()
 
         self._callbackGetModel  = None
@@ -180,7 +180,7 @@ class TensorflowManager(manager.Manager):
                             loss=self._objective,
                             metrics=self._metrics,
                             steps_per_execution=1)
-        #self._model.summary(line_length=72,print_fn=self.logMessage)
+        #self._model.summary(line_length=96)
         return None
 
     # Private Interface 
