@@ -155,6 +155,20 @@ class Preprocessors:
         return sampleBatch
 
     @staticmethod
+    def rescaleTo128by128(preprocessMgr: PreprocessManager,
+                        sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
+        """ Resize each input image to 64 x 64 """
+        Xresized = tf.image.resize(
+            sampleBatch.getX(),
+            size=(128,128),
+            method=tf.image.ResizeMethod.BILINEAR,
+            preserve_aspect_ratio=False,
+            antialias=False)
+        Xresized = Xresized.numpy()
+        sampleBatch.setX( Xresized ) 
+        return sampleBatch
+
+    @staticmethod
     def divideBy255(preprocessMgr: PreprocessManager,
                     sampleBatch: batch.SampleBatch) -> batch.SampleBatch:
         """ Divide each element in the Batch by 255 """
