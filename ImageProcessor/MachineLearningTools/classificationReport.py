@@ -112,8 +112,7 @@ class ClassificationReport:
         return None
 
     def export(self,
-               outputFolder: str,
-               currentFoldIndex: int):
+               outputFolder: str):
         """ Write all classification Report Data to Disk """
         frameDict = {   "class"        : self._classNames,
                         "precision"    : self.getPrecisionScores(),
@@ -121,19 +120,19 @@ class ClassificationReport:
                         "f1-score"     : self.getF1Scores(),
                         "accuracy"     : self.getAccuraryScores()}
         frame = pd.DataFrame(data=frameDict)
-        reportPath = os.path.join(outputFolder,"classificationReport{0}.csv".format(currentFoldIndex))
+        reportPath = os.path.join(outputFolder,"classificationReport.csv")
         frame.to_csv(reportPath,index=True,mode="w")
 
         # Export the Standard Confusion Matrix
-        standardConfusionMatrixCsvPath = os.path.join(outputFolder,"confusionMatrixStandard{0}.csv".format(currentFoldIndex))
+        standardConfusionMatrixCsvPath = os.path.join(outputFolder,"confusionMatrixStandard.csv")
         self._confusionMatrix.exportStandardMatrixAsCsv(standardConfusionMatrixCsvPath)
-        standardConfusionMatrixPngPath = os.path.join(outputFolder,"confusionMatrixStandard{0}.png".format(currentFoldIndex))
+        standardConfusionMatrixPngPath = os.path.join(outputFolder,"confusionMatrixStandard.png")
         self._confusionMatrix.exportStandardMatrixAsPng(standardConfusionMatrixPngPath)
 
         # Export the Weighted Confusion Matrix
-        weightedConfusionMatrixCsvPath = os.path.join(outputFolder,"confusionMatrixWeighted{0}.csv".format(currentFoldIndex))
+        weightedConfusionMatrixCsvPath = os.path.join(outputFolder,"confusionMatrixWeighted.csv")
         self._confusionMatrix.exportWeightedMatrixAsCsv(weightedConfusionMatrixCsvPath)
-        weightedConfusionMatrixPngPath = os.path.join(outputFolder,"confusionMatrixWeighted{0}.png".format(currentFoldIndex))
+        weightedConfusionMatrixPngPath = os.path.join(outputFolder,"confusionMatrixWeighted.png")
         self._confusionMatrix.exportWeightedMatrixAsPng(weightedConfusionMatrixPngPath)
 
         # All done!
