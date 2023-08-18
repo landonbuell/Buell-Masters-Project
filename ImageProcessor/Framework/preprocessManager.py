@@ -36,8 +36,8 @@ class PreprocessManager(manager.Manager):
         """ Constructor """
         super().__init__(app,PreprocessManager.__NAME)
         self._steps     = list()
-        self._displayInitialImage   = False
-        self._displayAfterEachStep  = False
+        self._displayInitialImage   = True
+        self._displayAfterEachStep  = True
 
         self.__registerPreprocessStep( Preprocessors.crop8PixelsFromEdges )
         #self.__registerPreprocessStep( Preprocessors.rescaleTo32by32 )
